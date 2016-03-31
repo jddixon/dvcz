@@ -1,0 +1,9 @@
+cd /home/jdd/dev/py/dvcz
+
+rm -rf build/* tmp/*
+
+pySloc -v $@ \
+    text:.gitignore text:MANIFEST.in \
+    bash:auto8it bash:countem bash:installit bash:test.all   \
+
+
