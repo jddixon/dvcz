@@ -1,2 +1,36 @@
 py/dvcz/TODO
 
+2016-04-18
+    dvCommit SPECS, ASSUMING MULTIPLE PROJECTS PER USER:
+    * confirm version number (a DecimalVersion) can be four digits, with 
+        the last the so-called build number, which is zero by default
+    * assume there is an append-only file in each top-level project 
+        directory called buildLists
+    * procedure:
+        - get a lock on $PROJECT_NAME using xlattice.procLock
+        - read version number N.N.N, read buildLists file to 
+            determine its $BUILD_NUMBER N.N.N.B including build part
+            * this determines the title of the buildList, which
+            is $PROJECT_NAME  $BUILD_NUMBER where the B part is zero 
+            unless there is an earlier commit for build N.N.N, in 
+            which case B is one higher than the previous build number
+        - read the RSA pivate key in PATH_TO_BL_KEYS/skPriv.pem
+        - create buildList using the public key, signing it with 
+            the private key
+        - hash the buildList; this is its content key $HEX_KEY
+        - insert the buildList into $DVCZ_UDIR using that
+            content key
+        - append "$TIMESTAMP $BUILD_NUMBER $HEX_KEY" to the
+            buildLists file
+        - unlock the project
+
+
+2016-03-31
+    * dvczInit sets up individual user
+        - writes keys to ~/.dvcz
+    * bkp2uInit
+        - writes bkp2u script, which invokes dvCommit
+    * bkp2u 
+        - -X uses .gitignore by default if present
+        - writes buildList as PROJECT_DIR/.buildLists/CCYYMMDD-HHMMSS
+

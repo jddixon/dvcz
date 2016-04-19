@@ -1,0 +1,224 @@
+#!/usr/bin/python3
+#
+# ~/dev/py/buildList/blListGen
+
+import base64
+import hashlib
+import os
+import sys
+from argparse import ArgumentParser
+from Crypto.PublicKey import RSA
+from Crypto.Hash import SHA    # presumably 1
+from Crypto.Signature import PKCS1_PSS
+
+from merkletree import MerkleDoc
+from buildList import *
+from xlattice.util import timestampNow
+
+
+def makeListing(args):
+
+    # this is here because assignment of args.uDir to None fails
+    if args.uDir and args.uDir != "":
+        uDir = args.uDir
+    else:
+        uDir = None
+
+    exclusions = args.exclude
+    keyFile = args.keyFile
+    listFile = args.listFile
+    matches = args.matchPat
+    now = args.now
+    rootDir = args.rootDir
+    signing = args.signing
+    testing = args.testing
+    title = args.title
+    uDir = args.uDir
+    usingSHA1 = args.usingSHA1
+    verbose = args.verbose
+
+    if rootDir and rootDir[-1] == '/':      # trailing slash
+        rootDir = rootDir[:-1]
+    if uDir and uDir[-1] == '/':            # trailing slash
+        uDir = uDir[:-1]
+
+    if exclusions:
+        exRE = MerkleDoc.makeExRE(exclusions)
+    else:
+        exRE = None
+    if matches:
+        matchRE = MerkleDoc.makeMatchRE(matches)
+    else:
+        matchRE = None
+
+    with open(keyFile, 'r') as f:
+        skPriv = RSA.importKey(f.read())
+    sk = skPriv.publickey()
+
+    bl = BuildList.createFromFileSystem(
+        title, rootDir, sk, usingSHA1, exRE, matchRE)
+    if signing:
+        bl.sign(skPriv)
+
+    blSer = bl.toString()
+    if listFile and (listFile != ''):
+        with open(listFile, 'w') as f:
+            f.write(blSer)
+    else:
+        print(blSer)
+
+
+def main():
+    """
+    Expect a command like
+        blListGen [options]
+
+    """
+
+    # program defaults ----------------------------------------------
+
+    now = timestampNow()
+
+    # parse the command line ----------------------------------------
+
+    DESC = 'generate build list for directory, optionally populating uDir'
+    parser = ArgumentParser(description=DESC)
+
+    parser.add_argument('-1', '--usingSHA1', action='store_true',
+                        help='use SHA1 in building merkletree (default=false=use SHA256)')
+
+    parser.add_argument('-b', '--listFile',
+                        help='path to build list')
+
+    parser.add_argument('-j', '--justShow', action='store_true',
+                        help='show options and exit')
+
+    parser.add_argument('-k', '--keyFile',
+                        help='path to RSA private key for signing')
+
+    parser.add_argument('-P', '--matchPat', action='append',
+                        help='include only files matching this pattern')
+
+    parser.add_argument('-r', '--rootDir',
+                        help='root directory for build list (REQUIRED)')
+
+    parser.add_argument('-s', '--signing', action='store_true',
+                        help='digitally sign the generated BuildList')
+
+    parser.add_argument('-T', '--testing', action='store_true',
+                        help='this is a test run')
+
+    parser.add_argument('-t', '--title',
+                        help='title for build list')
+
+    parser.add_argument('-u', '--uDir',
+                        help='path to uDir (relative to tmp/ if testing)')
+
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='be chatty')
+
+    parser.add_argument('-X', '--exclude', action='append',
+                        help='exclude files matching this pattern')
+
+    args = parser.parse_args()
+
+    # fixups --------------------------------------------------------
+    args.now = now
+    if args.testing and args.rootDir:
+        if args.rootDir[0] == '/':
+            args.rootDir = args.rootDir[1:]
+        args.rootDir = os.path.join('tmp', args.rootDir)
+
+    # sanity checks -------------------------------------------------
+    if not args.justShow:
+        if (not args.rootDir) or (args.rootDir == ''):
+            print("no root directory specified")
+            parser.print_usage()
+            sys.exit(1)
+
+        if not os.path.isdir(args.rootDir):
+            print("root directory '%s' isn't a directory" % args.rootDir)
+            parser.print_usage()        # short form
+            # parser.print_help()       # long form (what you get from -h)
+            sys.exit(1)
+
+        if args.keyFile:
+            if args.keyFile == '':
+                args.keyFile = None
+            else:
+                if args.testing:
+                    if args.keyFile[0] == '/':
+                        args.keyFile = args.keyFile[1:]
+                    args.keyFile = os.path.join('tmp', args.keyFile)
+                if not os.path.isfile(args.keyFile):
+                    print("key file '%s' does not exist" % args.keyFile)
+                    sys.exit(1)
+        else:
+            print('you must specify a private key file')
+            parser.print_usage()
+            sys.exit(1)
+
+    # fixups --------------------------------------------------------
+
+    # uDir ------------------------------------------------
+    if args.testing and args.uDir:
+        if args.uDir[0] == '/':
+            args.uDir = args.uDir[1:]
+        args.uDir = os.path.join('tmp', args.uDir)
+
+    # title -----------------------------------------------
+    if args.rootDir:
+        if not args.title or args.title == '':
+            junk, sep, base = args.rootDir.rpartition('/')
+            args.title = base
+        else:
+            # this can contain spaces and other undesirable characters
+            base = args.title
+
+    # listFile --------------------------------------------
+    if args.listFile and args.testing:
+        if args.listFile[0] == '/':
+            args.listFile = args.listFile[1:]
+        args.listFile = os.path.join('tmp', args.listFile)
+
+    # complete setup ------------------------------------------------
+    appName = 'blListGen %s' % __version__
+    args.title = str(args.title)
+
+    # maybe show options and such -----------------------------------
+    if args.verbose or args.justShow:
+        print("%s %s" % (appName, __version_date__))
+
+    if args.verbose or args.justShow:
+        print('justShow     = ' + str(args.justShow))
+        print('keyFile      = ' + str(args.keyFile))
+        print('listFile     = ' + str(args.listFile))
+        print('timestamp    = ' + str(args.now))
+        print('rootDir      = ' + str(args.rootDir))
+        print('signing      = ' + str(args.signing))
+        print('testing      = ' + str(args.testing))
+        print('title        = ' + str(args.title))
+        print('uDir         = ' + str(args.uDir))
+        print('usingSHA1    = ' + str(args.usingSHA1))
+        print('verbose      = ' + str(args.verbose))
+
+        if args.exclude and len(args.exclude) > 0:
+            print("exclude:")
+            for exclusion in args.exclude:
+                print("    %s" % exclusion)
+        if args.matchPat and len(args.matchPat) > 0:
+            print("match:")
+            for match in args.matchPat:
+                print("    %s" % match)
+
+    if args.justShow:
+        sys.exit(0)
+
+    # do what's required --------------------------------------------
+
+    # try: ACQUIRE LOCK ON PROJECT, that is, on the name of the project
+    makeListing(args)
+    # finally: RELEASE LOCK ON PROJECT
+
+if __name__ == '__main__':
+    main()
