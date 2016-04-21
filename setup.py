@@ -16,6 +16,6 @@ setup(name='dvcz',
       py_modules=[],
       packages=['dvcz'],
       # following could be in scripts/ subdir
-      scripts=[],
+      scripts=['dvcCommit'],
       # MISSING url
       )
