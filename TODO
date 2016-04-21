@@ -1,9 +1,11 @@
 py/dvcz/TODO
 
-2016-04-18
+2016-04-21, edited from -18
     dvCommit SPECS, ASSUMING MULTIPLE PROJECTS PER USER:
-    * confirm version number (a DecimalVersion) can be four digits, with 
-        the last the so-called build number, which is zero by default
+    * version number (a DecimalVersion) is represented by three or four
+        numbers, each less than 256, separated by periods ('.'), with
+        the optional fourth the last the so-called build number, which 
+        is zero by default 
     * assume there is an append-only file in each top-level project 
         directory called buildLists
     * procedure:

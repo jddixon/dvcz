@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #
-# ~/dev/py/buildList/blListGen
+# ~/dev/py/buildList/dvcCommit
 
 import base64
 import hashlib
@@ -11,25 +11,18 @@ from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA    # presumably 1
 from Crypto.Signature import PKCS1_PSS
 
-from merkletree import MerkleDoc
-from buildList import *
-from xlattice.util import timestampNow
+from xlattice.util import makeExRE, timestampNow
+from dvcz import *
 
 
-def makeListing(args):
-
-    # this is here because assignment of args.uDir to None fails
-    if args.uDir and args.uDir != "":
-        uDir = args.uDir
-    else:
-        uDir = None
+def doCommit(args):
 
     exclusions = args.exclude
     keyFile = args.keyFile
     listFile = args.listFile
     matches = args.matchPat
     now = args.now
-    rootDir = args.rootDir
+    projDir = args.projDir
     signing = args.signing
     testing = args.testing
     title = args.title
@@ -37,13 +30,13 @@ def makeListing(args):
     usingSHA1 = args.usingSHA1
     verbose = args.verbose
 
-    if rootDir and rootDir[-1] == '/':      # trailing slash
-        rootDir = rootDir[:-1]
+    if projDir and projDir[-1] == '/':      # trailing slash
+        projDir = projDir[:-1]
     if uDir and uDir[-1] == '/':            # trailing slash
         uDir = uDir[:-1]
 
     if exclusions:
-        exRE = MerkleDoc.makeExRE(exclusions)
+        exRE = makeExRE(exclusions)
     else:
         exRE = None
     if matches:
@@ -56,7 +49,7 @@ def makeListing(args):
     sk = skPriv.publickey()
 
     bl = BuildList.createFromFileSystem(
-        title, rootDir, sk, usingSHA1, exRE, matchRE)
+        title, projDir, sk, usingSHA1, exRE, matchRE)
     if signing:
         bl.sign(skPriv)
 
@@ -70,9 +63,6 @@ def makeListing(args):
 
 def main():
     """
-    Expect a command like
-        blListGen [options]
-
     """
 
     # program defaults ----------------------------------------------
@@ -81,7 +71,7 @@ def main():
 
     # parse the command line ----------------------------------------
 
-    DESC = 'generate build list for directory, optionally populating uDir'
+    DESC = 'commit the current state of a project to U'
     parser = ArgumentParser(description=DESC)
 
     parser.add_argument('-1', '--usingSHA1', action='store_true',
@@ -90,17 +80,20 @@ def main():
     parser.add_argument('-b', '--listFile',
                         help='path to build list')
 
+    parser.add_argument('-d', '--projDir',
+                        help='project directory')
+
     parser.add_argument('-j', '--justShow', action='store_true',
                         help='show options and exit')
 
     parser.add_argument('-k', '--keyFile',
                         help='path to RSA private key for signing')
 
-    parser.add_argument('-P', '--matchPat', action='append',
+    parser.add_argument('-M', '--matchPat', action='append',
                         help='include only files matching this pattern')
 
-    parser.add_argument('-r', '--rootDir',
-                        help='root directory for build list (REQUIRED)')
+    parser.add_argument('-P', '--project',
+                        help='name of project (REQUIRED)')
 
     parser.add_argument('-s', '--signing', action='store_true',
                         help='digitally sign the generated BuildList')
@@ -124,20 +117,25 @@ def main():
 
     # fixups --------------------------------------------------------
     args.now = now
-    if args.testing and args.rootDir:
-        if args.rootDir[0] == '/':
-            args.rootDir = args.rootDir[1:]
-        args.rootDir = os.path.join('tmp', args.rootDir)
+    if args.testing and args.projDir:
+        if args.projDir[0] == '/':
+            args.projDir = args.projDir[1:]
+        args.projDir = os.path.join('tmp', args.projDir)
 
     # sanity checks -------------------------------------------------
     if not args.justShow:
-        if (not args.rootDir) or (args.rootDir == ''):
-            print("no root directory specified")
+        if (not args.project) or (args.project == ''):
+            print("no project name specified")
             parser.print_usage()
             sys.exit(1)
 
-        if not os.path.isdir(args.rootDir):
-            print("root directory '%s' isn't a directory" % args.rootDir)
+        if (not args.projDir) or (args.projDir == ''):
+            print("no project directory specified")
+            parser.print_usage()
+            sys.exit(1)
+
+        if not os.path.isdir(args.projDir):
+            print("project directory '%s' isn't a directory" % args.projDir)
             parser.print_usage()        # short form
             # parser.print_help()       # long form (what you get from -h)
             sys.exit(1)
@@ -167,13 +165,8 @@ def main():
         args.uDir = os.path.join('tmp', args.uDir)
 
     # title -----------------------------------------------
-    if args.rootDir:
-        if not args.title or args.title == '':
-            junk, sep, base = args.rootDir.rpartition('/')
-            args.title = base
-        else:
-            # this can contain spaces and other undesirable characters
-            base = args.title
+    if not args.title or args.title == '':
+        args.title = args.project
 
     # listFile --------------------------------------------
     if args.listFile and args.testing:
@@ -182,7 +175,7 @@ def main():
         args.listFile = os.path.join('tmp', args.listFile)
 
     # complete setup ------------------------------------------------
-    appName = 'blListGen %s' % __version__
+    appName = 'dvcCommit %s' % __version__
     args.title = str(args.title)
 
     # maybe show options and such -----------------------------------
@@ -193,10 +186,11 @@ def main():
         print('justShow     = ' + str(args.justShow))
         print('keyFile      = ' + str(args.keyFile))
         print('listFile     = ' + str(args.listFile))
-        print('timestamp    = ' + str(args.now))
-        print('rootDir      = ' + str(args.rootDir))
+        print('projDir      = ' + str(args.projDir))
+        print('project      = ' + str(args.project))
         print('signing      = ' + str(args.signing))
         print('testing      = ' + str(args.testing))
+        print('timestamp    = ' + str(args.now))
         print('title        = ' + str(args.title))
         print('uDir         = ' + str(args.uDir))
         print('usingSHA1    = ' + str(args.usingSHA1))
@@ -217,7 +211,7 @@ def main():
     # do what's required --------------------------------------------
 
     # try: ACQUIRE LOCK ON PROJECT, that is, on the name of the project
-    makeListing(args)
+    doCommit(args)
     # finally: RELEASE LOCK ON PROJECT
 
 if __name__ == '__main__':
