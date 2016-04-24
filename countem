@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-cd ~/dev/py/dvcz
+cd $DEV_BASE/py/dvcz
 
 rm -rf build/* tmp/* 
 
-pySloc -X 'build|tmp' -v $@
+pySloc -X dist -X tmp -v $@
