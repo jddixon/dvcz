@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+cd $DEV_BASE/py/dvcz
+
+rm tmp/*
+
+blListGen                                 \
+            -d ../dvcz                    \
+            -1L                             \
+            -u /var/app/sharedev/U          \
+            $@
