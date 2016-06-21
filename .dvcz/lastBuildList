@@ -1,0 +1,59 @@
+-----BEGIN RSA PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoM2sBgX0ChP2JriXkOxS
+e2FjHYVzBGkNvgf0vIAa7FFYZi2pWmxBAVXgl3tTiB3quqqud/MbKqdejM6gkKBK
+v8f7hlcBQLD6BLIZ/RRfhIElc+WlDVfKSnBTB4va5qTQAgvuq5i8+oMj7G8WEy5d
+7cYucWyUJMtHvT4pCDtBWeeqQ62tByWjv34Ud/+A9Mjf0leiWxM3tiToVsqIKb4s
+zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
+H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
+GQIDAQAB
+-----END RSA PUBLIC KEY-----
+dvcz v0.0.6
+2016-06-21 18:26:30
+# START CONTENT #
+dvcz
+ .dvcz
+  builds 53398edb81702a78befecd6fb5f4d60f8070710d
+  lastBuildList cea9d4e6d5753d2112d22ab116f78093195c843f
+  projCfg 1e727e7b62a7739bda7951cd37e9f23d42f79317
+  projCfg.local af384b8c01663065cdda3cc15aed090e5146ce32
+  version 7e5effab945fda4214e7d5cc21340ba0f7c921b7
+ .gitignore 5f1a04317952b671c5828218c6efe88c2594f8fb
+ CHANGES 6893f74c89018f7eee537e17f31cd45155d19fae
+ LICENSE.md 50a6fc1b15e967d1dc37ba7559cf121a66240830
+ MANIFEST.in 411b2ccb09758078af3c3ffed4fab5e1214cea5c
+ README.md c736320895e17a97e608980854346c4fdfad8b5e
+ TODO 9a8b7c64551914ffd815a11fd8520f05a6168e59
+ bkp2U b8eb7e8c6a8c60d9914ca7635e3ee4ea740a05a4
+ countem d5cd5818c45e84c9f4eab8cf0cf6ece57a45e80a
+ dist
+  dvcz-0.0.1.tar.gz 1a7880bc1463fcecbff7aa50951d5fdabdbdf204
+  dvcz-0.0.2.tar.gz eec66619ad1e9f27273b712a4d130c137565c119
+  dvcz-0.0.3.tar.gz 259997c7c7182658f81627a962a704ae42e35681
+  dvcz-0.0.4.tar.gz 8829b3fbe34b423c0b88a68935ffa8989b164406
+  dvcz-0.0.5.tar.gz 2faba3626e66b57a47e0c647d28903540865dc48
+  dvcz-0.0.6.tar.gz b4fdb054b8d848c58490ce197362b5ae4d466018
+ dvcCommit e5a1adabe19c235e017d0f33ca178cb5820f4902
+ dvcz
+  __init__.py 7b1a2608c3e6e6101e996b09f4df8a6181d7230a
+ ghpDoc
+  css
+   LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
+   ghp.css 1d6ebe8a6cf8f61f4645a793cb087dfae2420f33
+   main.css 018ed80b8a6e6607bc7c08595fa5a7fa56853885
+   normalize.css cba40c7ce3d558d00ff79d7505ac3d348015ec9c
+  img
+   GitHub-Mark-32px.png fabe53eb72f9b6d3d47cd95aff31ffc45c2fdbf8
+   chunk.jpg de2b27e41f1547fc14b13399f5906b4303b49657
+   chunk2.jpg d0593d312dbb8ea837c17b28cb639726e29ea93b
+   cluster-with-clients.jpg c167d04c0c6b5736ef9fe4cdc3fcce1956fdea78
+   simple-cluster.jpg 6b223ddd25937c1ef75ef328f36fc3436f10bd62
+   xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
+   xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
+  index.md cd63a4377c07a80fce20023ac0d2703d8aaba17b
+ installit 5108adbba14955e85087a1bd33fd129e55c9ba21
+ setup.py 6824f6af5529c1201ed36b42c0bca02ee064d89d
+ styleit fc3e53a18fbd0860e64e15a4e7ef816608cea84b
+ test.all 17efd4c78604475dfa754deb88981278d732896c
+# END CONTENT #
+
+gKxJDdAE8xqaaunxwz29j03Not46BDGoou2yvLZoJNUiSGlqmFFd2jEV0Zr2sgYVcYG/RgxHDeXWEoN7jw07UHpbhtgHkAPhk7O4yVpV+FoL6VUmYV5XckEHUb5i3YtrTDCJlH8Cu4Dgm4Fgu1xgKW9Pr+ngK2ytY6c9YhFAQW4A8egBXadtAmfbwoCi+U1ajVaPGGd/MmnoMMvrazAf7aPlCYKLbiFXIh7E6zCZ12pyZvGfNBd/X1u7Jc8o3YyHBGNijY+yKcBrJ2Me4ctF6qr3jdiARGYXAE/YuGcm8dFWRLlCQFzpEBDOv0mKLAjtUnxrF1IHTCKFel03RAJQ1A==

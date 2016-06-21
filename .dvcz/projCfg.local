@@ -1,25 +1,9 @@
-code:std:.gitignore
-code:std:.dvcz/projCfg
-code:std:.dvcz/projCfg.local
-code:std:MANIFEST.in
+# dvcz/.dvcz/projCfg.local
 
-txt:std:CHANGES
-txt:std:LICENSE.md
-txt:std:README.md
-txt:std:TODO
-
-dir:std:dist
-dir:std:ghpDoc
 dir:pkg:dvcz
-dir:clr:build
+
+# directories
 dir:clr:tmp
 
-bash:std:auto8it
-bash:std:countem
-bash:std:installit
-bash:std:test.all
-
-py:std:setup.py
-
-# 
+# globals
 py:global:dvcCommit
