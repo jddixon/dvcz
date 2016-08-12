@@ -1,3 +1,0 @@
-cd /home/jdd/dev/py/dvcz
-
-autopep8 -air dvcz dvcCommit *.py 
