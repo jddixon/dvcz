@@ -16,7 +16,7 @@ scripts in the project's root directory.
 ### Environmental Variables
 
 These must be defined in order for project software to work correctly;
-they included:
+they include:
 
 * DEV_BASE, the path to the directory containing project directories
 * DVCZ_AUTHOR, the double-quoted name of the author, such as "John Smith"
@@ -39,17 +39,23 @@ this point these include
 * **lastBuildlist*", the full text of the last build list, digitally signed
 with the committer's RSA key
 * **projCfg**, a description of what is to be included in each project build
-* **projCfg.local**, a list of items which must be included in `projCfg` if
-it is rewritten
+* **projCfg.local**, a list of items (file or directory names)
+    which must be included in `projCfg` if it is rewritten
 
 #### builds
 
+This is a list in chronological order of
+
+* the time at which each version of the project has been committed
+* the corresponding version number
+* and the content hash of the BuildList for the commit
+
 An excerpt from a typical `builds` file:
 
-2016-05-19 18:31:36 v0.4.23 8a8ed84f8937a1f20c0d317c115e87fc9ebb12e8
-2016-05-25 19:53:11 v0.4.24 92d53f31e14c52de23830ad093db11440d77803a
-2016-05-25 20:04:30 v0.4.24 2026ccd5c10112e509108606f7770a4cd3f61a6c
-2016-06-15 00:32:54 v0.4.26 752e4eb5bca0033a6db4fb1391df120671c0daa9
+    2016-05-19 18:31:36 v0.4.23 8a8ed84f8937a1f20c0d317c115e87fc9ebb12e8
+    2016-05-25 19:53:11 v0.4.24 92d53f31e14c52de23830ad093db11440d77803a
+    2016-05-25 20:04:30 v0.4.24 2026ccd5c10112e509108606f7770a4cd3f61a6c
+    2016-06-15 00:32:54 v0.4.26 752e4eb5bca0033a6db4fb1391df120671c0daa9
 
 Each line begins with a timestamp in `CCYY-MM-DD HH:MM:SS` format.
 This is followed by a three or four part decimal version number, and

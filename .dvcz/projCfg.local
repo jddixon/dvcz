@@ -2,6 +2,8 @@
 
 dir:pkg:dvcz
 
+txt:std:LICENSE-MIT.md
+
 # directories
 dir:clr:tmp
 

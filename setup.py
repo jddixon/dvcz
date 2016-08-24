@@ -17,9 +17,14 @@ setup(name='dvcz',
       packages=['dvcz'],
       # following could be in scripts/ subdir
       scripts=['dvcCommit'],
-      # MISSING description
+      description='a simple distributed version control system',
+      url='https://jddixon.github.io/dvcz',
       classifiers=[
+          'Development Status :: 2 - Pre-Alpha',
+          'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python :: 3',
+          'Natural Language :: English',
+          'Programming Language :: Python 3',
+          'Topic :: Software Development :: Libraries :: Python Modules',
       ],
       )
