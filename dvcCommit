@@ -27,7 +27,7 @@ def doCommit(args):
     testing = args.testing
     title = args.title
     uDir = args.uDir
-    usingSHA1 = args.usingSHA1
+    usingSHA = args.usingSHA
     verbose = args.verbose
 
     if projDir and projDir[-1] == '/':      # trailing slash
@@ -49,7 +49,7 @@ def doCommit(args):
     sk = skPriv.publickey()
 
     bl = BuildList.createFromFileSystem(
-        title, projDir, sk, usingSHA1, exRE, matchRE)
+        title, projDir, sk, usingSHA, exRE, matchRE)
     if signing:
         bl.sign(skPriv)
 
@@ -74,7 +74,7 @@ def main():
     DESC = 'commit the current state of a project to U'
     parser = ArgumentParser(description=DESC)
 
-    parser.add_argument('-1', '--usingSHA1', action='store_true',
+    parser.add_argument('-1', '--usingSHA', action='store_true',
                         help='use SHA1 in building merkletree (default=false=use SHA256)')
 
     parser.add_argument('-b', '--listFile',
@@ -193,7 +193,7 @@ def main():
         print('timestamp    = ' + str(args.now))
         print('title        = ' + str(args.title))
         print('uDir         = ' + str(args.uDir))
-        print('usingSHA1    = ' + str(args.usingSHA1))
+        print('usingSHA    = ' + str(args.usingSHA))
         print('verbose      = ' + str(args.verbose))
 
         if args.exclude and len(args.exclude) > 0:
