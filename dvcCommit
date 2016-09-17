@@ -11,6 +11,8 @@ from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA    # presumably 1
 from Crypto.Signature import PKCS1_PSS
 
+from xlattice import (Q, checkUsingSHA,
+                      parseUsingSHA, fixUsingSHA, showUsingSHA, checkUPath)
 from xlattice.util import makeExRE, timestampNow
 from dvcz import *
 
@@ -74,9 +76,6 @@ def main():
     DESC = 'commit the current state of a project to U'
     parser = ArgumentParser(description=DESC)
 
-    parser.add_argument('-1', '--usingSHA', action='store_true',
-                        help='use SHA1 in building merkletree (default=false=use SHA256)')
-
     parser.add_argument('-b', '--listFile',
                         help='path to build list')
 
@@ -102,20 +101,16 @@ def main():
                         help='this is a test run')
 
     parser.add_argument('-t', '--title',
-                        help='title for build list')
-
-    parser.add_argument('-u', '--uDir',
-                        help='path to uDir (relative to tmp/ if testing)')
-
-    parser.add_argument('-v', '--verbose', action='store_true',
                         help='be chatty')
 
     parser.add_argument('-X', '--exclude', action='append',
                         help='exclude files matching this pattern')
 
+    parseUsingSHA(parser)
     args = parser.parse_args()
 
     # fixups --------------------------------------------------------
+    fixUsingSHA(args)
     args.now = now
     if args.testing and args.projDir:
         if args.projDir[0] == '/':
@@ -123,7 +118,9 @@ def main():
         args.projDir = os.path.join('tmp', args.projDir)
 
     # sanity checks -------------------------------------------------
+    checkUsingSHA(args.usingSHA)
     if not args.justShow:
+        checkUPath(parser, args, mustExist=True)        # XXX must exist??
         if (not args.project) or (args.project == ''):
             print("no project name specified")
             parser.print_usage()
@@ -158,12 +155,6 @@ def main():
 
     # fixups --------------------------------------------------------
 
-    # uDir ------------------------------------------------
-    if args.testing and args.uDir:
-        if args.uDir[0] == '/':
-            args.uDir = args.uDir[1:]
-        args.uDir = os.path.join('tmp', args.uDir)
-
     # title -----------------------------------------------
     if not args.title or args.title == '':
         args.title = args.project
@@ -192,9 +183,7 @@ def main():
         print('testing      = ' + str(args.testing))
         print('timestamp    = ' + str(args.now))
         print('title        = ' + str(args.title))
-        print('uDir         = ' + str(args.uDir))
-        print('usingSHA    = ' + str(args.usingSHA))
-        print('verbose      = ' + str(args.verbose))
+        showUsingSHA(args)
 
         if args.exclude and len(args.exclude) > 0:
             print("exclude:")
