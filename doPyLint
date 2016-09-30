@@ -1,0 +1,4 @@
+
+# should add test*.py
+
+pylint setup.py dvcz 

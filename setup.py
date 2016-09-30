@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-# dvcz/setup.py
+""" Do set up for our distributed version control system. """
 
 import re
 from distutils.core import setup
-__version__ = re.search("__version__\s*=\s*'(.*)'",
+__version__ = re.search(r"__version__\s*=\s*'(.*)'",
                         open('dvcz/__init__.py').read()).group(1)
 
 # see http://docs.python.org/distutils/setupscript.html
@@ -25,6 +25,6 @@ setup(name='dvcz',
           'License :: OSI Approved :: MIT License',
           'Natural Language :: English',
           'Programming Language :: Python 3',
-          'Topic :: Software Development :: Libraries :: Python Modules',
-      ],
+          'Topic :: Software Development :: Libraries :: Python Modules'
+      ]
       )
