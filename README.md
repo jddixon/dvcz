@@ -19,18 +19,29 @@ These must be defined in order for project software to work correctly;
 they include:
 
 * DEV_BASE, the path to the directory containing project directories
-* DVCZ_AUTHOR, the double-quoted name of the author, such as "John Smith"
 * DVCZ_DIR, which might be for example "/var/app/sharedev"
-* DVCZ_EMAIL, such as "john.smith@example.com"
-* DVCZ_PATH_TO_KEYS, for example "$DVCZ_DIR/U"
 * DVCZ_UDIR, where files are stored by content key; eg `/var/app/sharedev/U`
+
+* DVCZ_USER, path to this user's .dvcz/, so $HOME/.dvcz
+* DVCZ_AUTHOR, the double-quoted name of the author, such as "John Smith"
+* DVCZ_AUTHOR_EMAIL, such as "john.smith@example.com"
+* DVCZ_PATH_TO_KEYS, conventionally "$DVCZ_USER/node"
 
 On a Linux system these are conventionally set in `$HOME/.bashrc`, a bash
 script, with a line like
 
     export DEV_BASE="$HOME/dev"
 
-### .dvcz Subdirectory
+### User .dvcz Subdirectory
+
+This is `$DVCZ_USER` which is conventionally `$HOME/.dvcz`.  Files in or
+below this subdirectory include
+
+* `node/skPriv.pem`, ie `$DVCZ_PATH_TO_KEYS/skPriv.pem`, the RSA secret key
+    used for signing BuildLists etc
+* `id`, the globally unique 160-bit ID used to identify the user
+
+### Project .dvcz Subdirectory
 
 Files in this directory describe the current state of the project.  At
 this point these include
@@ -41,12 +52,15 @@ with the committer's RSA key
 * **projCfg**, a description of what is to be included in each project build
 * **projCfg.local**, a list of items (file or directory names)
     which must be included in `projCfg` if it is rewritten
+* **version**, containing two newline-terminated lines, the first of which
+    is a serialized `DecimalVersion` and the second a date in `CCYY-MM-DD`
+    format
 
 #### builds
 
 This is a list in chronological order of
 
-* the time at which each version of the project has been committed
+* the date and time at which each version of the project has been committed
 * the corresponding version number
 * and the content hash of the BuildList for the commit
 
