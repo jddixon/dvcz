@@ -6,7 +6,7 @@ then
   
   rm -rf build/* tmp/* 
   
-  pySloc -L py  -X dist -v $@
+  pySloc -L py dvc_bkp2u dvc_commit -X cover -X dist -v $@
 else
   echo "DEV_BASE is not defined"
 fi
