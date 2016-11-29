@@ -1,15 +1,21 @@
 py/dvcz/TODO
 
-2016-04-21, edited from -18
-    dvCommit SPECS, ASSUMING MULTIPLE PROJECTS PER USER:
+2016-11-28
+    * modify dvc_bkp2u to write to U_PATH/in/ID/, where ID represents
+        the 40-char hex value under $HOME/.dvcz/id
+    * rename dvc_commit dvc_commit_old, dvc_bkp2u dvc_commit            * DONE
+    * FIX: countem generating incorrect counts
+
+2016-11-28, edited from -04-21, edited from -18
+    dvc_commit SPECS, ASSUMING MULTIPLE PROJECTS PER USER:
     * version number (a DecimalVersion) is represented by three or four
         numbers, each less than 256, separated by periods ('.'), with
         the optional fourth the last the so-called build number, which 
         is zero by default 
-    * assume there is an append-only file in each top-level project 
-        directory called buildLists
+    * assume there is an append-only file in each project's .dvcz 
+        subdirectory called buildLists
     * procedure:
-        - get a lock on $PROJECT_NAME using xlattice.procLock
+        - get a lock on $PROJECT_NAME using xlattice.proc_lock
         - read version number N.N.N, read buildLists file to 
             determine its $BUILD_NUMBER N.N.N.B including build part
             * this determines the title of the buildList, which
@@ -26,13 +32,11 @@ py/dvcz/TODO
             buildLists file
         - unlock the project
 
-
-2016-03-31
-    * dvczInit sets up individual user
-        - writes keys to ~/.dvcz
-    * bkp2uInit
-        - writes bkp2u script, which invokes dvCommit
-    * bkp2u 
-        - -X uses .gitignore by default if present
+2016-11-28, edited from -03-31
+    * dvc_init sets up individual user
+        - writes private RSA key to ~/.dvcz/node/skPriv.pem
+            * this file should be 0o400, user-readable only
+    * dvc_commit (former dvc_bkp2u)
+        - -X uses .dvczignore by default if present
         - writes buildList as PROJECT_DIR/.buildLists/CCYYMMDD-HHMMSS
 

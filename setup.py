@@ -16,7 +16,7 @@ setup(name='dvcz',
       py_modules=[],
       packages=['dvcz'],
       # following could be in scripts/ subdir
-      scripts=['dvcCommit'],
+      scripts=['dvc_adduser', 'dvc_commit'],
       description='a simple distributed version control system',
       url='https://jddixon.github.io/dvcz',
       classifiers=[
@@ -26,5 +26,4 @@ setup(name='dvcz',
           'Natural Language :: English',
           'Programming Language :: Python 3',
           'Topic :: Software Development :: Libraries :: Python Modules'
-      ]
-      )
+      ])

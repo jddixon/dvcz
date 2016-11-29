@@ -1,0 +1,194 @@
+#!/usr/bin/python3
+#
+# ~/dev/py/dvcz/dvc_adduser
+
+"""
+Add a DVCZ user by creating $HOME/.dvcz and $U_DIR/ID/{in/,tmp/,L}.
+"""
+
+import os
+import sys
+
+from argparse import ArgumentParser
+
+from buildlist import(check_dirs_in_path, generate_rsa_key, rm_f_dir_contents)
+from dvcz import(__version__, __version_date__)
+from xlattice import (check_u_path,
+                      check_using_sha, parseUsingSHA, fix_using_sha,
+                      show_using_sha)
+from xlattice.util import timestamp_now
+
+
+def doit(options):
+    """
+    Carry out the configuration.
+
+    Arrive here with the working directory set to either $HOME or
+    (if testing) the initial working directory.
+    """
+
+    # create dvcz_dir if doesn't exist; if does exist and -force, recreate it
+
+    # write RSA private key to $DVCZ_DIR/node/skPriv.pem
+
+    # generate and write a unique ID to $DVCZ_DIR/id
+
+    # if necessary create $U_DIR with requisite DIR_STRUC and using_sha
+
+    # create $U_DIR/$ID/ which is DIR_FLAT with the correct using_sha
+
+    # create $U_DIR/$ID/{L,in/,tmp/}
+
+
+def get_args():
+    """ Collect command-line arguments. """
+
+    now = timestamp_now()
+    home = os.environ['HOME']
+
+    app_name = 'dvc_adduser %s' % __version__
+    key_path = os.path.join(os.environ['DVCZ_PATH_TO_KEYS'], 'skPriv.pem')
+
+    # parse the command line ----------------------------------------
+
+    desc = 'Set up directories for a new DVCZ user.'
+    parser = ArgumentParser(description=desc)
+
+    parser.add_argument('-D', '--dvcz_dir', default='.dvcz',
+                        help='dvcz directory (default=.dvcz)')
+
+    parser.add_argument('-f', '--force', action='store_true',
+                        help='overwrite existing user configuration')
+
+    parser.add_argument('-j', '--just_show', action='store_true',
+                        help='show options and exit')
+
+    parser.add_argument('-k', '--key_bits', default=2048,
+                        help='number of RSA key bits')
+
+    parser.add_argument('-T', '--testing', action='store_true',
+                        help='this is a test run')
+
+    parser.add_argument('-V', '--show_version', action='store_true',
+                        help='display version number and exit')
+
+    # -1,-2,-3, using_sha, -v/--verbose
+    parseUsingSHA(parser)
+
+    args = parser.parse_args()
+
+    if args.show_version:
+        print(app_name)
+        sys.exit(0)
+
+    if args.testing:
+        args.home = './'
+    else:
+        args.home = home
+        os.chdir(home)
+
+    args.app_name = app_name
+    args.now = now
+    return parser, args
+
+
+def check_sanity(parser, args):
+    """ check for option values that just don't make sense. """
+
+    if not args.just_show:
+        check_using_sha(args.using_sha)
+
+        if (not args.dvcz_dir) or (args.dvcz_dir == ''):
+            print("no dvcz directory specified")
+            parser.print_usage()
+            sys.exit(1)
+
+        if not os.path.isdir(args.dvcz_dir):
+            print("dvcz directory '%s' isn't a directory" % args.dvcz_dir)
+            parser.print_usage()        # short form
+            sys.exit(1)
+
+        args.key_file = os.path.join(args.dvcz_dir,
+                                     os.path.join('node', 'skPriv.pem'))
+        if not os.path.exists(args.key_file):
+            check_dirs_in_path(args.key_file)
+            if args.testing:
+                generate_rsa_key(args.key_file, 1024)
+            else:
+                generate_rsa_key(args.key_file, args.key_bits)
+
+        if args.testing:
+            args.u_path = 'tmp/U'
+
+        check_u_path(parser, args, must_exist=not args.testing)
+
+
+def check_args(parser, args):
+    """ Check and possibly edit command-line arguments. """
+
+    fix_using_sha(args)
+
+    if args.testing:
+        args.dvcz_dir = os.path.join('tmp', 'dvcz')
+        if os.path.exists(args.dvcz_dir):
+            # DEBUG
+            print("TYPE .dvcz_dir: ", type(args.dvcz_dir))
+            print("VALUE:          '%s'" % args.dvcz_dir)
+            # END
+            rm_f_dir_contents(args.dvcz_dir)      # empties the directory
+    os.makedirs(args.dvcz_dir, 0o755, exist_ok=True)
+    # WE HAVE args.dvcz_dir
+
+    check_sanity(parser, args)
+
+    # u_path ------------------------------------------------
+    if args.testing and args.u_path:
+        if os.path.exists(args.u_path):
+            rm_f_dir_contents(args.u_path)
+
+    if args.u_path:
+        os.makedirs(args.u_path, 0o755, exist_ok=True)
+
+
+def show_args(args):
+    """ Maybe show options and such. """
+    if args.verbose or args.just_show:
+        print("%s %s" % (args.app_name, __version_date__))
+
+    if args.verbose or args.just_show:
+        print('current directory    = ' + os.getcwd())
+        print('dvcz_dir             = ' + str(args.dvcz_dir))
+        print('force                = ' + str(args.force))
+        print('home                 = ' + str(args.home))
+        print('just_show            = ' + str(args.just_show))
+        print('key_bits             = ' + str(args.key_bits))
+        print('key_file             = ' + str(args.key_file))
+        print('timestamp            = ' + str(args.now))
+        print('testing              = ' + str(args.testing))
+        show_using_sha(args)
+
+    if args.just_show:
+        sys.exit(0)
+
+
+def main():
+    """
+    Collect comamnd line options and execute the command if required.
+    """
+
+    # collect and validate command line arguments
+    parser, args = get_args()
+    check_args(parser, args)
+    show_args(args)
+
+    # do what's required
+    # try:
+    #    mgr = ProcLock(what-we-are-locking)
+
+    doit(args)
+
+    # finally:
+    #     mrg.unlock()
+
+if __name__ == '__main__':
+    main()

@@ -8,4 +8,6 @@ txt:std:LICENSE-MIT.md
 dir:clr:tmp
 
 # globals
-py:global:dvcCommit
+py:global:dvc_adduser
+py:global:dvc_commit
+py:global:dvc_commit_old

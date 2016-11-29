@@ -108,7 +108,7 @@ In its current form dvcz is based on Python 3.
 
 dvcz depends upon a number of related projects:
 
-* [**buildList**](https://jddixon.github.io/buildList), a technology
+* [**buildlist**](https://jddixon.github.io/buildlist), a technology
 for authenticating the contents of a directory structure
 * [**fieldz**](https://jddixon.github.io/fieldz), a communications
 prototol intended to be compatible with a subset of Google's

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #
-# ~/dev/py/buildList/dvcCommit
+# ~/dev/py/buildList/dvc_commit
 
 import base64
 import hashlib
@@ -166,7 +166,7 @@ def main():
         args.listFile = os.path.join('tmp', args.listFile)
 
     # complete setup ------------------------------------------------
-    appName = 'dvcCommit %s' % __version__
+    appName = 'dvc_commit %s' % __version__
     args.title = str(args.title)
 
     # maybe show options and such -----------------------------------
