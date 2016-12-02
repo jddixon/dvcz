@@ -16,7 +16,7 @@ from argparse import ArgumentParser
 
 from buildlist import(BuildList,
                       check_dirs_in_path, generate_rsa_key, rm_f_dir_contents)
-from dvcz import(__version__, __version_date__, dvc_get_project)
+from dvcz import(__version__, __version_date__, dvc_get_project_info)
 from xlattice import (check_using_sha, parseUsingSHA, fix_using_sha,
                       show_using_sha)
 from xlattice.util import get_exclusions, timestamp_now
@@ -28,18 +28,19 @@ def doit(options):
 
     Optionally serialize the BuildList, append to a log, and populate
     the content-keyed store using the selected SHA hash type.
+
     """
     data_dir = options.data_dir
     dvcz_dir = options.dvcz_dir
     excl = options.excl
-    key_file = options.key_file
+    key_path = options.key_path
     list_file = options.list_file
     logging = options.logging
     title = options.title
     u_path = options.u_path      # if None, don't save to u_path
     using_sha = options.using_sha
 
-    blist = BuildList.list_gen(title, data_dir, dvcz_dir, list_file, key_file,
+    blist = BuildList.list_gen(title, data_dir, dvcz_dir, list_file, key_path,
                                excl, logging, u_path, using_sha)
 
     print("BuildList written to %s" % os.path.join(dvcz_dir, list_file))
@@ -57,7 +58,6 @@ def get_args():
 
     now = timestamp_now()
     app_name = 'dvc_bkp2u %s' % __version__
-    key_path = os.path.join(os.environ['DVCZ_PATH_TO_KEYS'], 'skPriv.pem')
 
     # parse the command line ----------------------------------------
 
@@ -71,7 +71,7 @@ def get_args():
                         help='dvcz directory (default=.dvcz)')
 
     parser.add_argument('-d', '--data_dir', default='.',
-                        help='data directory for build list (default=./)')
+                        help='data directory for build list (default=../)')
 
     parser.add_argument('-i', '--ignore_file', default='.dvczignore',
                         help='file containing wildcards (globs) for files to ignore')
@@ -79,15 +79,22 @@ def get_args():
     parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
 
-    parser.add_argument('-k', '--key_file', default=key_path,
+    parser.add_argument('-k', '--key_path',
                         help='path to RSA private key for signing')
 
     parser.add_argument('-L', '--logging', action='store_false',
                         help="append timestamp and BuildList hash to to .dvcz/builds")
 
     # NOT CURRENTLY SUPPORTED (may never be)
-    parser.add_argument('-M', '--matchPat', action='append',
+    parser.add_argument('-M', '--match_pat', action='append',
                         help='include only files matching this pattern')
+
+    parser.add_argument('-P', '--project',
+                        help='project name')
+
+    # XXX CURRENTLY IGNORED
+    parser.add_argument('-s', '--signing', action='store_false',
+                        help="DON'T add a digital signature")
 
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
@@ -123,24 +130,25 @@ def check_sanity(parser, args):
         check_using_sha(args.using_sha)
 
         if (not args.data_dir) or (args.data_dir == ''):
-            print("no root directory specified")
+            print("no data directory specified")
             parser.print_usage()
             sys.exit(1)
 
         if not os.path.isdir(args.data_dir):
-            print("root directory '%s' isn't a directory" % args.data_dir)
+            print("data directory '%s' isn't a directory" % args.data_dir)
             parser.print_usage()        # short form
             # parser.print_help()       # long form (what you get from -h)
             sys.exit(1)
 
         if args.testing:
-            args.key_file = os.path.join(args.dvcz_dir, 'skPriv.pem')
-        if not os.path.exists(args.key_file):
-            check_dirs_in_path(args.key_file)
+            args.key_path = os.path.join(args.dvcz_dir, 'skPriv.pem')
+
+        if not os.path.exists(args.key_path):
+            check_dirs_in_path(args.key_path)
             if args.testing:
-                generate_rsa_key(args.key_file, 1024)
+                generate_rsa_key(args.key_path, 1024)
             else:
-                generate_rsa_key(args.key_file, 2048)
+                generate_rsa_key(args.key_path, 2048)
 
 
 def check_args(parser, args):
@@ -180,9 +188,15 @@ def check_args(parser, args):
     if args.u_path:
         os.makedirs(args.u_path, 0o755, exist_ok=True)
 
+    # committer and in_path -------------------------------
+
+    # The directory at u_path is known to exist.  We are committing to
+    # a committer-specific subdirectory, u_path/in/ID, where ID is a
+    # 40- or 64-char hex value, the committer's ID.
+
     # title -----------------------------------------------
     if not args.title:
-        args.title = "%s_v%s" % (args.proj_name, __version__)
+        args.title = "%s_v%s" % (args.project, __version__)
 
 
 def show_args(args):
@@ -197,19 +211,20 @@ def show_args(args):
         print('exclusions           = ' + str(args.exclusions))
         print('ignore_file          = ' + str(args.ignore_file))
         print('just_show            = ' + str(args.just_show))
-        print('key_file             = ' + str(args.key_file))
+        print('key_path             = ' + str(args.key_path))
         print('list_file            = ' + str(args.list_file))
         print('logging              = ' + str(args.logging))
         print('proj_dir             = ' + str(args.proj_dir))
-        print('proj_name            = ' + str(args.proj_name))
+        print('project              = ' + str(args.project))
+        print('signing              = ' + str(args.signing))
         print('timestamp            = ' + str(args.now))
         print('testing              = ' + str(args.testing))
         print('title                = ' + str(args.title))
         show_using_sha(args)
 
-        if args.matchPat and len(args.matchPat) > 0:
+        if args.match_pat and len(args.match_pat) > 0:
             print("match:")
-            for match in args.matchPat:
+            for match in args.match_pat:
                 print("    %s" % match)
 
     if args.just_show:
@@ -222,7 +237,7 @@ def main():
     """
 
     parser, args = get_args()
-    dvc_get_project(args)               # and possibly change working directory
+    dvc_get_project_info(args)      # and possibly change working directory
     check_args(parser, args)
     show_args(args)
 

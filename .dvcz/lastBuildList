@@ -7,26 +7,24 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END PUBLIC KEY-----
-dvcz v0.0.14
-2016-11-29 01:43:50
+dvcz v0.0.15
+2016-12-02 01:13:01
 # BEGIN CONTENT #
 dvcz
  .dvcz
-  builds 6da4b31b2c4fb5888251baf6bab9020df89dc91c
+  builds c2c0dd995e0503562a12ed06f00db9495f0c3afa
   copyright 6794cf665112656267cf59917bdfc150e4c4b97c
-  lastBuildList 8a8c9fdb60c06fa281da281c60a3005dc7f3a2a7
+  lastBuildList c81bece5e9619eef5c94ced2427f11d31b691626
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  node
-   skPriv.pem 64bc42306bee5069c6b9fe6b397bff8dac01b4e1
   projCfg 031fc667aee027b30762847d45b9c69323dc9842
   projCfg.local 6b9b6b777d3818c1ed9daef0535aceca66835204
-  version 954a6d6b754775299602151fd447de8dc9ba8d70
+  version 3b8a8f0208fdf3a8792835fc447a7e8c4adfbd7b
  .gitignore 2bc4bcb7826ea9b5fb999444fe18f6785df1de72
- CHANGES f5b40c6824aa675d97a966e383e5a492f33a3b2f
+ CHANGES 1d69491061d8166300a4f2629bc79bb5ab28928b
  LICENSE-MIT.md e82e359e6de3e83b487ab0eda0679762159a3d9d
  MANIFEST.in 411b2ccb09758078af3c3ffed4fab5e1214cea5c
- README.md 7cb0687d7b5d08f02aa20daa8c5a84424a937558
- TODO 4fd3795d8f7a9c8ae13f07e85e95fbc6a4678ed3
+ README.md 9ca38acfd2ac865ade31be46a62a42e6dfd5fd28
+ TODO 793cfdb4e723dc084d6f503da5bcab2bc4a28e74
  bkp2U 0371ca086d6943f6c3bd427ece3a4d273405fe1a
  checkCoverage ebb83e35b67ea9c36cc69ce333e4f95e37dc514f
  countem b4e85424e33b3994e9ca1a8f1e3a808c38e04714
@@ -37,6 +35,7 @@ dvcz
   dvcz-0.0.12.tar.gz 4ae8c4b80a5138deec3e88a7ad668b6e11327bd9
   dvcz-0.0.13.tar.gz 908cd6b65ccb92666547d18b3168612409be3187
   dvcz-0.0.14.tar.gz 3218892634e268bdbe488deca9aaac5a539a1e97
+  dvcz-0.0.15.tar.gz 3e23d7855ceb46c909803b8d32af8c314b224020
   dvcz-0.0.2.tar.gz eec66619ad1e9f27273b712a4d130c137565c119
   dvcz-0.0.3.tar.gz 259997c7c7182658f81627a962a704ae42e35681
   dvcz-0.0.4.tar.gz 8829b3fbe34b423c0b88a68935ffa8989b164406
@@ -45,12 +44,11 @@ dvcz
   dvcz-0.0.7.tar.gz 12eab9490726dbd8389cd29994a73a13e8a95bbc
   dvcz-0.0.8.tar.gz f8b01a7bfb0ca23f6cc101d86415205157dba7da
   dvcz-0.0.9.tar.gz fe3a5b1cf415ec24d083f4527db709b44244c300
- doPyLint c6bbb6b5b9afb06cd8f538b0cebcd82abadd9b66
- dvc_adduser 57d955dc8f2a23862a5902f56cbaa31f8ba7288c
- dvc_commit f6993a1266d841f60b96031427cc45882c03f922
- dvc_commit_old cba165fd653aeb146fa93d201ac398de8b6ace6b
+ doPyLint 85a4825264e4f8f02e13388fe1393dd457e12ed0
+ dvc_adduser ec3facecb39232f722ca17d7994455740dc64ed2
+ dvc_commit 71c20139a6c600eec9318bd1f9487c90f3a63c63
  dvcz
-  __init__.py 0de48ce6d9dfd1fb2fd911e238cb14256d2d61ba
+  __init__.py 31ee2b162adbc4282083c3896cc75bdaf0bb5bbc
  ghpDoc
   css
    LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
@@ -65,7 +63,7 @@ dvcz
    simple-cluster.jpg 6b223ddd25937c1ef75ef328f36fc3436f10bd62
    xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
    xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
-  index.md c24f5eccc3700e4bf31412704b3c3832130b81ce
+  index.md fd0ea42751c0d6c49beabf4ce362fa4d1263d891
  installit 5108adbba14955e85087a1bd33fd129e55c9ba21
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  setup.py 76af5ce9a2fbeb045b0b6d70d55c3b326d919a31
@@ -73,4 +71,4 @@ dvcz
  test.all 17efd4c78604475dfa754deb88981278d732896c
 # END CONTENT #
 
-GP30FZml6rpIkIwiosELUNruVKNeUisq2ftbcipqzGI1yEpYYvixetEd9Kua0eG2221R3ORREhk0N+lXFnnzuFevhGlM9RxPuten97mKyeXLY237rdVM7resyHXiSLv9jAlTKdgZLNN1bB5hnkSIAFySor/qdElCYjHy8JUEY2J9tFa+laUlJE+jMHFW2gkEiM+Q2zqdW8MsmXH56qzy5E2PQ7yt8N8/2d8psIYAlFayiKESWqHmqjsisfz2sFFbHDDO6RCacF44KJqvDwT34TwtzWUjEaUfG1ZIR+ZG5WZZF3xEqQEZeGWS52ywrody97mQ1GnQ6ZaZIaio4jw/Wg==
+l2n+HnYnuv0xFdWQ6vVyERBc/SWbZ9lwtc+WDmtasdOjhLZZE8VPLQ/ThnvREwj8FXOGVdaMCSiTM42jM/GfKpXd49byXY6fmtX6IYolKn0G2zMiMzrA3yotkYL2aQNzZOwH6XmuMCfinBHQFDrjr6i+QxW3x8skqTVUk3AHCh37l9C10q3OzAAzeirjGslonszSm2glpLh7LeR6vRF4Qb4oUjBjjBLIt1XhvleXpaC6U3E5sEi8kjC6vByg/AOU7kX51gGM9k4BQnxmRl7rIi5qXcfwBwO9ehRSiMGAjUdQjYBdtSyKMWEKjsHVxBLOm38EKMzIIzCjCRqwdEDJOQ==

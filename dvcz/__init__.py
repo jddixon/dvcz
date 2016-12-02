@@ -5,13 +5,13 @@
 import os
 import sys
 
-__all__ = ['__version__', '__version_date__', 'dvc_get_project']
+__all__ = ['__version__', '__version_date__', 'dvc_get_project_info']
 
-__version__ = '0.0.14'
-__version_date__ = '2016-11-28'
+__version__ = '0.0.15'
+__version_date__ = '2016-12-01'
 
 
-def dvc_get_project(args):
+def dvc_get_project_info(args):
     """
     Find the project name and project directory.
 
@@ -22,13 +22,13 @@ def dvc_get_project(args):
     Otherwise add project name and directory to the args namelist.
     """
 
-    proj_name = 'UNKNOWN_PROJECT'
+    project = 'UNKNOWN_PROJECT'
     proj_dir = 'UNKNOWN_PATH'
     start_dir = os.getcwd()
     curdir = start_dir
 
     while curdir:
-        above, sep, proj_name = curdir.rpartition('/')    # parse path
+        above, sep, project = curdir.rpartition('/')    # parse path
         if sep != '/':
             print("invalid working directory: '%s'" % curdir)
             sys.exit(1)
@@ -40,7 +40,7 @@ def dvc_get_project(args):
         # otherwise we need to loop
         curdir = above
 
-    if proj_name.startswith('UNKNOWN') or proj_dir.startswith('UNKNOWN'):
+    if project.startswith('UNKNOWN') or proj_dir.startswith('UNKNOWN'):
         print(
             "unable to determine project name or directory for %s" % start_dir)
         sys.exit(1)
@@ -49,5 +49,5 @@ def dvc_get_project(args):
         print("no project directory found above %s" % start_dir)
         sys.exit(0)
 
-    args.proj_name = proj_name
+    args.project = project
     args.proj_dir = proj_dir

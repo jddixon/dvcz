@@ -1,8 +1,12 @@
 py/dvcz/TODO
 
+2016-11-30
+    * rearrange dvc_adduser so that it picks up using_sha and dir_struc
+        from any existing uDir
+
 2016-11-28
     * modify dvc_bkp2u to write to U_PATH/in/ID/, where ID represents
-        the 40-char hex value under $HOME/.dvcz/id
+        the 40- or 64-char hex value under $HOME/.dvcz/id
     * rename dvc_commit dvc_commit_old, dvc_bkp2u dvc_commit            * DONE
     * FIX: countem generating incorrect counts
 

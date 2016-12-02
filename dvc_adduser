@@ -3,41 +3,115 @@
 # ~/dev/py/dvcz/dvc_adduser
 
 """
-Add a DVCZ user by creating $HOME/.dvcz and $U_DIR/ID/{in/,tmp/,L}.
+Add a DVCZ user by creating $HOME/.dvcz and $U_DIR/{in/ID,tmp/,L}.
+If testing, create tmp/{home/dvcz,project/dvcz,uDir}
 """
 
+from argparse import ArgumentParser
 import os
 import sys
-
-from argparse import ArgumentParser
+import hashlib
 
 from buildlist import(check_dirs_in_path, generate_rsa_key, rm_f_dir_contents)
 from dvcz import(__version__, __version_date__)
-from xlattice import (check_u_path,
-                      check_using_sha, parseUsingSHA, fix_using_sha,
+from xlattice import (QQQ, check_using_sha, parseUsingSHA, fix_using_sha,
                       show_using_sha)
 from xlattice.util import timestamp_now
+from xlattice.u import UDir
+
+if sys.version_info < (3, 6):
+    # pylint: disable=unused-import
+    import sha3         # monkey-patches hashlib
+
+
+def make_committer_id(options):
+    # generate and write a unique ID to $DVCZ_DIR/id
+    path_pubkey = os.path.join(os.environ['HOME'],
+                               os.path.join('.ssh', 'id_rsa.pub'))
+    if not os.path.exists(path_pubkey):
+        print("""
+We use your ssh RSA public key to compute your committer ID, expecting
+to find this in {0}, but there is no such file.  Please remedy.""")
+
+    with open(path_pubkey, 'rb') as file:
+        pubkey = file.read()
+
+    using_sha = options.using_sha
+    # pylint: disable=redefined-variable-type
+    if using_sha == QQQ.USING_SHA1:
+        sha = hashlib.sha1()
+    elif using_sha == QQQ.USING_SHA2:
+        sha = hashlib.sha256()
+    elif using_sha == QQQ.USING_SHA3:
+        sha = hashlib.sha3_256()
+    sha.update(pubkey)
+    return sha.hexdigest()
 
 
 def doit(options):
     """
     Carry out the configuration.
-
-    Arrive here with the working directory set to either $HOME or
-    (if testing) the initial working directory.
     """
 
-    # create dvcz_dir if doesn't exist; if does exist and -force, recreate it
+    if options.testing and os.path.exists('tmp'):
+        rm_f_dir_contents('tmp')                # empties the directory
+
+    # user_dvcz_path ------------------------------------------------
+    # this is $HOME/.dvcz unless testing
+
+    if os.path.exists(options.user_dvcz_path):
+        if options.force:
+            rm_f_dir_contents(options.user_dvcz_path)  # empties the directory
+
+    if not os.path.exists(options.user_dvcz_path):
+        os.makedirs(options.user_dvcz_path, exist_ok=True, mode=0o755)
 
     # write RSA private key to $DVCZ_DIR/node/skPriv.pem
+    if not os.path.exists(options.key_path):
+        check_dirs_in_path(options.key_path)
+        if options.testing:
+            generate_rsa_key(options.key_path, 1024)
+        else:
+            generate_rsa_key(options.key_path, options.key_bits)
 
-    # generate and write a unique ID to $DVCZ_DIR/id
+    # generate and write a unique ID to $DVCZ_DIR/id --
+    path_to_id = os.path.join(options.user_dvcz_path, 'id')
+    if os.path.exists(path_to_id):
+        with open(path_to_id, 'r') as file:
+            committer_id = file.read()
+    else:
+        committer_id = make_committer_id(options)
+        with open(path_to_id, 'w+') as file:
+            file.write(committer_id)
+    # DEBUG
+    print("committer ID: %s" % committer_id)
+    # END
 
-    # if necessary create $U_DIR with requisite DIR_STRUC and using_sha
+    # proj_dvcz_path ------------------------------------------------
+    # if testing, remove it; otherwise just make sure that it exists
+    if options.testing:
+        if os.path.exists(options.proj_dvcz_path):
+            # DEBUG
+            print("deleting %s" % options.proj_dvcz_path)
+            # END
+            rm_f_dir_contents(options.proj_dvcz_path)      # empties directory
 
-    # create $U_DIR/$ID/ which is DIR_FLAT with the correct using_sha
+    os.makedirs(options.proj_dvcz_path, 0o755, exist_ok=True)
 
-    # create $U_DIR/$ID/{L,in/,tmp/}
+    # u_path --------------------------------------------------------
+    using_sha = options.using_sha
+    if options.testing and options.u_path:
+        if os.path.exists(options.u_path):
+            rm_f_dir_contents(options.u_path)
+
+    if options.u_path:
+        # if necessary create $U_DIR with requisite DIR_STRUC and using_sha
+        u_dir = UDir.discover(options.u_path, using_sha=using_sha)
+
+        # create $U_DIR/in/$ID/ which is DIR_FLAT with the correct using_sha
+        my_in_path = os.path.join(options.u_path,
+                                  os.path.join('in', committer_id))
+        my_in_dir = UDir.discover(my_in_path, using_sha=using_sha)
 
 
 def get_args():
@@ -47,15 +121,11 @@ def get_args():
     home = os.environ['HOME']
 
     app_name = 'dvc_adduser %s' % __version__
-    key_path = os.path.join(os.environ['DVCZ_PATH_TO_KEYS'], 'skPriv.pem')
 
     # parse the command line ----------------------------------------
 
     desc = 'Set up directories for a new DVCZ user.'
     parser = ArgumentParser(description=desc)
-
-    parser.add_argument('-D', '--dvcz_dir', default='.dvcz',
-                        help='dvcz directory (default=.dvcz)')
 
     parser.add_argument('-f', '--force', action='store_true',
                         help='overwrite existing user configuration')
@@ -65,6 +135,9 @@ def get_args():
 
     parser.add_argument('-k', '--key_bits', default=2048,
                         help='number of RSA key bits')
+
+    parser.add_argument('-s', '--dir_struc_name', type=str, default='DIR_FLAT',
+                        help="new dirStruc (DIR_FLAT, DIR16x16, or DIR256x256")
 
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
@@ -95,32 +168,14 @@ def get_args():
 def check_sanity(parser, args):
     """ check for option values that just don't make sense. """
 
-    if not args.just_show:
-        check_using_sha(args.using_sha)
+    if not args.dir_struc_name or not args.dir_struc_name in UDir.DIR_STRUC_NAMES:
+        print(
+            "you must specify a directory structure, one of %s" %
+            UDir. DIR_STRUC_NAMES)
+        parser.print_help()
+        sys.exit(1)
 
-        if (not args.dvcz_dir) or (args.dvcz_dir == ''):
-            print("no dvcz directory specified")
-            parser.print_usage()
-            sys.exit(1)
-
-        if not os.path.isdir(args.dvcz_dir):
-            print("dvcz directory '%s' isn't a directory" % args.dvcz_dir)
-            parser.print_usage()        # short form
-            sys.exit(1)
-
-        args.key_file = os.path.join(args.dvcz_dir,
-                                     os.path.join('node', 'skPriv.pem'))
-        if not os.path.exists(args.key_file):
-            check_dirs_in_path(args.key_file)
-            if args.testing:
-                generate_rsa_key(args.key_file, 1024)
-            else:
-                generate_rsa_key(args.key_file, args.key_bits)
-
-        if args.testing:
-            args.u_path = 'tmp/U'
-
-        check_u_path(parser, args, must_exist=not args.testing)
+    args.dir_struc = UDir.name_to_dir_struc(args.dir_struc_name)
 
 
 def check_args(parser, args):
@@ -129,25 +184,37 @@ def check_args(parser, args):
     fix_using_sha(args)
 
     if args.testing:
-        args.dvcz_dir = os.path.join('tmp', 'dvcz')
-        if os.path.exists(args.dvcz_dir):
-            # DEBUG
-            print("TYPE .dvcz_dir: ", type(args.dvcz_dir))
-            print("VALUE:          '%s'" % args.dvcz_dir)
-            # END
-            rm_f_dir_contents(args.dvcz_dir)      # empties the directory
-    os.makedirs(args.dvcz_dir, 0o755, exist_ok=True)
-    # WE HAVE args.dvcz_dir
+        args.user_dvcz_path = os.path.join('tmp',
+                                           os.path.join('home', 'dvcz'))
+        args.proj_dvcz_path = os.path.join('tmp',
+                                           os.path.join('proj', 'dvcz'))
+    else:
+        # for now, assume we are in the right directory
+        cur_dir = os.getcwd()
+
+        args.user_dvcz_path = os.path.join(os.environ['HOME'], '.dvcz')
+        args.proj_dvcz_path = os.path.join('tmp',
+                                           os.path.join('proj', 'dvcz'))
+
+    if os.path.exists(args.user_dvcz_path) and \
+            not os.path.isdir(args.user_dvcz_path):
+        print("home dvcz directory '%s' isn't a directory" %
+              args.user_dvcz_path)
+        sys.exit(1)
+
+    if os.path.exists(args.proj_dvcz_path) and\
+            not os.path.isdir(args.proj_dvcz_path):
+        print("proj dvcz directory '%s' isn't a directory" %
+              args.proj_dvcz_path)
+        sys.exit(1)
+
+    args.key_path = os.path.join(args.user_dvcz_path,
+                                 os.path.join('node', 'skPriv.pem'))
+
+    if args.testing:
+        args.u_path = 'tmp/U'
 
     check_sanity(parser, args)
-
-    # u_path ------------------------------------------------
-    if args.testing and args.u_path:
-        if os.path.exists(args.u_path):
-            rm_f_dir_contents(args.u_path)
-
-    if args.u_path:
-        os.makedirs(args.u_path, 0o755, exist_ok=True)
 
 
 def show_args(args):
@@ -156,16 +223,21 @@ def show_args(args):
         print("%s %s" % (args.app_name, __version_date__))
 
     if args.verbose or args.just_show:
-        print('current directory    = ' + os.getcwd())
-        print('dvcz_dir             = ' + str(args.dvcz_dir))
+        print('OPTIONS:')
+        print('dir_struc_name       = ' + str(args.dir_struc_name))
         print('force                = ' + str(args.force))
         print('home                 = ' + str(args.home))
         print('just_show            = ' + str(args.just_show))
         print('key_bits             = ' + str(args.key_bits))
-        print('key_file             = ' + str(args.key_file))
-        print('timestamp            = ' + str(args.now))
         print('testing              = ' + str(args.testing))
         show_using_sha(args)
+
+        print('\nOTHER:')
+        print('current directory    = ' + os.getcwd())
+        print('key_path             = ' + str(args.key_path))
+        print('proj_dvcz_path       = ' + str(args.proj_dvcz_path))
+        print('user_dvcz_path       = ' + str(args.user_dvcz_path))
+        print('timestamp            = ' + str(args.now))
 
     if args.just_show:
         sys.exit(0)

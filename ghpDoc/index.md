@@ -22,10 +22,10 @@ they include:
 * DVCZ_DIR, which might be for example "/var/app/sharedev"
 * DVCZ_UDIR, where files are stored by content key; eg `/var/app/sharedev/U`
 
-* DVCZ_USER, path to this user's .dvcz/, so $HOME/.dvcz
+* DVCZ_USER_DIR, path to this user's .dvcz/, so $HOME/.dvcz
 * DVCZ_AUTHOR, the double-quoted name of the author, such as "John Smith"
 * DVCZ_AUTHOR_EMAIL, such as "john.smith@example.com"
-* DVCZ_PATH_TO_KEYS, conventionally "$DVCZ_USER/node"
+* DVCZ_PATH_TO_KEYS, conventionally "$DVCZ_USER_DIR/node"
 
 On a Linux system these are conventionally set in `$HOME/.bashrc`, a bash
 script, with a line like
@@ -34,7 +34,7 @@ script, with a line like
 
 ### User .dvcz Subdirectory
 
-This is `$DVCZ_USER` which is conventionally `$HOME/.dvcz`.  Files in or
+This is `$DVCZ_USER_DIR` which is conventionally `$HOME/.dvcz`.  Files in or
 below this subdirectory include
 
 * `node/skPriv.pem`, ie `$DVCZ_PATH_TO_KEYS/skPriv.pem`, the RSA secret key
