@@ -64,17 +64,20 @@ def get_args():
     desc = 'generate build list for directory, optionally populating u_path'
     parser = ArgumentParser(description=desc)
 
-    parser.add_argument('-b', '--list_file', default='lastBuildList',
-                        help='path to build list')
+    # notice that the default is NOT determined by dvcz_dir
+    parser.add_argument('-b', '--list_file', default='.dvcz/lastBuildList',
+                        help='path to build list'
+                        '(default=.dvcz/lastBuildList)')
 
     parser.add_argument('-D', '--dvcz_dir', default='.dvcz',
                         help='dvcz directory (default=.dvcz)')
 
-    parser.add_argument('-d', '--data_dir', default='.',
+    parser.add_argument('-d', '--data_dir', default='../',
                         help='data directory for build list (default=../)')
 
     parser.add_argument('-i', '--ignore_file', default='.dvczignore',
-                        help='file containing wildcards (globs) for files to ignore')
+                        help='file containing wildcards (globs) '
+                        'for files to ignore\ndefault=.dvczignore')
 
     parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
@@ -83,7 +86,8 @@ def get_args():
                         help='path to RSA private key for signing')
 
     parser.add_argument('-L', '--logging', action='store_false',
-                        help="append timestamp and BuildList hash to to .dvcz/builds")
+                        help='append timestamp and BuildList hash to to '
+                        'DVCZ_DIR/builds')
 
     # NOT CURRENTLY SUPPORTED (may never be)
     parser.add_argument('-M', '--match_pat', action='append',
@@ -94,7 +98,7 @@ def get_args():
 
     # XXX CURRENTLY IGNORED
     parser.add_argument('-s', '--signing', action='store_false',
-                        help="DON'T add a digital signature")
+                        help="add a digital signature -- selected means False")
 
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
@@ -205,6 +209,7 @@ def show_args(args):
         print("%s %s" % (args.app_name, __version_date__))
 
     if args.verbose or args.just_show:
+        print('OPTIONS:')
         print('data_dir             = ' + str(args.data_dir))
         print('dvcz_dir             = ' + str(args.dvcz_dir))
         print('excl                 = ' + str(args.excl))
@@ -214,13 +219,15 @@ def show_args(args):
         print('key_path             = ' + str(args.key_path))
         print('list_file            = ' + str(args.list_file))
         print('logging              = ' + str(args.logging))
-        print('proj_dir             = ' + str(args.proj_dir))
+        print('projdir              = ' + str(args.projdir))
         print('project              = ' + str(args.project))
         print('signing              = ' + str(args.signing))
-        print('timestamp            = ' + str(args.now))
         print('testing              = ' + str(args.testing))
-        print('title                = ' + str(args.title))
         show_using_sha(args)
+
+        print('OTHER:')
+        print('timestamp            = ' + str(args.now))
+        print('title                = ' + str(args.title))
 
         if args.match_pat and len(args.match_pat) > 0:
             print("match:")

@@ -4,6 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/dvcz
   
+  ./test_dummy.sh
   
 else
   echo "DEV_BASE is not defined"

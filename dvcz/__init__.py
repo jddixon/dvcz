@@ -7,8 +7,8 @@ import sys
 
 __all__ = ['__version__', '__version_date__', 'dvc_get_project_info']
 
-__version__ = '0.0.15'
-__version_date__ = '2016-12-01'
+__version__ = '0.0.16'
+__version_date__ = '2016-12-02'
 
 
 def dvc_get_project_info(args):
@@ -22,7 +22,10 @@ def dvc_get_project_info(args):
     Otherwise add project name and directory to the args namelist.
     """
 
-    project = 'UNKNOWN_PROJECT'
+    if not args.project:
+        project = 'UNKNOWN_PROJECT'
+
+    # WORKING HERE
     proj_dir = 'UNKNOWN_PATH'
     start_dir = os.getcwd()
     curdir = start_dir

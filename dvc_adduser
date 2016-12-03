@@ -3,8 +3,12 @@
 # ~/dev/py/dvcz/dvc_adduser
 
 """
-Add a DVCZ user by creating $HOME/.dvcz and $U_DIR/{in/ID,tmp/,L}.
-If testing, create tmp/{home/dvcz,project/dvcz,uDir}
+Add a DVCZ user.
+
+If necessary, create $HOME/.dvcz including the committer ID and RSA
+private key.  Create $U_DIR/{in/ID,tmp/,L} for the committer.
+
+If testing, create tmp/{home/dvcz,project/dvcz,uDir} instead.
 """
 
 from argparse import ArgumentParser
@@ -12,7 +16,8 @@ import os
 import sys
 import hashlib
 
-from buildlist import(check_dirs_in_path, generate_rsa_key, rm_f_dir_contents)
+from buildlist import(check_dirs_in_path, generate_rsa_key, read_rsa_key,
+                      rm_f_dir_contents)
 from dvcz import(__version__, __version_date__)
 from xlattice import (QQQ, check_using_sha, parseUsingSHA, fix_using_sha,
                       show_using_sha)
@@ -24,19 +29,7 @@ if sys.version_info < (3, 6):
     import sha3         # monkey-patches hashlib
 
 
-def make_committer_id(options):
-    # generate and write a unique ID to $DVCZ_DIR/id
-    path_pubkey = os.path.join(os.environ['HOME'],
-                               os.path.join('.ssh', 'id_rsa.pub'))
-    if not os.path.exists(path_pubkey):
-        print("""
-We use your ssh RSA public key to compute your committer ID, expecting
-to find this in {0}, but there is no such file.  Please remedy.""")
-
-    with open(path_pubkey, 'rb') as file:
-        pubkey = file.read()
-
-    using_sha = options.using_sha
+def make_committer_id(pubkey, using_sha):
     # pylint: disable=redefined-variable-type
     if using_sha == QQQ.USING_SHA1:
         sha = hashlib.sha1()
@@ -44,7 +37,7 @@ to find this in {0}, but there is no such file.  Please remedy.""")
         sha = hashlib.sha256()
     elif using_sha == QQQ.USING_SHA3:
         sha = hashlib.sha3_256()
-    sha.update(pubkey)
+    sha.update(pubkey.exportKey())  # PEM format
     return sha.hexdigest()
 
 
@@ -74,13 +67,17 @@ def doit(options):
         else:
             generate_rsa_key(options.key_path, options.key_bits)
 
-    # generate and write a unique ID to $DVCZ_DIR/id --
+    # Read the RSA private key from disk ------------------
+    privkey = read_rsa_key(options.key_path)
+    pubkey = privkey.publickey()
+
+    # Generate and write a unique committer ID to $DVCZ_DIR/id.
     path_to_id = os.path.join(options.user_dvcz_path, 'id')
     if os.path.exists(path_to_id):
         with open(path_to_id, 'r') as file:
             committer_id = file.read()
     else:
-        committer_id = make_committer_id(options)
+        committer_id = make_committer_id(pubkey, options.using_sha)
         with open(path_to_id, 'w+') as file:
             file.write(committer_id)
     # DEBUG
@@ -168,6 +165,8 @@ def get_args():
 def check_sanity(parser, args):
     """ check for option values that just don't make sense. """
 
+    check_using_sha(args.using_sha)
+
     if not args.dir_struc_name or not args.dir_struc_name in UDir.DIR_STRUC_NAMES:
         print(
             "you must specify a directory structure, one of %s" %
@@ -214,8 +213,6 @@ def check_args(parser, args):
     if args.testing:
         args.u_path = 'tmp/U'
 
-    check_sanity(parser, args)
-
 
 def show_args(args):
     """ Maybe show options and such. """
@@ -251,6 +248,7 @@ def main():
     # collect and validate command line arguments
     parser, args = get_args()
     check_args(parser, args)
+    check_sanity(parser, args)
     show_args(args)
 
     # do what's required
