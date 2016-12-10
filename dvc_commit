@@ -3,7 +3,8 @@
 # ~/dev/py/dvcz/dvc_bkp1u
 
 """
-Create a project BuildList and post project files to DVCZ's content-keyed store.
+Create a project BuildList and post project files to the committer's
+subdirectory of in/ in DVCZ's content-keyed store.
 
 If we are not in a project directory (one with a .dvcz/ subdirectory) we
 search upward to find one and then make that our working directory.
@@ -11,15 +12,15 @@ search upward to find one and then make that our working directory.
 
 import os
 import sys
-
 from argparse import ArgumentParser
 
 from buildlist import(BuildList,
                       check_dirs_in_path, generate_rsa_key, rm_f_dir_contents)
-from dvcz import(__version__, __version_date__, dvc_get_project_info)
-from xlattice import (check_using_sha, parseUsingSHA, fix_using_sha,
+from optionz import dump_options
+from xlattice import (check_using_sha, parse_using_sha, fix_using_sha,
                       show_using_sha)
 from xlattice.util import get_exclusions, timestamp_now
+from dvcz import(__version__, __version_date__, dvc_get_project_info)
 
 
 def doit(options):
@@ -110,7 +111,7 @@ def get_args():
                         help='display version number and exit')
 
     # -1,-2,-3, using_sha, -v/--verbose
-    parseUsingSHA(parser)
+    parse_using_sha(parser)
 
     parser.add_argument(
         '-X', '--exclusions', action='append',
@@ -204,35 +205,17 @@ def check_args(parser, args):
 
 
 def show_args(args):
-    """ Maybe show options and such. """
+    """
+    Conditionally display sorted option names and values.
+
+    Where the option value is list, display the value separately
+    under the capitalized option name.
+    """
     if args.verbose or args.just_show:
-        print("%s %s" % (args.app_name, __version_date__))
+        print("%s %s\n" % (args.app_name, __version_date__))
 
     if args.verbose or args.just_show:
-        print('OPTIONS:')
-        print('data_dir             = ' + str(args.data_dir))
-        print('dvcz_dir             = ' + str(args.dvcz_dir))
-        print('excl                 = ' + str(args.excl))
-        print('exclusions           = ' + str(args.exclusions))
-        print('ignore_file          = ' + str(args.ignore_file))
-        print('just_show            = ' + str(args.just_show))
-        print('key_path             = ' + str(args.key_path))
-        print('list_file            = ' + str(args.list_file))
-        print('logging              = ' + str(args.logging))
-        print('projdir              = ' + str(args.projdir))
-        print('project              = ' + str(args.project))
-        print('signing              = ' + str(args.signing))
-        print('testing              = ' + str(args.testing))
-        show_using_sha(args)
-
-        print('OTHER:')
-        print('timestamp            = ' + str(args.now))
-        print('title                = ' + str(args.title))
-
-        if args.match_pat and len(args.match_pat) > 0:
-            print("match:")
-            for match in args.match_pat:
-                print("    %s" % match)
+        print(dump_options(args))
 
     if args.just_show:
         sys.exit(0)

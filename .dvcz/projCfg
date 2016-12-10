@@ -2,8 +2,8 @@
 project:dvcz
 package:dvcz
 mainlang:py
-version:0.0.15
-versionDate:2016-12-01
+version:0.0.17
+versionDate:2016-12-10
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -37,8 +37,9 @@ bash:std:styleit
 bash:std:test.all
 bash:std:doPyLint
 bash:std:checkCoverage
+bash:local:test_dummy.sh
 py:std:setup.py
 py:global:dvc_adduser
 py:global:dvc_commit
 py:global:dvc_commit_old
-dunno:local:test_dummy.sh
+py:test:test_get_project_info.py
