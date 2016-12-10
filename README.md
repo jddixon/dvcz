@@ -156,10 +156,15 @@ prototol intended to be compatible with a subset of Google's
 
 ## Project Status
 
+<<<<<<< HEAD
 Pre-alpha.
 
 In active development and currently used for backup but
 generally not yet fully specified.
+=======
+In active development but and currently used for backup but
+generally not yet specified in detail.
+>>>>>>> 6757a9ae9fe944ae2c7d6d817499f086d5fb5232
 
 ## On-line Documentation
 
