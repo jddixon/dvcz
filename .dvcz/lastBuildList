@@ -7,28 +7,26 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-dvcz v0.0.17
-2016-12-10 22:50:12
+dvcz v0.0.18
+2016-12-19 05:37:19
 # BEGIN CONTENT #
 dvcz
  .dvcz
-  builds 12ca32d04321186ac100278a3de0ff3e71366364
+  builds e6db23fcb89aa879547eb13f555e926f57aba6d4
   copyright 6794cf665112656267cf59917bdfc150e4c4b97c
-  lastBuildList 194fdbe6aea0559f15b7469b5e3fda5ee91ca691
+  lastBuildList ca91e3c18fe1bb637770097c2413b68455285e32
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  node
-   skPriv.pem 64bc42306bee5069c6b9fe6b397bff8dac01b4e1
-  projCfg 484c810d051a68391655c9f2bc59d3baed2abb5f
+  projCfg 4c4becd97a9a4d9aa1fda1ffc35f55e912c7ecf9
   projCfg.local 6b9b6b777d3818c1ed9daef0535aceca66835204
-  version dd28fc9ba2371116ba3ae788675d1064e6c132d0
- .gitignore 2bc4bcb7826ea9b5fb999444fe18f6785df1de72
- CHANGES 6b51222d97ae126673f65bc711742a569cb25dfc
+  version 26e8b147fc657a120a750d1e4eb25013f6b7a5df
+ .gitignore b2cc5fa149056ba0a01449dcdb19409728483a5c
+ CHANGES 84fdab8879ae38ef778d13db9ae215a7e6ec7828
  LICENSE-MIT.md e82e359e6de3e83b487ab0eda0679762159a3d9d
  MANIFEST.in 411b2ccb09758078af3c3ffed4fab5e1214cea5c
  README.md fae67eb51a4a2196c6ebd4b1be6b9e1494f6e29d
- TODO bc9e96558f58050db4c40c5bb8bae0b7780cb0ed
+ TODO b889063adb1d7593ef05c050b1a295b88ac65384
  bkp2U 1c830549f3c57c590cb52f5a69918b657287237c
- checkCoverage ebb83e35b67ea9c36cc69ce333e4f95e37dc514f
+ checkCoverage 7c5dd3c55453ef550cb93323736307234efb2dce
  countem 4a92b1c9657b74dbd9731e9042ed354330b06524
  dist
   dvcz-0.0.1.tar.gz 1a7880bc1463fcecbff7aa50951d5fdabdbdf204
@@ -40,6 +38,7 @@ dvcz
   dvcz-0.0.15.tar.gz 3e23d7855ceb46c909803b8d32af8c314b224020
   dvcz-0.0.16.tar.gz 3fa2758d91fa999d1266ba9b72f28e67b017f4a3
   dvcz-0.0.17.tar.gz 57b540c90cb1b57c8b20ec190027375088a567e3
+  dvcz-0.0.18.tar.gz af2afcaaf9afb98df7d2387e3072cddf9515c738
   dvcz-0.0.2.tar.gz eec66619ad1e9f27273b712a4d130c137565c119
   dvcz-0.0.3.tar.gz 259997c7c7182658f81627a962a704ae42e35681
   dvcz-0.0.4.tar.gz 8829b3fbe34b423c0b88a68935ffa8989b164406
@@ -49,13 +48,10 @@ dvcz
   dvcz-0.0.8.tar.gz f8b01a7bfb0ca23f6cc101d86415205157dba7da
   dvcz-0.0.9.tar.gz fe3a5b1cf415ec24d083f4527db709b44244c300
  doPyLint 85a4825264e4f8f02e13388fe1393dd457e12ed0
- dvcCommit ccf1b3088a15b47a550a6cf5aabc86627c3f783d
- dvc_adduser f922f5926806dfaef107ecfdf4e889d72854ff0a
- dvc_bkp2u db1f4b13ef62a74eb9c51632a8c8d5a63d83a642
- dvc_commit 62253b2bc1521bdca4deb3dd906eeb359a41addd
- dvc_commit_old cba165fd653aeb146fa93d201ac398de8b6ace6b
+ dvc_adduser 1bb7cfcd5dc808453b3881ff0562922110cfe229
+ dvc_commit 5c3d2967e1b8bfc154f75cf98ee813bbab533c1b
  dvcz
-  __init__.py fc1cc71171484b45744e9128505c16e5b8130df6
+  __init__.py 1222d1adc931d36cacf0f2d8acc2370f6d21b65e
  ghpDoc
   css
    LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
@@ -74,10 +70,10 @@ dvcz
  installit 5108adbba14955e85087a1bd33fd129e55c9ba21
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  setup.py 76af5ce9a2fbeb045b0b6d70d55c3b326d919a31
- styleit 7750e36b69e74f84f8a5d11b9f26d2174dc9f62a
- test.all 0f74b489f0a01e772271f7a485f963d7acea341d
+ styleit 0aa7f0405eb1786050feed7742e6ca89110f9ed1
+ test.all 4fdb7e7fba5b643fb4f699e9f741a25f651b0d2a
  test_dummy.sh cc1bf73ca7b459ba93fae4b28248ae9385a28361
- test_get_project_info.py 8c5ec56eea0b048ae7aceee843b9927e7c46728e
+ test_get_project_info.py e5be11aab8c04b29f7eabbdc5453a647634d785f
 # END CONTENT #
 
-cnUifZq+bxZnRcGDsl01ZAL0vyB01B+P/KPWXF2yyEFgFDuUjTyt7ZSMSkmz8YeoO8jXB+Fy+r5+fG15siWUv+gQOb73TDZtTv6NBRUH5la54OvtGeM1o6I3faOhIMPxGaCxamLz6gJL1sGVT8L+C46xBWfdZJIujOG9umNdNP1hQ/7EvLKgt0D8Cl4elah+FEX6pIPeDnkNegHyd9mabozDsIs9/1Ye/Jk+IP4VixB2osNSL9fcIhlPk4JiQJxCD/ykhYwNTYt4bB0gVmkcEi+rfUZNCcncx+6kFLe7G6y1Z8zULIRhVmQBbu41dam3JIwH7QEehsau6fPZ0xayAg==
+KqGbPvjq2x1yCPXyoH3v33GZV2q60p0b9eCFm92pIEtTTZK2oWVkHWDUcvwl5GAr34M6nj9zLjh2T2EN5HweAKL0aJPcFpxdwRgdrfgP8xl9ZlK1Ix6jIzjSuQ6+os97qQQhl/0mrOjEDUb7CeWoFLVssubkrcoAOIwikJx+JLKwMuKjJBZF2V2egJTW14p+zM2/nHHfyMX6g9CxBboY3udndrlG45k9/R4qmKfl4+G58rlIIbSL8Sh7jtrXa7EtJ5bdsYEHezYtf+gGHmJGIDw3RVQksYVqCgypyQ5bq9OCuNs0A5yVx5qcs3eYvmeOmr18XyZ9Mm1LH+VXLG0tNA==

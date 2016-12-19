@@ -1,5 +1,14 @@
 py/dvcz/TODO
 
+2016-12-18
+    * dvc_commit ignores -P PROJECT, where PROJECT is the project name
+        - AH! how do we convert a project name into a path?
+        - so make it -P PROJ_DIR and verify that there is a .dvcz
+            subdirectory to PROJ_DIR
+2016-12-16
+    * add the current time to the hash used to generate a committer     * DONE
+        ID -- make_committer_id()                                       * DONE
+
 2016-11-30
     * rearrange dvc_adduser so that it picks up using_sha and dir_struc
         from any existing uDir

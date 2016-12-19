@@ -42,7 +42,7 @@ class TestGetProjectInfo(unittest.TestCase):
         args = Namespace()
         dvc_get_project_info(args)
         self.assertEqual(args.project, 'dvcz')
-        self.assertEqual(args.projdir, expected_path)
+        self.assertEqual(args.proj_path, expected_path)
 
     def test_search_up(self):
         basedir = os.getcwd()
@@ -59,7 +59,7 @@ class TestGetProjectInfo(unittest.TestCase):
         # put me in setUp() !
         expected_path = os.path.join(os.environ['DEV_BASE'],
                                      os.path.join('py', 'dvcz'))
-        self.assertEqual(args.projdir, expected_path)
+        self.assertEqual(args.proj_path, expected_path)
 
 
 if __name__ == '__main__':

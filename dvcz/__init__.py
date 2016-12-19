@@ -6,20 +6,20 @@ import os
 import sys
 import hashlib
 
-if sys.version_info < (3, 6):
-    import sha3
-
 from buildlist import(check_dirs_in_path, generate_rsa_key,
                       read_rsa_key, rm_f_dir_contents)
 from xlattice import QQQ
 from xlattice.u import UDir
 
+if sys.version_info < (3, 6):
+    import sha3
+
 __all__ = ['__version__', '__version_date__',
            'dvc_get_project_info',
            'do_add_user']
 
-__version__ = '0.0.17'
-__version_date__ = '2016-12-10'
+__version__ = '0.0.18'
+__version_date__ = '2016-12-18'
 
 
 def dvc_get_project_info(options):
@@ -39,7 +39,7 @@ def dvc_get_project_info(options):
         project = 'UNKNOWN_PROJECT'
 
     # WORKING HERE
-    projdir = 'UNKNOWN_PATH'
+    proj_path = 'UNKNOWN_PATH'
     start_dir = os.getcwd()
     curdir = start_dir
 
@@ -50,13 +50,13 @@ def dvc_get_project_info(options):
             sys.exit(1)
         if os.path.exists(os.path.join(curdir, '.dvcz')):
             # we have a .dvcz subdirectory, so this is a project directory
-            projdir = curdir
-            os.chdir(projdir)
+            proj_path = curdir
+            os.chdir(proj_path)
             break
         # otherwise we need to loop
         curdir = above
 
-    if project.startswith('UNKNOWN') or projdir.startswith('UNKNOWN'):
+    if project.startswith('UNKNOWN') or proj_path.startswith('UNKNOWN'):
         print(
             "unable to determine project name or directory for %s" % start_dir)
         sys.exit(1)
@@ -66,12 +66,17 @@ def dvc_get_project_info(options):
         sys.exit(0)
 
     options.project = project
-    options.projdir = projdir
+    options.proj_path = proj_path
 
 
 # == adduser ========================================================
 
 def make_committer_id(pubkey, using_sha):
+    """
+    Create a quasi-random committer ID by hashing the user's ssh RSA
+    public key.
+    """
+
     # pylint: disable=redefined-variable-type
     if using_sha == QQQ.USING_SHA1:
         sha = hashlib.sha1()
@@ -147,9 +152,12 @@ def do_add_user(options):
 
     if options.u_path:
         # if necessary create $U_DIR with requisite DIR_STRUC and using_sha
-        u_dir = UDir.discover(options.u_path, using_sha=using_sha)
+        # u_dir =
+        UDir.discover(options.u_path, using_sha=using_sha)
+        # can get SHA type from u_dir
 
         # create $U_DIR/in/$ID/ which is DIR_FLAT with the correct using_sha
         my_in_path = os.path.join(options.u_path,
                                   os.path.join('in', committer_id))
-        my_in_dir = UDir.discover(my_in_path, using_sha=using_sha)
+        # my_in_dir =
+        UDir.discover(my_in_path, using_sha=using_sha)

@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.0.18
+    2016-12-18
+        * reworking dvc_commit                                      SLOC 1047
 v0.0.17
     2016-12-10
         * dvc_adduser creates $HOME/.dvcz                           SLOC 1173
@@ -64,10 +67,8 @@ v0.0.1
 
 
 
-<<<<<<< HEAD
 
 
 
 
-=======
->>>>>>> 6757a9ae9fe944ae2c7d6d817499f086d5fb5232
+
