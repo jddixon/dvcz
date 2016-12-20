@@ -9,4 +9,5 @@ nosetests \
     --cover-erase \
     --cover-branches \
     --cover-inclusive  \
-    dvcz
+    --cover-package=dvcz    \
+    test*.py

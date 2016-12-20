@@ -1,16 +1,31 @@
 py/dvcz/TODO
 
+2016-12-19
+    * dvc_commit is writing to U_DIR/ directly, not to 
+        u_DIR/in/USER_ID
+    * dvc_commit shoud NEVER create U_DIR, nor should it create
+        U_DIR/in/USER_ID/
+
+2016-12-18
+    * dvc_commit ignores -P PROJECT, where PROJECT is the project name
+        - AH! how do we convert a project name into a path?
+        - so make it -P PROJ_DIR and verify that there is a .dvcz
+            subdirectory to PROJ_DIR
+2016-12-16
+    * add the current time to the hash used to generate a committer     * DONE
+        ID -- make_committer_id()                                       * DONE
+
 2016-11-30
     * rearrange dvc_adduser so that it picks up using_sha and dir_struc
         from any existing uDir
 
-2016-11-28
-    * modify dvc_bkp2u to write to U_PATH/in/ID/, where ID represents
+2016j-12-08, edited from -11-28
+    * modify dvc_commit to write to DVCZ_UDIR/in/ID/, where ID represents
         the 40- or 64-char hex value under $HOME/.dvcz/id
     * rename dvc_commit dvc_commit_old, dvc_bkp2u dvc_commit            * DONE
     * FIX: countem generating incorrect counts
 
-2016-11-28, edited from -04-21, edited from -18
+2016-12-08, edited from -11-28, edited from -04-21, edited from -18
     dvc_commit SPECS, ASSUMING MULTIPLE PROJECTS PER USER:
     * version number (a DecimalVersion) is represented by three or four
         numbers, each less than 256, separated by periods ('.'), with
@@ -21,26 +36,55 @@ py/dvcz/TODO
     * procedure:
         - get a lock on $PROJECT_NAME using xlattice.proc_lock
         - read version number N.N.N, read buildLists file to 
-            determine its $BUILD_NUMBER N.N.N.B including build part
-            * this determines the title of the buildList, which
-            is $PROJECT_NAME  $BUILD_NUMBER where the B part is zero 
+            determine its $VERSION_NUMBER N.N.N.B including build part
+            * this determines the title of the BuildList, which
+            is $PROJECT_NAME  $VERSION_NUMBER where the B part is zero 
             unless there is an earlier commit for build N.N.N, in 
             which case B is one higher than the previous build number
         - read the RSA pivate key in PATH_TO_BL_KEYS/skPriv.pem
-        - create buildList using the public key, signing it with 
+        - create BuildList using the public key, signing it with 
             the private key
-        - hash the buildList; this is its content key $HEX_KEY
-        - insert the buildList into $DVCZ_UDIR using that
+        - hash the BuildList; this is its content key $HEX_KEY
+        - insert the BuildList into $DVCZ_UDIR/in/ID/ using that
             content key
-        - append "$TIMESTAMP $BUILD_NUMBER $HEX_KEY" to the
+        - append "$TIMESTAMP $VERSION_NUMBER $HEX_KEY" to the
             buildLists file
         - unlock the project
 
-2016-11-28, edited from -03-31
-    * dvc_init sets up individual user
-        - writes private RSA key to ~/.dvcz/node/skPriv.pem
+2016-12-08, edited from -11-28, edited from -03-31
+    * dvc_adduser sets up individual user and/or uDir/in/USER_ID/
+        USER PART
+        - creates $HOME/.dvcz if it doesn't already exist
+        - if the file doesn't already exist, generates a private RSA 
+            key and write it to ~/.dvcz/node/skPriv.pem
             * this file should be 0o400, user-readable only
+        - if the file doesn't already exist, generates a user ID and
+            writes it to ~/.dvcz/id
+            * current implementation: this is an SHA256 hash of the 
+                public part of the RSA key in hex format
+        PROJECT PART
+        - verifies that $PROJ_DIR/.dvcz/ exists and is readable and
+            writeable
+        UDIR PART
+        - if it doesn't already exist, create $DVCZ_UDIR/in/ID/, 
+            where ID is the hex representation of the user ID
+        - this should be 0o750
+        FOR TEST RUNS
+            - dvc_adduser deletes ./tmp/* recursively and then 
+                guarantees that ./tmp/ exists
+            USER PART
+            - tmp/home replaces $HOME, so we create tmp/home/dvcz
+                and below that node/skPriv.epm and id
+            PROJECT PART
+            - tmp/project/dvcz replaces $PROJ_DIR/.dvcz 
+            UDIR PART
+            - tmp/uDir/in/ is created
+                * dvc_commit will create ID/{,in/,tmp/,L} below that
+
     * dvc_commit (former dvc_bkp2u)
-        - -X uses .dvczignore by default if present
-        - writes buildList as PROJECT_DIR/.buildLists/CCYYMMDD-HHMMSS
+        - a dvc_adduser must have preceded this call
+        - chdir($PROJ_DIR)
+        - -X uses ./.dvczignore by default if present
+        - writes BuildList to .dvcz/lastBuildList
+        - log to ./.dvcz/builds
 

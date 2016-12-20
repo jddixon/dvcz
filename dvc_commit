@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 #
-# ~/dev/py/dvcz/dvc_bkp1u
+# ~/dev/py/dvcz/dvc_commit
 
 """
-Create a project BuildList and post project files to DVCZ's content-keyed store.
+Create a project BuildList and post project files to the committer's
+subdirectory of in/ in DVCZ's content-keyed store.
 
 If we are not in a project directory (one with a .dvcz/ subdirectory) we
 search upward to find one and then make that our working directory.
@@ -11,39 +12,38 @@ search upward to find one and then make that our working directory.
 
 import os
 import sys
-
 from argparse import ArgumentParser
 
 from buildlist import(BuildList,
                       check_dirs_in_path, generate_rsa_key, rm_f_dir_contents)
-from dvcz import(__version__, __version_date__, dvc_get_project_info)
-from xlattice import (check_using_sha, parseUsingSHA, fix_using_sha,
-                      show_using_sha)
+from optionz import dump_options
+from xlattice import (check_using_sha, parse_using_sha, fix_using_sha)
 from xlattice.util import get_exclusions, timestamp_now
+from dvcz import(__version__, __version_date__, get_proj_info)
 
 
 def doit(options):
     """
     Given the command-line options, create the BuildList.
 
-    Optionally serialize the BuildList, append to a log, and populate
+    Serialize the BuildList, append its hash to a log, and populate
     the content-keyed store using the selected SHA hash type.
 
     """
-    data_dir = options.data_dir
-    dvcz_dir = options.dvcz_dir
+    parent_path = options.parent_path
+    dest_dvcz_path = options.dest_dvcz_path
     excl = options.excl
     key_path = options.key_path
     list_file = options.list_file
-    logging = options.logging
-    title = options.title
-    u_path = options.u_path      # if None, don't save to u_path
+    u_path = options.u_path
     using_sha = options.using_sha
 
-    blist = BuildList.list_gen(title, data_dir, dvcz_dir, list_file, key_path,
-                               excl, logging, u_path, using_sha)
+    blist = BuildList.list_gen(options.proj_name, options.proj_path,
+                               dest_dvcz_path, list_file, key_path, excl,
+                               True,  # logging=True
+                               u_path, using_sha)
 
-    print("BuildList written to %s" % os.path.join(dvcz_dir, list_file))
+    print("BuildList written to %s" % os.path.join(dest_dvcz_path, list_file))
 
     # confirm that whatever is in the BuildList is now in u_path
     if u_path:
@@ -57,60 +57,31 @@ def get_args():
     """ Collect command-line arguments. """
 
     now = timestamp_now()
-    app_name = 'dvc_bkp2u %s' % __version__
+    app_name = 'dvc_commit %s' % __version__
 
     # parse the command line ----------------------------------------
 
     desc = 'generate build list for directory, optionally populating u_path'
     parser = ArgumentParser(description=desc)
 
-    # notice that the default is NOT determined by dvcz_dir
-    parser.add_argument('-b', '--list_file', default='.dvcz/lastBuildList',
-                        help='path to build list'
-                        '(default=.dvcz/lastBuildList)')
-
-    parser.add_argument('-D', '--dvcz_dir', default='.dvcz',
-                        help='dvcz directory (default=.dvcz)')
-
-    parser.add_argument('-d', '--data_dir', default='../',
-                        help='data directory for build list (default=../)')
-
-    parser.add_argument('-i', '--ignore_file', default='.dvczignore',
-                        help='file containing wildcards (globs) '
-                        'for files to ignore\ndefault=.dvczignore')
-
     parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
-
-    parser.add_argument('-k', '--key_path',
-                        help='path to RSA private key for signing')
-
-    parser.add_argument('-L', '--logging', action='store_false',
-                        help='append timestamp and BuildList hash to to '
-                        'DVCZ_DIR/builds')
 
     # NOT CURRENTLY SUPPORTED (may never be)
     parser.add_argument('-M', '--match_pat', action='append',
                         help='include only files matching this pattern')
 
-    parser.add_argument('-P', '--project',
-                        help='project name')
-
-    # XXX CURRENTLY IGNORED
-    parser.add_argument('-s', '--signing', action='store_false',
-                        help="add a digital signature -- selected means False")
+    parser.add_argument('-p', '--proj_path', default=os.getcwd(),
+                        help='data directory for build list (default=../)')
 
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
-
-    parser.add_argument('-t', '--title',
-                        help='title for build list')
 
     parser.add_argument('-V', '--showVersion', action='store_true',
                         help='display version number and exit')
 
     # -1,-2,-3, using_sha, -v/--verbose
-    parseUsingSHA(parser)
+    parse_using_sha(parser)
 
     parser.add_argument(
         '-X', '--exclusions', action='append',
@@ -133,19 +104,26 @@ def check_sanity(parser, args):
     if not args.just_show:
         check_using_sha(args.using_sha)
 
-        if (not args.data_dir) or (args.data_dir == ''):
-            print("no data directory specified")
+        if (not args.proj_path) or (args.proj_path == ''):
+            print("no proj_path (project path) specified")
             parser.print_usage()
             sys.exit(1)
 
-        if not os.path.isdir(args.data_dir):
-            print("data directory '%s' isn't a directory" % args.data_dir)
+        if not os.path.isdir(args.proj_path):
+            print("data directory '%s' isn't a directory" % args.proj_path)
             parser.print_usage()        # short form
             # parser.print_help()       # long form (what you get from -h)
             sys.exit(1)
 
         if args.testing:
-            args.key_path = os.path.join(args.dvcz_dir, 'skPriv.pem')
+            args.key_path = os.path.join(
+                'tmp', os.path.join(
+                    'home', os.path.join('node', 'skPriv.pem')))
+
+        else:
+            args.key_path = os.path.join(
+                os.environ['HOME'],
+                args.path.join('node', 'skPriv.pem'))
 
         if not os.path.exists(args.key_path):
             check_dirs_in_path(args.key_path)
@@ -155,9 +133,67 @@ def check_sanity(parser, args):
                 generate_rsa_key(args.key_path, 2048)
 
 
+def add_derived(parser, args):
+    """
+    Wired-in paths.
+
+    Arrive here with args.proj_path known and known to be a directory.
+    """
+
+    proj_path = args.proj_path
+
+    # Determine the path to project .dvcz ---------------------------
+    src_dvcz_path = os.path.abspath(os.path.join(proj_path, '.dvcz'))
+
+    # If necessary search upward for a .dvcz directory; if it's
+    # $HOME/.dvcz or /.dvcz, complain and take an error exit
+
+    # At this point we have a path to the .dvcz we get data from
+    args.src_dvcz_path = src_dvcz_path
+
+    if args.testing:
+        # we are guaranteed to be in the project directory
+        args.dest_dvcz_path = os.path.join('tmp', 'dvcz')
+    else:
+        args.dest_dvcz_path = args.src_dvcz_path
+
+    # Get the project's version number ------------------------------
+    proj_version_path = os.path.join(src_dvcz_path, 'version')
+    if not os.path.exists(proj_version_path):
+        print("%s does not exist -- cannot continue" % proj_version_path)
+        sys.exit(1)
+    with open(proj_version_path, 'r') as file:
+        proj_version = file.read()
+
+    # Extract the project name and  from that the BuildList's title -
+
+    # we calculate the project name from src_dvcz_path
+    proj_path_parts = src_dvcz_path.split('/')
+    args.proj_name = proj_path_parts[-2]
+    args.parent_path = '/'.join(proj_path_parts[:-2])
+    # DEBUG
+    print("SRC_DVCZ_PATH:  %s" % args.src_dvcz_path)
+    print("DEST_DVCZ_PATH: %s" % args.dest_dvcz_path)
+    print("PARTS:          %s" % str(proj_path_parts))
+    print("PROJ_NAME:      %s" % args.proj_name)
+    print("PARENT_PATH:    %s" % args.parent_path)
+    print("PROJ VERSION:   %s" % proj_version)
+    # END
+
+    # Other things in .dvcz: ----------------------------------------
+    args.ignore_file = os.path.join(proj_path, '.dvczignore')
+    args.list_file = 'lastBuildList'
+
+    # And things elsewhere ------------------------------------------
+    args.key_path = os.path.join(
+        os.environ['HOME'], os.path.join(
+            '.dvcz', os.path.join('node', 'skPriv.pem')))
+
+
 def check_args(parser, args):
     """ Check and possibly edit command-line arguments. """
 
+    add_derived(parser, args)
     fix_using_sha(args)
 
     args.cur_dir = os.getcwd()
@@ -173,21 +209,22 @@ def check_args(parser, args):
         args.excl.extend(args.exclusions)
 
     if args.testing:
-        args.dvcz_dir = os.path.join('tmp/dvcz')
-        if os.path.exists(args.dvcz_dir):
-            rm_f_dir_contents(args.dvcz_dir)      # empties the directory
-    os.makedirs(args.dvcz_dir, 0o755, exist_ok=True)
-    # WE HAVE args.dvcz_dir
+        args.dest_dvcz_path = os.path.join('tmp/dvcz')
+        if os.path.exists(args.dest_dvcz_path):
+            rm_f_dir_contents(args.dest_dvcz_path)      # empties the directory
+
+    os.makedirs(args.dest_dvcz_path, 0o755, exist_ok=True)
 
     check_sanity(parser, args)
 
     # u_path ------------------------------------------------
-    if args.testing and args.u_path:
-        if args.u_path[0] == '/':
-            args.u_path = args.u_path[1:]
-        args.u_path = os.path.join('tmp', args.u_path)
-        if os.path.exists(args.u_path):
-            rm_f_dir_contents(args.u_path)
+    if args.testing:
+        args.u_path = os.path.join('tmp', 'U')
+        # if os.path.exists(args.u_path):
+        #    rm_f_dir_contents(args.u_path)
+        os.makedirs(args.u_path, 0o755, exist_ok=True)
+
+    # OTHERWISE args.u_path MUST BE SPECIFIED AND MUST EXIST
 
     if args.u_path:
         os.makedirs(args.u_path, 0o755, exist_ok=True)
@@ -198,41 +235,19 @@ def check_args(parser, args):
     # a committer-specific subdirectory, u_path/in/ID, where ID is a
     # 40- or 64-char hex value, the committer's ID.
 
-    # title -----------------------------------------------
-    if not args.title:
-        args.title = "%s_v%s" % (args.project, __version__)
-
 
 def show_args(args):
-    """ Maybe show options and such. """
+    """
+    Conditionally display sorted option names and values.
+
+    Where the option value is list, display the value separately
+    under the capitalized option name.
+    """
     if args.verbose or args.just_show:
-        print("%s %s" % (args.app_name, __version_date__))
+        print("%s %s\n" % (args.app_name, __version_date__))
 
     if args.verbose or args.just_show:
-        print('OPTIONS:')
-        print('data_dir             = ' + str(args.data_dir))
-        print('dvcz_dir             = ' + str(args.dvcz_dir))
-        print('excl                 = ' + str(args.excl))
-        print('exclusions           = ' + str(args.exclusions))
-        print('ignore_file          = ' + str(args.ignore_file))
-        print('just_show            = ' + str(args.just_show))
-        print('key_path             = ' + str(args.key_path))
-        print('list_file            = ' + str(args.list_file))
-        print('logging              = ' + str(args.logging))
-        print('projdir              = ' + str(args.projdir))
-        print('project              = ' + str(args.project))
-        print('signing              = ' + str(args.signing))
-        print('testing              = ' + str(args.testing))
-        show_using_sha(args)
-
-        print('OTHER:')
-        print('timestamp            = ' + str(args.now))
-        print('title                = ' + str(args.title))
-
-        if args.match_pat and len(args.match_pat) > 0:
-            print("match:")
-            for match in args.match_pat:
-                print("    %s" % match)
+        print(dump_options(args))
 
     if args.just_show:
         sys.exit(0)
@@ -243,17 +258,22 @@ def main():
     Collect comamnd line options and execute the command if required.
     """
 
-    parser, args = get_args()
-    dvc_get_project_info(args)      # and possibly change working directory
-    check_args(parser, args)
-    show_args(args)
+    basedir = os.getcwd()
+    try:
+        parser, args = get_args()
+        get_proj_info(args)      # and possibly change working directory
+        check_args(parser, args)
+        show_args(args)
 
-    # do what's required --------------------------------------------
+        # do what's required --------------------------------------------
 
-    # try: ACQUIRE LOCK ON PROJECT, that is, on the name of the project
-    doit(args)
+        # try: ACQUIRE LOCK ON PROJECT, that is, on the name of the project
+        doit(args)
 
-    # finally: RELEASE LOCK ON PROJECT
+        # finally: RELEASE LOCK ON PROJECT
+
+    finally:
+        os.chdir(basedir)
 
 if __name__ == '__main__':
     main()

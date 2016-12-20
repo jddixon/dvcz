@@ -4,8 +4,8 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/dvcz
   
-  autopep8 -ai dvc_adduser dvc_commit *.py
   autopep8 -ai -r dvcz 
+  autopep8 -ai dvc_adduser dvc_commit  *.py
   
 else
   echo "DEV_BASE is not defined"
