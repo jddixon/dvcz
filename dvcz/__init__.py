@@ -15,58 +15,70 @@ if sys.version_info < (3, 6):
     import sha3
 
 __all__ = ['__version__', '__version_date__',
-           'dvc_get_project_info',
-           'do_add_user']
+           'get_proj_info',
+           'do_add_user',
+           'DvczError']
 
-__version__ = '0.0.18'
-__version_date__ = '2016-12-18'
+__version__ = '0.0.19'
+__version_date__ = '2016-12-19'
 
 
-def dvc_get_project_info(options):
+class DvczError(RuntimeError):
+    pass
+
+
+def get_proj_info(options):
     """
-    Find the project name and project directory.
+    Given a candidate path the the project, determine the actual path,
+    change to that directory, and return the project name, path, and
+    parent path.
 
-    The project directory is the first found searching upward with
+    The candidate path is options.proj_path.  If this is not a valid
+    directory, raise DvczError.
+
+    The project directory is the first found searching upward which has
     a .dvcz subdirectory.   Make that the current working directory.
-    If not found, program exit.  If the user's home directory is the
+    If not found, raise DvczError.  If the user's home directory is the
     first found, program exit: this is not a valid project directory.
-    Otherwise add project name and directory to the options namelist.
+    Otherwise add project name and directory to the options Namespace.
+
+    The project name, path, and parent are added to the options
+    Namespace as options.proj_name, options.proj_path, and
+    options.proj_parent respectively.
     """
 
+    proj_name = ''
+    proj_parent = ''
     try:
-        project = options.project
+        proj_path = options.proj_path
+        try:
+            os.chdir(proj_path)
+        except FileNotFoundError:
+            raise DvczError("%s does not exist" % proj_path)
     except AttributeError:
-        project = 'UNKNOWN_PROJECT'
-
-    # WORKING HERE
-    proj_path = 'UNKNOWN_PATH'
-    start_dir = os.getcwd()
-    curdir = start_dir
+        proj_path = os.getcwd()
+    curdir = proj_path
+    start_dir = curdir
 
     while curdir:
-        above, sep, project = curdir.rpartition('/')    # parse path
+        proj_parent, sep, proj_name = curdir.rpartition('/')    # parse path
         if sep != '/':
-            print("invalid working directory: '%s'" % curdir)
-            sys.exit(1)
+            raise DvczError("invalid working directory: '%s'" % curdir)
         if os.path.exists(os.path.join(curdir, '.dvcz')):
             # we have a .dvcz subdirectory, so this is a project directory
             proj_path = curdir
             os.chdir(proj_path)
             break
         # otherwise we need to loop
-        curdir = above
+        curdir = proj_parent
 
-    if project.startswith('UNKNOWN') or proj_path.startswith('UNKNOWN'):
-        print(
-            "unable to determine project name or directory for %s" % start_dir)
-        sys.exit(1)
+    if curdir == os.environ['HOME'] or curdir == '' or curdir is None:
+        raise DvczError("no project directory found above %s" % start_dir)
 
-    if curdir == os.environ['HOME']:
-        print("no project directory found above %s" % start_dir)
-        sys.exit(0)
-
-    options.project = project
+    options.proj_name = proj_name
     options.proj_path = proj_path
+    options.proj_parent = proj_parent
+    os.chdir(proj_path)
 
 
 # == adduser ========================================================

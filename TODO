@@ -1,5 +1,11 @@
 py/dvcz/TODO
 
+2016-12-19
+    * dvc_commit is writing to U_DIR/ directly, not to 
+        u_DIR/in/USER_ID
+    * dvc_commit shoud NEVER create U_DIR, nor should it create
+        U_DIR/in/USER_ID/
+
 2016-12-18
     * dvc_commit ignores -P PROJECT, where PROJECT is the project name
         - AH! how do we convert a project name into a path?

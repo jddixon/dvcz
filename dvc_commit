@@ -19,7 +19,7 @@ from buildlist import(BuildList,
 from optionz import dump_options
 from xlattice import (check_using_sha, parse_using_sha, fix_using_sha)
 from xlattice.util import get_exclusions, timestamp_now
-from dvcz import(__version__, __version_date__, dvc_get_project_info)
+from dvcz import(__version__, __version_date__, get_proj_info)
 
 
 def doit(options):
@@ -35,12 +35,12 @@ def doit(options):
     excl = options.excl
     key_path = options.key_path
     list_file = options.list_file
-    proj_name = options.proj_name
-    u_path = options.u_path      # if None, don't save to u_path
+    u_path = options.u_path
     using_sha = options.using_sha
 
-    blist = BuildList.list_gen(proj_name, parent_path, dest_dvcz_path,
-                               list_file, key_path, excl, True,  # logging=True
+    blist = BuildList.list_gen(options.proj_name, options.proj_path,
+                               dest_dvcz_path, list_file, key_path, excl,
+                               True,  # logging=True
                                u_path, using_sha)
 
     print("BuildList written to %s" % os.path.join(dest_dvcz_path, list_file))
@@ -105,7 +105,7 @@ def check_sanity(parser, args):
         check_using_sha(args.using_sha)
 
         if (not args.proj_path) or (args.proj_path == ''):
-            print("no data directory specified")
+            print("no proj_path (project path) specified")
             parser.print_usage()
             sys.exit(1)
 
@@ -117,8 +117,8 @@ def check_sanity(parser, args):
 
         if args.testing:
             args.key_path = os.path.join(
-                'tmp', args.path.join(
-                    'home', args.path.join('node', 'skPriv.pem')))
+                'tmp', os.path.join(
+                    'home', os.path.join('node', 'skPriv.pem')))
 
         else:
             args.key_path = os.path.join(
@@ -142,17 +142,23 @@ def add_derived(parser, args):
 
     proj_path = args.proj_path
 
-    # Determine the path to .dvcz -----------------------------------
-    dvcz_path = os.path.abspath(os.path.join(proj_path, '.dvcz'))
+    # Determine the path to project .dvcz ---------------------------
+    src_dvcz_path = os.path.abspath(os.path.join(proj_path, '.dvcz'))
 
     # If necessary search upward for a .dvcz directory; if it's
     # $HOME/.dvcz or /.dvcz, complain and take an error exit
 
-    # At this point we have a path to .dvcz
-    args.dvcz_path = dvcz_path
+    # At this point we have a path to the .dvcz we get data from
+    args.src_dvcz_path = src_dvcz_path
+
+    if args.testing:
+        # we are guaranteed to be in the project directory
+        args.dest_dvcz_path = os.path.join('tmp', 'dvcz')
+    else:
+        args.dest_dvcz_path = args.src_dvcz_path
 
     # Get the project's version number ------------------------------
-    proj_version_path = os.path.join(dvcz_path, 'version')
+    proj_version_path = os.path.join(src_dvcz_path, 'version')
     if not os.path.exists(proj_version_path):
         print("%s does not exist -- cannot continue" % proj_version_path)
         sys.exit(1)
@@ -161,25 +167,22 @@ def add_derived(parser, args):
 
     # Extract the project name and  from that the BuildList's title -
 
-    # we calculate the project name from dvcz_path
-    proj_path_parts = dvcz_path.split('/')
+    # we calculate the project name from src_dvcz_path
+    proj_path_parts = src_dvcz_path.split('/')
     args.proj_name = proj_path_parts[-2]
     args.parent_path = '/'.join(proj_path_parts[:-2])
     # DEBUG
-    print("DVCZ_PATH:    %s" % dvcz_path)
-    print("PARTS:        %s" % str(proj_path_parts))
-    print("PROJ_NAME:    %s" % args.proj_name)
-    print("PARENT_PATH:  %s" % args.parent_path)
-    print("PROJ VERSION: %s" % proj_version)
-    # END
-    args.title = '%s_%s' % (args.proj_name, proj_version)
-    # DEBUG
-    print("TITLE:        %s" % args.title)
+    print("SRC_DVCZ_PATH:  %s" % args.src_dvcz_path)
+    print("DEST_DVCZ_PATH: %s" % args.dest_dvcz_path)
+    print("PARTS:          %s" % str(proj_path_parts))
+    print("PROJ_NAME:      %s" % args.proj_name)
+    print("PARENT_PATH:    %s" % args.parent_path)
+    print("PROJ VERSION:   %s" % proj_version)
     # END
 
     # Other things in .dvcz: ----------------------------------------
     args.ignore_file = os.path.join(proj_path, '.dvczignore')
-    args.list_file = os.path.join(dvcz_path, 'lastBuildList')
+    args.list_file = 'lastBuildList'
 
     # And things elsewhere ------------------------------------------
     args.key_path = os.path.join(
@@ -206,20 +209,22 @@ def check_args(parser, args):
         args.excl.extend(args.exclusions)
 
     if args.testing:
-        args.dvcz_path = os.path.join('tmp/dvcz')
-        if os.path.exists(args.dvcz_path):
-            rm_f_dir_contents(args.dvcz_path)      # empties the directory
-    os.makedirs(args.dvcz_path, 0o755, exist_ok=True)
+        args.dest_dvcz_path = os.path.join('tmp/dvcz')
+        if os.path.exists(args.dest_dvcz_path):
+            rm_f_dir_contents(args.dest_dvcz_path)      # empties the directory
+
+    os.makedirs(args.dest_dvcz_path, 0o755, exist_ok=True)
 
     check_sanity(parser, args)
 
     # u_path ------------------------------------------------
-    if args.testing and args.u_path:
-        if args.u_path[0] == '/':
-            args.u_path = args.u_path[1:]
-        args.u_path = os.path.join('tmp', args.u_path)
-        if os.path.exists(args.u_path):
-            rm_f_dir_contents(args.u_path)
+    if args.testing:
+        args.u_path = os.path.join('tmp', 'U')
+        # if os.path.exists(args.u_path):
+        #    rm_f_dir_contents(args.u_path)
+        os.makedirs(args.u_path, 0o755, exist_ok=True)
+
+    # OTHERWISE args.u_path MUST BE SPECIFIED AND MUST EXIST
 
     if args.u_path:
         os.makedirs(args.u_path, 0o755, exist_ok=True)
@@ -229,10 +234,6 @@ def check_args(parser, args):
     # The directory at u_path is known to exist.  We are committing to
     # a committer-specific subdirectory, u_path/in/ID, where ID is a
     # 40- or 64-char hex value, the committer's ID.
-
-    # title -----------------------------------------------
-    if not args.title:
-        args.title = "%s_v%s" % (args.project, __version__)
 
 
 def show_args(args):
@@ -257,17 +258,22 @@ def main():
     Collect comamnd line options and execute the command if required.
     """
 
-    parser, args = get_args()
-    dvc_get_project_info(args)      # and possibly change working directory
-    check_args(parser, args)
-    show_args(args)
+    basedir = os.getcwd()
+    try:
+        parser, args = get_args()
+        get_proj_info(args)      # and possibly change working directory
+        check_args(parser, args)
+        show_args(args)
 
-    # do what's required --------------------------------------------
+        # do what's required --------------------------------------------
 
-    # try: ACQUIRE LOCK ON PROJECT, that is, on the name of the project
-    doit(args)
+        # try: ACQUIRE LOCK ON PROJECT, that is, on the name of the project
+        doit(args)
 
-    # finally: RELEASE LOCK ON PROJECT
+        # finally: RELEASE LOCK ON PROJECT
+
+    finally:
+        os.chdir(basedir)
 
 if __name__ == '__main__':
     main()

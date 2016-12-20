@@ -4,7 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/dvcz
   
-  ./test_get_project_info.py
+  ./test_get_proj_info.py
   ./test_dummy.sh
   
 else
