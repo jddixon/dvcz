@@ -3,11 +3,14 @@
 """ Our distributed version control system. """
 
 import os
+import re
 import sys
+import time
 import hashlib
 
 from buildlist import(check_dirs_in_path, generate_rsa_key,
                       read_rsa_key, rm_f_dir_contents)
+from rnglib import FILE_NAME_STARTERS, FILE_NAME_CHARS
 from xlattice import QQQ
 from xlattice.u import UDir
 
@@ -19,12 +22,40 @@ __all__ = ['__version__', '__version_date__',
            'do_add_user',
            'DvczError']
 
-__version__ = '0.0.19'
-__version_date__ = '2016-12-19'
+__version__ = '0.0.20'
+__version_date__ = '2016-12-21'
 
 
 class DvczError(RuntimeError):
     pass
+
+VALID_FILE_NAME_PAT = \
+    r'^[' + FILE_NAME_STARTERS + '](?:' + FILE_NAME_CHARS + ')*'
+VALID_FILE_NAME_RE = re.compile(VALID_FILE_NAME_PAT)
+
+
+def validFileName(string):
+    """
+    Return whether this is a valid file name for our purposes.
+
+    This means that the starter character is in the string of acceptable
+    starting characters and that any other characters are in the string
+    of acceptable 'other' characters.
+
+    XXX This function should be in a less specialized library.
+    """
+    if not string:
+        valid = False
+    else:
+        valid = True
+        if not string[0] in FILE_NAME_STARTERS:
+            valid = False
+        else:
+            for ndx in range(1, len(string)):
+                if not string[ndx] in FILE_NAME_CHARS:
+                    valid = False
+                    break
+    return valid
 
 
 def get_proj_info(options):
@@ -85,8 +116,12 @@ def get_proj_info(options):
 
 def make_committer_id(pubkey, using_sha):
     """
-    Create a quasi-random committer ID by hashing the user's ssh RSA
-    public key.
+    Create a unique committer ID derived from the user's RSA public key
+    using this SHA type.
+
+    This implementation adds the current time to the hash.
+
+    Returns a 40- or 64-character hex value.
     """
 
     # pylint: disable=redefined-variable-type
@@ -97,6 +132,7 @@ def make_committer_id(pubkey, using_sha):
     elif using_sha == QQQ.USING_SHA3:
         sha = hashlib.sha3_256()
     sha.update(pubkey.exportKey())  # PEM format
+    sha.update(str(time.time()).encode('utf-8'))
     return sha.hexdigest()
 
 

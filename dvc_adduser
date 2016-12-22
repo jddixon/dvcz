@@ -14,12 +14,12 @@ If testing, create tmp/{home/dvcz,project/dvcz,uDir} instead.
 from argparse import ArgumentParser
 import os
 import sys
-import time
 import hashlib
 # import shutil
 
 # from buildlist import(generate_rsa_key, read_rsa_key)
-from dvcz import(__version__, __version_date__, do_add_user)
+from dvcz import(__version__, __version_date__,
+                 do_add_user)
 from optionz import dump_options
 from xlattice import (QQQ, check_using_sha, parse_using_sha, fix_using_sha)
 from xlattice.proc_lock import ProcLock
@@ -29,24 +29,6 @@ from xlattice.u import UDir
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
     import sha3         # monkey-patches hashlib
-
-
-def make_committer_id(pubkey, using_sha):
-    """
-    Create a unique committer ID derived from the user's RSA public key
-    using this SHA type.
-    """
-
-    # pylint: disable=redefined-variable-type
-    if using_sha == QQQ.USING_SHA1:
-        sha = hashlib.sha1()
-    elif using_sha == QQQ.USING_SHA2:
-        sha = hashlib.sha256()
-    elif using_sha == QQQ.USING_SHA3:
-        sha = hashlib.sha3_256()
-    sha.update(pubkey.exportKey())  # PEM format
-    sha.update(str(time.time()).encode('utf-8'))
-    return sha.hexdigest()
 
 
 def get_args():
@@ -104,7 +86,7 @@ def elaborate_args(parser, args):
 
     We want to leave here having set the following additional options:
     * home                  # $HOME or tmp/home/
-    * data_dir              # ../               # WHERE WE GET FILES
+    * proj_parent           # ../               # WHERE WE GET FILES
     # proj_dir              # ./ or tmp/proj    # WHERE .dvcz IS
     * user_dvcz_path        # $HOME/.dvcz or tmp/home/
     * proj_dvcz_path        # $PROJ_DIR/.dvcz

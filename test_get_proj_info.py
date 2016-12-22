@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# buildlist/test_get_proj_info.py
+# dvcz/test_get_proj_info.py
 
 from argparse import Namespace
 import os

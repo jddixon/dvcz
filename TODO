@@ -1,16 +1,22 @@
 py/dvcz/TODO
 
+2016-12-20
+    * dvc_adduser -T should create tmp/U/in/$USER_ID/
+    * this must be tested
+
 2016-12-19
     * dvc_commit is writing to U_DIR/ directly, not to 
         u_DIR/in/USER_ID
     * dvc_commit shoud NEVER create U_DIR, nor should it create
         U_DIR/in/USER_ID/
+    * verify that U/in/USER_ID/ is always DIR_FLAT
+    * gh-pages needs something on dvc_commit
 
-2016-12-18
-    * dvc_commit ignores -P PROJECT, where PROJECT is the project name
-        - AH! how do we convert a project name into a path?
-        - so make it -P PROJ_DIR and verify that there is a .dvcz
-            subdirectory to PROJ_DIR
+2016-12-19, edited from -18
+    * dvc_commit -p PROJ_PATH defaults to current directory, searches   * DONE
+        upward for a directory containing a .dvcz, changes to that      * DONE
+        directory                                                       * DONE
+
 2016-12-16
     * add the current time to the hash used to generate a committer     * DONE
         ID -- make_committer_id()                                       * DONE
