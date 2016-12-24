@@ -16,47 +16,8 @@ class DvcTestSetup(object):
     """
     Create a directory structure under ./tmp/
 
-    This looks like
-        tmp/
-          RUN_ID/
-            home/
-              LOGIN/
-                dvcz/
-                  committers/
-                    HANDLE      # serialized Committer object
-                    ...         #   containing secret keys, etc
-                  stores/
-                    STORE_NAME  # serialized UStore object
-                    ...
-            projects/
-              PROJECT_NAME/
-                dvcz/
-              ...
-            stores/
-              STORE_NAME/
-                SHA_SIG     # hex value of SHAxNONE, where x is 1, 2, or 3
-                in/
-                  USER_ID
-                    SHA_SIG
-                    in/
-                    tmp/
-                    CONTENT_KEY
-                    ...
-
-    That is, each run ID has a distinct subdirectory under tmp.
-    In each such subdirectory there is a dummy home/login directory,
-    and under that a dvcz directory that corresponds to $HOME/.dvcz.
-    The keys in this dummy dvcz directory are used for digital
-    signatures on BuildLists created during test runs
-
-    At the same level as the home/ directory there is a projects/
-    directory and under that dummy project directories for the test
-    runs.  At the time of writing these are used only for collecting
-    lastBuildList files and appending build info to the builds file.
-
-    And at the same level there are dummy content-keyed stores used
-    in the test runs.  Each such store has a unique name.  Each has
-    an in/ directory and within that
+    See https://jddixon.github.io/dvcz for an extended description
+    of the subdirectory.
     """
 
     def __init__(self):
@@ -97,30 +58,55 @@ class DvcTestSetup(object):
 
     @property
     def rng(self):
+        """ Return a simple random number generator. """
         return self._rng
 
     @property
     def run_id(self):
+        """
+        Return the quasi-random integer uniquely identifying this
+        run directory.
+        """
         return self._run_id
 
     @property
     def run_dir(self):
+        """
+        Return a path to this run directory, a path incorporating run_id."""
         return self._run_dir
 
     @property
     def login(self):
+        """
+        Return the host operating system login associated with this test run.
+        """
         return self._login
 
     @property
     def home_committers_dir(self):
+        """
+        Return a path to the committers/ subdirectory containing
+        serialized Committer objects.  In general one login may have many
+        such Committer objects.
+        """
         return self._home_committers_dir
 
     @property
     def home_stores_dir(self):
+        """
+        Return a path to the stores/ subdirectory containing serialized
+        Store objects, one for each content-keyed store that a Committer
+        might have access to.
+        """
         return self._home_stores_dir
 
     @property
     def projects_dir(self):
+        """
+        Return a path to the projects/ subdirectory.  This will contain
+        subdirectories by Committer name, and below each serialized
+        Project objects .
+        """
         return self._projects_dir
 
     @property

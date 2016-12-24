@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.1
+    2016-12-23
+        * add test_directory_structure.*                            SLOC 1341
 v0.1.0
     2016-12-22
         * add {Pub,}{User,Committer} and Project abstractions       SLOC 1352
@@ -63,6 +66,7 @@ v0.0.2
 v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
+
 
 
 

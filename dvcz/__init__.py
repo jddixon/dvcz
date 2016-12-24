@@ -24,8 +24,8 @@ __all__ = ['__version__', '__version_date__',
            'do_add_user',
            'DvczError']
 
-__version__ = '0.1.0'
-__version_date__ = '2016-12-22'
+__version__ = '0.1.1'
+__version_date__ = '2016-12-23'
 
 
 def get_proj_info(options):
@@ -192,7 +192,8 @@ class User(object):
     This version of the user descriptor includes secret RSA keys.
     """
 
-    def __init__(self, login, sk_priv=None, ck_priv=None, key_bits=2048):
+    def __init__(self, login=os.environ['LOGNAME'],
+                 sk_priv=None, ck_priv=None, key_bits=2048):
 
         # The login must always be a valid name, one including no
         # delimiters or other odd characters.
