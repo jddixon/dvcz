@@ -1,1 +1,270 @@
-dummy index
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>dvcz</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
+  <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="css/ghp.css" />
+</head>
+<body>
+<div class="content">
+<h1>
+<a id="user-content-dvcz" class="anchor" href="#dvcz" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dvcz</h1>
+
+<p><strong>dvcz</strong> is a
+<a href="https://en.wikipedia.org/wiki/Distributed_version_control">distributed version control system</a>
+in the early stages of specification and development.  It can be seen as
+a front end to
+a group of loosely coordinated servers.</p>
+
+<h2>
+<a id="user-content-existing-code-and-project-structure" class="anchor" href="#existing-code-and-project-structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Existing Code and Project Structure</h2>
+
+<p>dvcz is one of a number of projects using
+<a href="https://www.github.com">Github</a>
+for storage.  Each of these has a <strong><code>.dvcz</code></strong> subdirectory and a number of
+scripts in the project's root directory.</p>
+
+<h3>
+<a id="user-content-environmental-variables" class="anchor" href="#environmental-variables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Environmental Variables</h3>
+
+<p>These must be defined in order for project software to work correctly;
+they include:</p>
+
+<ul>
+<li>DEV_BASE, the path to the directory containing project directories</li>
+<li>DVCZ_DIR, which might be for example <code>"/var/app/sharedev"</code>
+</li>
+<li><p>DVCZ_UDIR, where files are stored by content key; eg <code>"/var/app/sharedev/U"</code></p></li>
+<li><p>DVCZ_USER_DIR, path to this user's .dvcz/, so $HOME/.dvcz</p></li>
+<li>DVCZ_AUTHOR, the double-quoted name of the author, such as <code>"John Smith"</code>
+</li>
+<li>DVCZ_AUTHOR_EMAIL, such as <code>"john.smith@example.com"</code>
+</li>
+<li>DVCZ_PATH_TO_KEYS, conventionally <code>"$DVCZ_USER_DIR/node"</code>
+</li>
+</ul>
+
+<p>On a Linux system these are conventionally set in <code>$HOME/.bashrc</code>, a bash
+script, with a line like</p>
+
+<pre><code>export DEV_BASE="$HOME/dev"
+</code></pre>
+
+<h3>
+<a id="user-content-user-dvcz-subdirectory" class="anchor" href="#user-dvcz-subdirectory" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>User .dvcz Subdirectory</h3>
+
+<p>This is <code>$DVCZ_USER_DIR</code> which is conventionally <code>$HOME/.dvcz</code>.  Files in or
+below this subdirectory include</p>
+
+<ul>
+<li>
+<code>node/skPriv.pem</code>, ie <code>$DVCZ_PATH_TO_KEYS/skPriv.pem</code>, the RSA secret key
+used for signing BuildLists etc</li>
+<li>
+<code>id</code>, the globally unique 160-bit ID used to identify the user</li>
+</ul>
+
+<h3>
+<a id="user-content-project-dvcz-subdirectory" class="anchor" href="#project-dvcz-subdirectory" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project .dvcz Subdirectory</h3>
+
+<p>Files in this directory describe the current state of the project.  At
+this point these include</p>
+
+<ul>
+<li>
+<strong>builds</strong>, a list of of timestamps, version numbers, and content hashes</li>
+<li>
+<strong>lastBuildList</strong>, the full text of the last build list, digitally signed
+with the committer's RSA key</li>
+<li>
+<strong>projCfg</strong>, a description of what is to be included in each project build</li>
+<li>
+<strong>projCfg.local</strong>, a list of items (file or directory names)
+which must be included in <code>projCfg</code> if it is rewritten</li>
+<li>
+<strong>version</strong>, containing two newline-terminated lines, the first of which
+is a serialized <code>DecimalVersion</code> and the second a date in <code>CCYY-MM-DD</code>
+format</li>
+</ul>
+
+<h4>
+<a id="user-content-builds" class="anchor" href="#builds" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>builds</h4>
+
+<p>This is a list in chronological order of</p>
+
+<ul>
+<li>the date and time at which each version of the project has been committed</li>
+<li>the corresponding version number</li>
+<li>and the content hash of the BuildList for the commit</li>
+</ul>
+
+<p>An excerpt from a typical <code>builds</code> file:</p>
+
+<pre><code>2016-05-19 18:31:36 v0.4.23 8a8ed84f8937a1f20c0d317c115e87fc9ebb12e8
+2016-05-25 19:53:11 v0.4.24 92d53f31e14c52de23830ad093db11440d77803a
+2016-05-25 20:04:30 v0.4.24 2026ccd5c10112e509108606f7770a4cd3f61a6c
+2016-06-15 00:32:54 v0.4.26 752e4eb5bca0033a6db4fb1391df120671c0daa9
+</code></pre>
+
+<p>Each line begins with a timestamp in <code>CCYY-MM-DD HH:MM:SS</code> format.
+This is followed by a three or four part decimal version number, and
+then the content key (the SHA hash of the contents of the BuildLists
+committed).  The content key is 40 hexadecimal digits if using <code>SHA1</code>
+and 64 hex digits if using <code>SHA2</code>.</p>
+
+<h3>
+<a id="user-content-bkp2u-script" class="anchor" href="#bkp2u-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>bkp2U Script</h3>
+
+<p>This is a bash script in the project's root directory.  This is
+<code>$DEV_BASE/$PROJECT</code> and so might resemble <code>/home/jdd/dev/dvcz</code>.</p>
+
+<p>The <code>bkp2U</code> script backs up project files to the
+content-keyed store, the path to which is set in <code>$DVCZ_UDIR</code>.   Before
+doing the actual backup, the script changes the working directory to
+the project's base directory,
+<code>$DEV_BASE/$PROJECT</code>.  During the course of the backup the script generates a
+BuildList for the contents of the project directory and subdirectories.
+After committing
+all of the project files, the script digitally signs the BuileList
+using the RSA key
+stored at <code>$DVCZ_PATH_TO_KEYS</code>.  This points to an RSA private key in
+PEM format (and so might look like <code>$HOME/.dvcz/node</code>.  The key file
+is conventionally named <code>skPriv.pem</code>.  That is, the path to the key
+file is something like <code>/home/jdd/.dvcz/node/skPriv.pem</code>.</p>
+
+<p>The signed build list is then (a) stored in <code>$DVCZ_UDIR</code> and (b) written
+to <code>.dvcz/lastBuildList</code>.</p>
+
+<p><code>bkp2U</code> will be replaced by <code>dvc_commit</code>.</p>
+
+<h3>
+<a id="user-content-dvc_adduser" class="anchor" href="#dvc_adduser" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dvc_adduser</h3>
+
+<p>This utility sets up a committer's <code>.dvcz</code> directory if necessary and then
+adds a subdirectory to <code>uDir</code> for used by the committer in submitting files
+to the content-keyed store (<code>uDir</code>).</p>
+
+<p>For our purposes here, <code>.dvcz</code> must contain two files:</p>
+
+<ul>
+<li>
+<code>node/skPriv.pem</code>, which contains the committer's secret RSA key</li>
+<li>
+<code>id</code>, a 40- or 64-hex character sequence unique to the committer</li>
+</ul>
+
+<p>If either of these is missing the utility will create it.</p>
+
+<pre><code>usage: dvc_adduser [-h] [-f] [-j] [-k KEY_BITS] [-s DIR_STRUC_NAME] [-T] [-V]
+                   [-1] [-2] [-3] [-u U_PATH] [-v]
+
+Set up directories for a new DVCZ user.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f, --force           overwrite existing user configuration
+  -j, --just_show       show options and exit
+  -k KEY_BITS, --key_bits KEY_BITS
+                        number of RSA key bits
+  -s DIR_STRUC_NAME, --dir_struc_name DIR_STRUC_NAME
+                        new dirStruc (DIR_FLAT, DIR16x16, or DIR256x256
+  -T, --testing         this is a test run
+  -V, --show_version    display version number and exit
+  -1, --using_sha1      using the 160-bit SHA1 hash
+  -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
+  -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+  -u U_PATH, --u_path U_PATH
+                        path to uDir
+  -v, --verbose         be chatty
+</code></pre>
+
+<h3>
+<a id="user-content-dvc_commit" class="anchor" href="#dvc_commit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dvc_commit</h3>
+
+<pre><code>usage: dvc_commit [-h] [-j] [-M MATCH_PAT] [-p PROJ_PATH] [-T] [-V] [-1] [-2]
+                  [-3] [-u U_PATH] [-v] [-X EXCLUSIONS]
+
+generate build list for directory, optionally populating u_path
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -j, --just_show       show options and exit
+  -M MATCH_PAT, --match_pat MATCH_PAT
+                        include only files matching this pattern
+  -p PROJ_PATH, --proj_path PROJ_PATH
+                        data directory for build list (default=../)
+  -T, --testing         this is a test run
+  -V, --showVersion     display version number and exit
+  -1, --using_sha1      using the 160-bit SHA1 hash
+  -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
+  -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+  -u U_PATH, --u_path U_PATH
+                        path to uDir
+  -v, --verbose         be chatty
+  -X EXCLUSIONS, --exclusions EXCLUSIONS
+                        do not include files/directories matching this pattern
+</code></pre>
+
+<h3>
+<a id="user-content-testing" class="anchor" href="#testing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Testing</h3>
+
+<p>See
+<a href="https://jddixon.github.io/dvcz/test_directory_structure.html">DvcTestSetup</a>
+for a description of how a DVCZ test directory is set up.</p>
+
+<h2>
+<a id="user-content-implementation-language" class="anchor" href="#implementation-language" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Implementation Language</h2>
+
+<p>In its current form the dvcz library and scripts are written in Python 3.</p>
+
+<h2>
+<a id="user-content-dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<p>dvcz depends upon a number of related projects:</p>
+
+<ul>
+<li>
+<a href="https://jddixon.github.io/buildlist"><strong>buildlist</strong></a>, a technology
+for authenticating the contents of a directory structure</li>
+<li>
+<a href="https://jddixon.github.io/fieldz"><strong>fieldz</strong></a>, a communications
+prototol intended to be compatible with a subset of Google's
+<a href="https://developers.google.com/protocol-buffers">Protocol Buffers</a>
+</li>
+<li>
+<strong>upax</strong>, as described above</li>
+</ul>
+
+<h2>
+<a id="user-content-project-status" class="anchor" href="#project-status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Status</h2>
+
+<p>Pre-alpha.</p>
+
+<p>In active development and currently used for backup but
+generally not yet fully specified.</p>
+
+<h2>Licensing</h2>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />The material on this github.io website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
+<p>Project software is licensed under an MIT license.
+Follow the SOFTWARE LICENSE link below for more information on project software licensing.</p>  <div class="f">
+    <hr />
+    <div class="license">
+      <p><a href="LICENSE-MIT.html">SOFTWARE LICENSE</a></p>
+    </div>
+    <div class="project">
+      github <a href="https://github.com/jddixon/dvcz">      <img src="img/GitHub-Mark-32px.png" 
+        alt="link to project"  
+        style="display: inline-block; margin-left: 0 auto; margin-right: 0 auto">
+       </a> project
+    </div>
+    <div class="logo" >
+      <a href="https://jddixon.github.io/xlattice/">
+      <img src="img/xlattice-2014.jpg" alt="the XLattice Project" style="float: right;" >
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
