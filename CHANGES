@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.2
+    2016-12-24
+        * rearrange code, introducing user.py                       SLOC 1341
 v0.1.1
     2016-12-23
         * add test_directory_structure.*                            SLOC 1341
@@ -66,6 +69,7 @@ v0.0.2
 v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
+
 
 
 
