@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-# buildlist/test_get_proj_info.py
+# dvcz/test_get_proj_info.py
 
 from argparse import Namespace
 import os
 import unittest
 
-from dvcz import get_proj_info, DvczError
+from dvcz import DvczError
+from dvcz.project import get_proj_info
 
 
 class TestGetProjInfo(unittest.TestCase):
