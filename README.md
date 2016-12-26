@@ -82,8 +82,7 @@ and 64 hex digits if using `SHA2`.
 This is a bash script in the project's root directory.  This is
 `$DEV_BASE/$PROJECT` and so might resemble `/home/jdd/dev/dvcz`.
 
-The `bkp2U` script
-backs up project files to the
+The `bkp2U` script backs up project files to the
 content-keyed store, the path to which is set in `$DVCZ_UDIR`.   Before
 doing the actual backup, the script changes the working directory to
 the project's base directory,
@@ -138,6 +137,35 @@ If either of these is missing the utility will create it.
       -v, --verbose         be chatty
 
 ### dvc_commit
+
+    usage: dvc_commit [-h] [-j] [-M MATCH_PAT] [-p PROJ_PATH] [-T] [-V] [-1] [-2]
+                      [-3] [-u U_PATH] [-v] [-X EXCLUSIONS]
+
+    generate build list for directory, optionally populating u_path
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -j, --just_show       show options and exit
+      -M MATCH_PAT, --match_pat MATCH_PAT
+                            include only files matching this pattern
+      -p PROJ_PATH, --proj_path PROJ_PATH
+                            data directory for build list (default=../)
+      -T, --testing         this is a test run
+      -V, --showVersion     display version number and exit
+      -1, --using_sha1      using the 160-bit SHA1 hash
+      -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
+      -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+      -u U_PATH, --u_path U_PATH
+                            path to uDir
+      -v, --verbose         be chatty
+      -X EXCLUSIONS, --exclusions EXCLUSIONS
+                            do not include files/directories matching this pattern
+
+### Testing
+
+See
+[DvcTestSetup](https://jddixon.github.io/dvcz/test_directory_structure.html)
+for a description of how a DVCZ test directory is set up.
 
 ## Implementation Language
 

@@ -92,8 +92,8 @@ class Project(object):
     def __init__(self, name, proj_path, main_lang='', mode=0o755):
 
         # DEBUG
-        print("PROJECT._INIT_: name %s, proj_path %s, main_lang %s" % (
-              name, proj_path, main_lang))
+        # print("PROJECT._INIT_: name %s, proj_path %s, main_lang %s" % (
+        #       name, proj_path, main_lang))
         # END
         if not valid_file_name(name):
             raise AttributeError("not a valid project name: '%s'" % name)

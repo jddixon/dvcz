@@ -44,7 +44,7 @@ class Store(UDir):
         if not valid_file_name(name):
             raise AttributeError("not a valid file name: '%s'" % name)
 
-        super().__init__(u_path, dir_struc, using_Sha, mode)
+        super().__init__(u_path, dir_struc, using_sha, mode)
         self._name = name
 
     @property
@@ -53,3 +53,33 @@ class Store(UDir):
         Return the name assigned to the store.  This is a valid file
         name, a single word incorporating no delimiters.
         """
+        return self._name
+
+    def __str__(self):
+        return '::'.join([self.name,
+                          self.u_path,
+                          UDir.DIR_STRUC_NAMES[self.dir_struc],
+                          self.using_sha._name_])
+
+    @classmethod
+    def create_from_file(cls, path):
+        """ Given a serialization, create a Store object. """
+
+        with open(path, 'r') as file:
+            # Possible FileNotFound.
+            text = file.read()
+        return cls.create_from_string(text)
+
+    @classmethod
+    def create_from_string(cls, text):
+        parts = text.split('::')
+        pcount = len(parts)
+        if pcount == 4:
+            name = parts[0]
+            u_path = parts[1]
+            dir_struc = UDir.name_to_dir_struc(parts[2])
+            # 'item access'
+            using_sha = QQQ[parts[3]]
+            return Store(name, u_path, dir_struc, using_sha)
+        else:
+            raise DvczError("Invalid Store descriptor: '%s'" % text)
