@@ -9,6 +9,7 @@ then
   ./test_get_proj_info.py
   ./test_project.py
   ./test_store.py
+  ./test_user.py
   ./test_dummy.sh
   
 else

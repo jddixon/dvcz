@@ -21,9 +21,10 @@ if sys.version_info < (3, 6):
 
 __all__ = ['__version__', '__version_date__', 'DvczError']
 
-__version__ = '0.1.4'
-__version_date__ = '2016-12-26'
+__version__ = '0.1.5'
+__version_date__ = '2016-12-27'
 
 
 class DvczError(RuntimeError):
+    """ Errors specific to the dvcz project. """
     pass

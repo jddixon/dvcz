@@ -8,6 +8,7 @@ import hashlib
 
 from buildlist import(check_dirs_in_path, generate_rsa_key,
                       read_rsa_key, rm_f_dir_contents)
+from dvcz import DvczError
 from rnglib import valid_file_name
 from xlattice import QQQ
 from xlattice.u import UDir
@@ -131,12 +132,12 @@ class _User(object):
         # The login must always be a valid name, one including no
         # delimiters or other odd characters.
 
-        if not valid_name(login):
+        if not valid_file_name(login):
             raise AtttributeError("not a valid login: '%s'" % login)
+        self._login = login
 
         # XXX: caller can supply keys with different sizes -- and
         # differing sizes.
-        self._key_bits = key_bits
         if sk_priv is None:
             sk_priv = RSA.generate(key_bits)
         if ck_priv is None:
@@ -147,6 +148,7 @@ class _User(object):
         #   with open(path, 'rb') as file: sk_priv = RSA.importKey(file.read())
         self._sk_priv = sk_priv
         self._ck_priv = ck_priv
+        self._key_bits = sk_priv.size()
 
     @property
     def login(self):
@@ -167,17 +169,94 @@ class _User(object):
         """ Return the size of the RSA key. """
         return self._key_bits
 
-    def __str__(self):
-
-        return "NOT IMPLEMENTED: User.__str__()"
-
 
 class User(_User):
 
-    def create_from_file(self, path):
+    START_LINE = '-----START DVCZ USER-----'
+    END_LINE = '-----END DVCZ USER-----'
+
+    def __init__(self, login=os.environ['LOGNAME'],
+                 sk_priv=None, ck_priv=None, key_bits=2048):
+        super().__init__(login, sk_priv, ck_priv, key_bits)
+
+    def __eq__(self, other):
+        if not isinstance(other, User):
+            return False
+        return self._login == other.login and \
+            self._sk_priv == other.sk_priv and \
+            self._ck_priv == other.ck_priv
+
+    def __str__(self):
+        return """{0}
+{1}
+{2}
+{3}
+{4}
+""".format(User.START_LINE,
+           self.login,
+           self.sk_priv.exportKey('PEM').decode('utf-8'),
+           self.ck_priv.exportKey('PEM').decode('utf-8'),
+           User.END_LINE)
+
+    @classmethod
+    def create_from_file(cls, path):
+        """ Parse the serialized User object. """
+        with open(path, 'r') as file:
+            text = file.read()
+        return cls.create_from_string(text)
+
+    @classmethod
+    def create_from_string(cls, string):
         """ Parse the serialized User object. """
 
-        return NotImplementedError()
+        strings = string.split('\n')
+        if strings[-1] == '\n':
+            strings = strings[:-1]
+        return cls.create_from_string_array(strings)
+
+    @classmethod
+    def create_from_string_array(cls, strings):
+        """ Parse the serialized User object from a list of strings. """
+
+        def collect_priv(lines, offset, line_count):
+            """
+            Interpret a list of lines of text as a PEM-formatted
+            RSA private key.
+            """
+
+            # find the end of the PEM-formatted RSA private key
+            found = False
+            ndx = -1
+            for ndx in range(offset, line_count):
+                if lines[ndx] == '-----END RSA PRIVATE KEY-----':
+                    found = True
+                    break
+            if not found:
+                raise DvczError("can't find end of PEM-formatted RSA key")
+            text = '\n'.join(lines[offset:ndx + 1])
+            priv = RSA.importKey(text)
+            return (ndx + 1, priv)
+
+        line_count = len(strings)
+        if line_count < 5:
+            raise DvczError(
+                "too few parts (%d) in User string array" % line_count)
+        if strings[0] != cls.START_LINE:
+            raise DvczError("found '%' instead of '%s'" % (
+                strings[0], cls.START_LINE))
+        login = strings[1]
+        offset = 2
+        offset, sk_priv = collect_priv(strings, offset, line_count)
+        offset, ck_priv = collect_priv(strings, offset, line_count)
+
+        if strings[offset] != cls.END_LINE:
+            raise DvczError("found '%' instead of '%s'" % (
+                strings[offset], cls.END_LINE))
+
+        # XXX Ignoring possiblity of differences key sizes
+        key_bits = sk_priv.size()
+
+        return User(login, sk_priv, ck_priv, key_bits)
 
 
 class _PubUser(object):

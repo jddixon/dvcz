@@ -1,5 +1,11 @@
 py/dvcz/TODO
 
+2016-12-16
+    * test_store.py should actually update 
+        tmp/RUN_ID/home/LOGIN/dvcz/stores/
+        - as it stands, it just creates 9 stores under
+            tmp/RUN_ID
+
 2016-12-23
     * README.md:
         - too many environmental variables
