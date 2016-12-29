@@ -3,22 +3,9 @@
 """ Project: a collection of code in and below a project root directory. """
 
 import os
-import re
-import sys
-import time
-import hashlib
 
-from buildlist import(check_dirs_in_path, generate_rsa_key,
-                      read_rsa_key, rm_f_dir_contents)
 from dvcz import DvczError
 from rnglib import valid_file_name
-from xlattice import QQQ
-from xlattice.u import UDir
-
-from Crypto.PublicKey import RSA
-
-if sys.version_info < (3, 6):
-    import sha3
 
 __all__ = ['get_proj_info', 'Project']
 
@@ -51,7 +38,7 @@ def get_proj_info(options):
             os.chdir(proj_path)
         except FileNotFoundError:
             raise DvczError("%s does not exist" % proj_path)
-    except AttributeError:
+    except DvczError:
         proj_path = os.getcwd()
     curdir = proj_path
     start_dir = curdir
@@ -96,9 +83,9 @@ class Project(object):
         #       name, proj_path, main_lang))
         # END
         if not valid_file_name(name):
-            raise AttributeError("not a valid project name: '%s'" % name)
+            raise DvczError("not a valid project name: '%s'" % name)
         if main_lang and not valid_file_name(main_lang):
-            raise AttributeError(
+            raise DvczError(
                 "not a valid language name: '%s'" %
                 main_lang)
 
@@ -132,11 +119,9 @@ class Project(object):
         return self._main_lang
 
     def __eq__(self, other):
-        if not isinstance(other, Project):
-            return False
-        if self._name != other.name:
-            return False
-        if self._proj_path != other.proj_path:
+        if not isinstance(other, Project) or \
+                self._name != other.name or \
+                self._proj_path != other.proj_path:
             return False
         if self._main_lang and not other.main_lang:
             return False
@@ -160,6 +145,7 @@ class Project(object):
 
     @classmethod
     def create_from_string(cls, text):
+        """ Create a Project object from a simple string serialization. """
 
         parts = text.split('::')
         pcount = len(parts)

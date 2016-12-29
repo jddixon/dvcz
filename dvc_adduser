@@ -14,14 +14,14 @@ If testing, create tmp/{home/dvcz,project/dvcz,uDir} instead.
 from argparse import ArgumentParser
 import os
 import sys
-import hashlib
+# import hashlib
 # import shutil
 
 # from buildlist import(generate_rsa_key, read_rsa_key)
-from dvcz import(__version__, __version_date__,
-                 do_add_user)
+from dvcz import(__version__, __version_date__)
+from dvcz.user import do_add_user
 from optionz import dump_options
-from xlattice import (QQQ, check_using_sha, parse_using_sha, fix_using_sha)
+from xlattice import (check_using_sha, parse_using_sha, fix_using_sha)
 from xlattice.proc_lock import ProcLock
 from xlattice.util import timestamp_now
 from xlattice.u import UDir

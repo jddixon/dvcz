@@ -19,7 +19,8 @@ from buildlist import(BuildList,
 from optionz import dump_options
 from xlattice import (check_using_sha, parse_using_sha, fix_using_sha)
 from xlattice.util import get_exclusions, timestamp_now
-from dvcz import(__version__, __version_date__, get_proj_info)
+from dvcz import(__version__, __version_date__)
+from dvcz.project import get_proj_info
 
 
 def doit(options):
@@ -30,7 +31,7 @@ def doit(options):
     the content-keyed store using the selected SHA hash type.
 
     """
-    parent_path = options.parent_path
+    # parent_path = options.parent_path
     dest_dvcz_path = options.dest_dvcz_path
     excl = options.excl
     key_path = options.key_path
@@ -133,7 +134,7 @@ def check_sanity(parser, args):
                 generate_rsa_key(args.key_path, 2048)
 
 
-def add_derived(parser, args):
+def add_derived(args):
     """
     Wired-in paths.
 
@@ -193,7 +194,7 @@ def add_derived(parser, args):
 def check_args(parser, args):
     """ Check and possibly edit command-line arguments. """
 
-    add_derived(parser, args)
+    add_derived(args)
     fix_using_sha(args)
 
     args.cur_dir = os.getcwd()

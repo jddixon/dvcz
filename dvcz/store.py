@@ -2,13 +2,11 @@
 
 """ Our distributed version control system. """
 
-import os
-import sys
-
 #import hashlib
 
-from buildlist import(check_dirs_in_path, generate_rsa_key,
-                      read_rsa_key, rm_f_dir_contents)
+# from buildlist import(check_dirs_in_path, generate_rsa_key,
+#                      read_rsa_key, rm_f_dir_contents)
+from dvcz import DvczError
 from rnglib import valid_file_name
 from xlattice import QQQ
 from xlattice.u import UDir
@@ -41,7 +39,7 @@ class Store(UDir):
                  using_sha=QQQ.USING_SHA2, mode=0o755):
 
         if not valid_file_name(name):
-            raise AttributeError("not a valid file name: '%s'" % name)
+            raise DvczError("not a valid file name: '%s'" % name)
 
         super().__init__(u_path, dir_struc, using_sha, mode)
         self._name = name
@@ -58,11 +56,11 @@ class Store(UDir):
         return '::'.join([self.name,
                           self.u_path,
                           UDir.DIR_STRUC_NAMES[self.dir_struc],
-                          self.using_sha._name_])
+                          self.using_sha.name])
 
     @classmethod
     def create_from_file(cls, path):
-        """ Given a serialization, create a Store object. """
+        """ Given an on-disk serialization, create a Store object. """
 
         with open(path, 'r') as file:
             # Possible FileNotFound.
@@ -71,6 +69,7 @@ class Store(UDir):
 
     @classmethod
     def create_from_string(cls, text):
+        """ Given a simple string serialization, create a Store object. """
         parts = text.split('::')
         pcount = len(parts)
         if pcount == 4:

@@ -3,14 +3,11 @@
 
 """ Test the setUp function for dvcz testing. """
 
-from argparse import Namespace
 import os
 import unittest
 
-from dvcz import DvczError
-from dvcz.project import get_proj_info
+# from dvcz import DvczError
 from rnglib import SimpleRNG, valid_file_name
-from xlattice.u import UDir
 
 
 class DvcTestSetup(object):

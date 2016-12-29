@@ -1,4 +1,8 @@
 # dvcz/user.py
+"""
+User, PubUser, Committer, and PubCommitter objects and related classes
+and functions.
+"""
 
 import os
 # import re
@@ -22,7 +26,7 @@ if sys.version_info < (3, 6):
 # == adduser ========================================================
 
 
-def make_committer_id(pubkey, using_sha):
+def make_committer_id(pubkey, using_sha=QQQ.USING_SHA2):
     """
     Create a unique committer ID derived from the user's RSA public key
     using this SHA type.
@@ -123,7 +127,9 @@ def do_add_user(options):
 
 class _User(object):
     """
-    This version of the user descriptor includes secret RSA keys.
+    Abstract version of the User class.
+
+    Includes secret RSA keys.
     """
 
     def __init__(self, login=os.environ['LOGNAME'],
@@ -133,7 +139,7 @@ class _User(object):
         # delimiters or other odd characters.
 
         if not valid_file_name(login):
-            raise AtttributeError("not a valid login: '%s'" % login)
+            raise DvczError("not a valid login: '%s'" % login)
         self._login = login
 
         # XXX: caller can supply keys with different sizes -- and
@@ -152,6 +158,7 @@ class _User(object):
 
     @property
     def login(self):
+        """ Return the user's login. """
         return self._login
 
     @property
@@ -171,7 +178,11 @@ class _User(object):
 
 
 class User(_User):
+    """
+    Descriptor for DVCZ users.
 
+    Includes private keys and serialization/deserialization methods.
+    """
     START_LINE = '-----START DVCZ USER-----'
     END_LINE = '-----END DVCZ USER-----'
 
@@ -187,6 +198,9 @@ class User(_User):
             self._ck_priv == other.ck_priv
 
     def __str__(self):
+        # possible ValueErrors here
+        sk_exp = self.sk_priv.exportKey('PEM').decode('utf-8')
+        ck_exp = self.ck_priv.exportKey('PEM').decode('utf-8')
         return """{0}
 {1}
 {2}
@@ -194,8 +208,8 @@ class User(_User):
 {4}
 """.format(User.START_LINE,
            self.login,
-           self.sk_priv.exportKey('PEM').decode('utf-8'),
-           self.ck_priv.exportKey('PEM').decode('utf-8'),
+           sk_exp,
+           ck_exp,
            User.END_LINE)
 
     @classmethod
@@ -209,6 +223,9 @@ class User(_User):
     def create_from_string(cls, string):
         """ Parse the serialized User object. """
 
+        if not string:
+            raise DvczError('empty string')
+
         strings = string.split('\n')
         if strings[-1] == '\n':
             strings = strings[:-1]
@@ -217,6 +234,9 @@ class User(_User):
     @classmethod
     def create_from_string_array(cls, strings):
         """ Parse the serialized User object from a list of strings. """
+
+        if not strings:
+            raise DvczError('empty string array')
 
         def collect_priv(lines, offset, line_count):
             """
@@ -242,7 +262,7 @@ class User(_User):
             raise DvczError(
                 "too few parts (%d) in User string array" % line_count)
         if strings[0] != cls.START_LINE:
-            raise DvczError("found '%' instead of '%s'" % (
+            raise DvczError("found '%s' instead of '%s'" % (
                 strings[0], cls.START_LINE))
         login = strings[1]
         offset = 2
@@ -250,7 +270,7 @@ class User(_User):
         offset, ck_priv = collect_priv(strings, offset, line_count)
 
         if strings[offset] != cls.END_LINE:
-            raise DvczError("found '%' instead of '%s'" % (
+            raise DvczError("found '%s' instead of '%s'" % (
                 strings[offset], cls.END_LINE))
 
         # XXX Ignoring possiblity of differences key sizes
@@ -269,8 +289,8 @@ class _PubUser(object):
         # The login must always be a valid name, one including no
         # delimiters or other odd characters.
 
-        if not valid_name(login):
-            raise AtttributeError("not a valid login: '%s'" % login)
+        if not valid_file_name(login):
+            raise DvczError("not a valid login: '%s'" % login)
         self._login = login
 
         # To write use
@@ -326,13 +346,89 @@ class Committer(User):
     cooperating servers housing content-keyed data stores.
     """
 
+    START_LINE = '-----START DVCZ COMMITTER-----'
+    END_LINE = '-----END DVCZ COMMITTER-----'
+
     def __init__(self, handle, login=os.environ['LOGNAME'],
                  sk_priv=None, ck_priv=None, key_bits=2048):
         if not valid_file_name(handle):
-            raise AttributeError("'%s' is not a valid handle" % handle)
+            raise DvczError("'%s' is not a valid handle" % handle)
         super().__init__(login, sk_priv, ck_priv, key_bits)
         self._handle = handle
 
+    @property
+    def handle(self):
+        """ Return the committer's handle, a valid name. ""
+        return self._handle
+
+    def __eq__(self, other):
+        if not isinstance(other, Committer):
+            return False
+        return self._handle == other.handle and \
+            self._login == other.login and \
+            self._sk_priv == other.sk_priv and \
+            self._ck_priv == other.ck_priv
+
+    def __str__(self):
+        output = """{0}
+{1}
+{2}{3}
+""".format(Committer.START_LINE,
+           self.handle,
+           super().__str__(),
+           Committer.END_LINE)
+        return output
+
+    @classmethod
+    def create_from_file(cls, path):
+        """ Parse the serialized Committer object. """
+        with open(path, 'r') as file:
+            text = file.read()
+        return cls.create_from_string(text)
+
+    @classmethod
+    def create_from_string(cls, string):
+        """ Parse the serialized Committer object. """
+
+        if not string:
+            raise DvczError('empty string')
+
+        # DEBUG
+        # print("Committer.create_from_string: input is:\n%s" % string)
+        # END
+        strings = string.split('\n')
+        while strings[-1] == '':
+            strings = strings[:-1]
+        return cls.create_from_string_array(strings)
+
+    @classmethod
+    def create_from_string_array(cls, strings):
+        """ Parse the serialized Committer object from a list of strings. """
+
+        if not strings:
+            raise DvczError("empty string array")
+
+        line_count = len(strings)
+        if line_count < 5:
+            raise DvczError(
+                "too few lines (%d) in Committer string array" % line_count)
+
+        if strings[0] != cls.START_LINE:
+            raise DvczError("found '%s' instead of '%s'" % (
+                strings[0], cls.START_LINE))
+        handle = strings[1]
+
+        if strings[-1] != cls.END_LINE:
+            raise DvczError("found '%s' instead of '%s'" % (
+                strings[-1], cls.END_LINE))
+
+        user = User.create_from_string_array(strings[2:-1])
+
+        return Committer(handle,
+                         user.login,
+                         user.sk_priv,
+                         user.ck_priv,
+                         user.key_bits)
 
 class PubCommitter(_PubUser):
     """
@@ -342,6 +438,6 @@ class PubCommitter(_PubUser):
     def __init__(self, handle, login=os.environ['LOGNAME'],
                  sk_=None, ck_=None):
         if not valid_file_name(handle):
-            raise AttributeError("'%s' is not a valid handle" % handle)
+            raise DvczError("'%s' is not a valid handle" % handle)
         super().__init__(login, sk_, ck_)
         self._handle = handle
