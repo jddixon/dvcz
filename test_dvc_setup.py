@@ -3,13 +3,11 @@
 
 """ Test the setUp function for dvcz testing. """
 
-from argparse import Namespace
 import os
 import unittest
 
-from dvcz import get_proj_info, DvczError
+# from dvcz import DvczError
 from rnglib import SimpleRNG, valid_file_name
-from xlattice.u import UDir
 
 
 class DvcTestSetup(object):
@@ -30,14 +28,14 @@ class DvcTestSetup(object):
             self._run_dir = os.path.join('tmp', self._run_id)
         os.makedirs(self._run_dir, mode=0o755)
 
-        # under this add home/LOGIN/dvcz/home_committers/ and stores/
+        # under this add home/LOGIN/dvcz/committers/ and stores/
         self._login = os.environ['LOGNAME']
         dvc_dir = os.path.join(
             self._run_dir, os.path.join(
                 'home', os.path.join(self._login, 'dvcz')))
-        self._home_committers_dir = os.path.join(dvc_dir, 'home_committers')
+        self._committers_dir = os.path.join(dvc_dir, 'committers')
         self._home_stores_dir = os.path.join(dvc_dir, 'stores')
-        os.makedirs(self._home_committers_dir, mode=0o755)
+        os.makedirs(self._committers_dir, mode=0o755)
         os.makedirs(self._home_stores_dir, mode=0o755)
 
         # on the same level as home
@@ -83,13 +81,13 @@ class DvcTestSetup(object):
         return self._login
 
     @property
-    def home_committers_dir(self):
+    def committers_dir(self):
         """
         Return a path to the committers/ subdirectory containing
         serialized Committer objects.  In general one login may have many
         such Committer objects.
         """
-        return self._home_committers_dir
+        return self._committers_dir
 
     @property
     def home_stores_dir(self):
@@ -136,16 +134,16 @@ class TestDvcSetup(unittest.TestCase):
         # sometimes returns eg 'jdd'
         try:
             ret = os.getlogin()
-            print("os.getlogin() unexpecedly worked, returning %s" % ret)
+            print("os.getlogin() unexpectedly worked, returning %s" % ret)
         except FileNotFoundError:
             pass
 
         self.assertEqual(cfg.login, os.environ['LOGNAME'])
 
         # pure lazinessM
-        self.assertEqual(cfg.home_committers_dir, cfg.run_dir + '/home/' +
-                         cfg.login + '/dvcz/home_committers')
-        self.assertTrue(os.path.exists(cfg.home_committers_dir))
+        self.assertEqual(cfg.committers_dir, cfg.run_dir + '/home/' +
+                         cfg.login + '/dvcz/committers')
+        self.assertTrue(os.path.exists(cfg.committers_dir))
         self.assertTrue(os.path.exists(cfg.home_stores_dir))
 
         self.assertTrue(os.path.exists(cfg.projects_dir))

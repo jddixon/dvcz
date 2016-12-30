@@ -1,5 +1,17 @@
 py/dvcz/CHANGES
 
+v0.1.6
+    2016-12-28
+        * Committer, test_committer.py                              SLOC 1820
+v0.1.5
+    2016-12-27
+        * add User, user.py, test_user.py                           SLOC 1664
+v0.1.4
+    2016-12-26
+        * add Store, store.py, and tests                            SLOC 1565
+v0.1.3
+    2016-12-25
+        * add Project, project.py, and tests                        SLOC 1498
 v0.1.2
     2016-12-24
         * rearrange code, introducing user.py                       SLOC 1341
@@ -92,3 +104,10 @@ v0.0.1
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> devel

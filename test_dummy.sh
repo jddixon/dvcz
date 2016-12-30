@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "This test succeeded."
+echo "This bash script test succeeded."

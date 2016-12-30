@@ -1,4 +1,3 @@
-
 # should add test*.py
 
-pylint setup.py dvc_commit dvc_adduser dvcz 
+pylint setup.py dvc_commit dvc_adduser dvcz test*.py

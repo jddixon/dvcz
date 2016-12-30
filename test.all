@@ -7,6 +7,9 @@ then
   ./test_adduser.py
   ./test_dvc_setup.py
   ./test_get_proj_info.py
+  ./test_project.py
+  ./test_store.py
+  ./test_user.py
   ./test_dummy.sh
   
 else
