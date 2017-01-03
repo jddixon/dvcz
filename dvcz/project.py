@@ -3,9 +3,9 @@
 """ Project: a collection of code in and below a project root directory. """
 
 import os
+import re
 
 from dvcz import DvczError
-from rnglib import valid_file_name
 
 __all__ = ['get_proj_info', 'Project']
 
@@ -34,12 +34,10 @@ def get_proj_info(options):
     proj_parent = ''
     try:
         proj_path = options.proj_path
-        try:
-            os.chdir(proj_path)
-        except FileNotFoundError:
-            raise DvczError("%s does not exist" % proj_path)
-    except DvczError:
+    except AttributeError:              # no such option
         proj_path = os.getcwd()
+    os.chdir(proj_path)         # may raise FileNotFoundError
+
     curdir = proj_path
     start_dir = curdir
 
@@ -76,15 +74,32 @@ class Project(object):
     must be another valid name.
     """
 
+    # Project names may not contain dots or dashes; they may contain
+    # digits but must not start with a digit.
+    PROJ_NAME_CHARS =  \
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_'
+    PROJ_NAME_STARTERS = \
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_'
+
+    VALID_PROJ_NAME_PAT = \
+        r'^[' + PROJ_NAME_STARTERS + '][' + PROJ_NAME_CHARS + ']*$'
+    VALID_PROJ_NAME_RE = re.compile(VALID_PROJ_NAME_PAT)
+
+    @classmethod
+    def valid_proj_name(cls, name):
+        """ Return whether the name matches the regular expression. """
+        match = cls.VALID_PROJ_NAME_RE.match(name)
+        return match is not None
+
     def __init__(self, name, proj_path, main_lang='', mode=0o755):
 
         # DEBUG
         # print("PROJECT._INIT_: name %s, proj_path %s, main_lang %s" % (
         #       name, proj_path, main_lang))
         # END
-        if not valid_file_name(name):
+        if not Project.valid_proj_name(name):
             raise DvczError("not a valid project name: '%s'" % name)
-        if main_lang and not valid_file_name(main_lang):
+        if main_lang and not Project.valid_proj_name(main_lang):
             raise DvczError(
                 "not a valid language name: '%s'" %
                 main_lang)

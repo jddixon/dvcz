@@ -96,7 +96,7 @@ class TestGetProjInfo(unittest.TestCase):
         try:
             get_proj_info(args)
             self.fail("didn't get FileNotFound on %s" % args.proj_path)
-        except DvczError:
+        except FileNotFoundError:
             pass
         finally:
             os.chdir(basedir)

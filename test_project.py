@@ -35,11 +35,10 @@ class TestProject(unittest.TestCase):
     def test_good_projects(self):
         """ Test a range of acceptable parameter sets. """
         #                  name      path            main_lang
-        self.do_test_good('grinch', 'tmp/abc/def')
-        self.do_test_good('grinch', 'tmp/pqr')
-
         self.do_test_good('bar', 'tmp/bunny', 'py')
         self.do_test_good('banana', 'tmp/frog', 'c')
+        self.do_test_good('grinch', 'tmp/abc/def')
+        self.do_test_good('grinch', 'tmp/pqr')
 
     def do_test_bad_name(self, name, path, main_lang=''):
         """ Verify that a known-bad name is rejected. """
@@ -52,16 +51,16 @@ class TestProject(unittest.TestCase):
     def test_bad_names(self):
         """ Test a range of inacceptable project names. """
         self.do_test_bad_name('', 'tmp/frog')
-        self.do_test_bad_name('a-b', 'tmp/frog')
         self.do_test_bad_name('.b', 'tmp/frog')
-        self.do_test_bad_name('a b', 'tmp/frog')
+        self.do_test_bad_name('a b', 'tmp/frog')        # FAILS
+        self.do_test_bad_name('a-b', 'tmp/frog')        # FAILS
 
     def do_test_bad_path(self, name, path, main_lang=''):
         """ Verify that a known-bad path to a project is rejected. """
         try:
             _ = Project(name, path, main_lang)
             self.fail("Project didn't detect bad path '%s'" % name)
-        except DvczError:
+        except PermissionError:
             pass
 
     def test_bad_paths(self):

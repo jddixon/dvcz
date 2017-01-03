@@ -13,7 +13,7 @@ import hashlib
 from buildlist import(check_dirs_in_path, generate_rsa_key,
                       read_rsa_key, rm_f_dir_contents)
 from dvcz import DvczError
-from rnglib import valid_file_name
+from dvcz.project import Project
 from xlattice import QQQ
 from xlattice.u import UDir
 
@@ -136,9 +136,10 @@ class _User(object):
                  sk_priv=None, ck_priv=None, key_bits=2048):
 
         # The login must always be a valid name, one including no
-        # delimiters or other odd characters.
+        # delimiters or other odd characters.  At least for the mement
+        # we use the same rules for user names as Project names.
 
-        if not valid_file_name(login):
+        if not Project.valid_proj_name(login):
             raise DvczError("not a valid login: '%s'" % login)
         self._login = login
 
@@ -358,7 +359,7 @@ class Committer(User):
 
     @property
     def handle(self):
-        """ Return the committer's handle, a valid name. ""
+        """ Return the committer's handle, a valid name. """
         return self._handle
 
     def __eq__(self, other):
@@ -370,14 +371,13 @@ class Committer(User):
             self._ck_priv == other.ck_priv
 
     def __str__(self):
-        output = """{0}
+        return """{0}
 {1}
 {2}{3}
 """.format(Committer.START_LINE,
            self.handle,
            super().__str__(),
            Committer.END_LINE)
-        return output
 
     @classmethod
     def create_from_file(cls, path):
@@ -429,6 +429,7 @@ class Committer(User):
                          user.sk_priv,
                          user.ck_priv,
                          user.key_bits)
+
 
 class PubCommitter(_PubUser):
     """

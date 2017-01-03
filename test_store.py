@@ -43,7 +43,7 @@ class TestStore(unittest.TestCase):
                 self.do_test_good('grinch', 'tmp/pqr', dir_struc, using_sha)
 
     def do_test_bad_name(self, name, u_path,
-                         dir_struc='', using_sha=QQQ.USING_SHA2):
+                         dir_struc=UDir.DIR_FLAT, using_sha=QQQ.USING_SHA2):
         """ Verify that names that should be rejected are. """
         try:
             _ = Store(name, u_path, dir_struc, using_sha)
@@ -54,9 +54,13 @@ class TestStore(unittest.TestCase):
     def test_bad_names(self):
         """ Test some instances of invalid names. """
         self.do_test_bad_name('', 'tmp/frog')
-        self.do_test_bad_name('a-b', 'tmp/frog')
+        self.do_test_bad_name(' ', 'tmp/frog')      # space
+        self.do_test_bad_name('.', 'tmp/frog')      # dot
+        self.do_test_bad_name('$', 'tmp/frog')      # dollar
+        self.do_test_bad_name('a$b', 'tmp/frog')
         self.do_test_bad_name('.b', 'tmp/frog')
-        self.do_test_bad_name('a b', 'tmp/frog')
+        self.do_test_bad_name('a b', 'tmp/frog')    # space
+        self.do_test_bad_name('a\tb', 'tmp/frog')   # tab
 
     def do_test_bad_path(self, name, u_path,
                          dir_struc='', using_sha=QQQ.USING_SHA2):
@@ -64,7 +68,7 @@ class TestStore(unittest.TestCase):
         try:
             _ = Store(name, u_path, dir_struc, using_sha)
             self.fail("Store didn't detect bad u_path '%s'" % name)
-        except DvczError:
+        except PermissionError:
             pass
 
     def test_bad_paths(self):
