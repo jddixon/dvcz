@@ -21,7 +21,7 @@ import sys
 from dvcz import(__version__, __version_date__)
 from dvcz.user import do_add_user
 from optionz import dump_options
-from xlattice import (check_using_sha, parse_using_sha, fix_using_sha)
+from xlattice import (check_hashtype, parse_hashtype_etc, fix_hashtype)
 from xlattice.proc_lock import ProcLock
 from xlattice.util import timestamp_now
 from xlattice.u import UDir
@@ -61,8 +61,8 @@ def get_args():
     parser.add_argument('-V', '--show_version', action='store_true',
                         help='display version number and exit')
 
-    # -1,-2,-3, using_sha, -v/--verbose
-    parse_using_sha(parser)
+    # -1,-2,-3, hashtype, -v/--verbose
+    parse_hashtype_etc(parser)
 
     args = parser.parse_args()
 
@@ -73,7 +73,7 @@ def get_args():
     # external factors or derived from the args
     args.app_name = app_name
     args.dir_struc = UDir.name_to_dir_struc(args.dir_struc_name)
-    fix_using_sha(args)
+    fix_hashtype(args)
     args.now = timestamp_now()
     args.proj_dir = os.getcwd()         # we can fiddle with this
 
@@ -97,7 +97,7 @@ def elaborate_args(parser, args):
 
     _ = parser
 
-    check_using_sha(args.using_sha)         # vestigial
+    check_hashtype(args.hashtype)         # vestigial
 
     if args.testing:
         args.home = os.path.join('tmp', 'home')
