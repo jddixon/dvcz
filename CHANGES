@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.8
+    2017-01-12
+        * modify to conform to revised xlattice_py API              SLOC 1821
 v0.1.7
     2017-01-03
         * get rid of various minor errors, improve valid name tests SLOC 1816
@@ -112,3 +115,7 @@ v0.0.1
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> devel

@@ -17,7 +17,7 @@ from argparse import ArgumentParser
 from buildlist import(BuildList,
                       check_dirs_in_path, generate_rsa_key, rm_f_dir_contents)
 from optionz import dump_options
-from xlattice import (check_using_sha, parse_using_sha, fix_using_sha)
+from xlattice import (check_hashtype, parse_hashtype_etc, fix_hashtype)
 from xlattice.util import get_exclusions, timestamp_now
 from dvcz import(__version__, __version_date__)
 from dvcz.project import get_proj_info
@@ -37,12 +37,12 @@ def doit(options):
     key_path = options.key_path
     list_file = options.list_file
     u_path = options.u_path
-    using_sha = options.using_sha
+    hashtype = options.hashtype
 
     blist = BuildList.list_gen(options.proj_name, options.proj_path,
                                dest_dvcz_path, list_file, key_path, excl,
                                True,  # logging=True
-                               u_path, using_sha)
+                               u_path, hashtype)
 
     print("BuildList written to %s" % os.path.join(dest_dvcz_path, list_file))
 
@@ -81,8 +81,8 @@ def get_args():
     parser.add_argument('-V', '--showVersion', action='store_true',
                         help='display version number and exit')
 
-    # -1,-2,-3, using_sha, -v/--verbose
-    parse_using_sha(parser)
+    # -1,-2,-3, hashtype, -v/--verbose
+    parse_hashtype_etc(parser)
 
     parser.add_argument(
         '-X', '--exclusions', action='append',
@@ -103,7 +103,7 @@ def check_sanity(parser, args):
     """ check for options that just don't make sense. """
 
     if not args.just_show:
-        check_using_sha(args.using_sha)
+        check_hashtype(args.hashtype)
 
         if (not args.proj_path) or (args.proj_path == ''):
             print("no proj_path (project path) specified")
@@ -195,7 +195,7 @@ def check_args(parser, args):
     """ Check and possibly edit command-line arguments. """
 
     add_derived(args)
-    fix_using_sha(args)
+    fix_hashtype(args)
 
     args.cur_dir = os.getcwd()
     if os.path.exists(args.ignore_file):

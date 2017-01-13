@@ -8,7 +8,7 @@
 #                      read_rsa_key, rm_f_dir_contents)
 from dvcz import DvczError
 from dvcz.project import Project
-from xlattice import QQQ
+from xlattice import HashTypes
 from xlattice.u import UDir
 
 # from Crypto.PublicKey import RSA
@@ -28,7 +28,7 @@ class Store(UDir):
     rules for store name are the same as the rules for project names.
 
     If the directory at u_path already exists, its directory
-    structure (dir_struc) and SHA hash type (using_sha) are discovered
+    structure (dir_struc) and SHA hash type (hashtype) are discovered
     and override the attributes supplied.
 
     If u_path does not exist, the directory is created using the attributes
@@ -37,12 +37,12 @@ class Store(UDir):
     """
 
     def __init__(self, name, u_path, dir_struc=UDir.DIR_FLAT,
-                 using_sha=QQQ.USING_SHA2, mode=0o755):
+                 hashtype=HashTypes.SHA2, mode=0o755):
 
         if not Project.valid_proj_name(name):
             raise DvczError("not a valid store name: '%s'" % name)
 
-        super().__init__(u_path, dir_struc, using_sha, mode)
+        super().__init__(u_path, dir_struc, hashtype, mode)
         self._name = name
 
     @property
@@ -57,7 +57,7 @@ class Store(UDir):
         return '::'.join([self.name,
                           self.u_path,
                           UDir.DIR_STRUC_NAMES[self.dir_struc],
-                          self.using_sha.name])
+                          self.hashtype.name])
 
     @classmethod
     def create_from_file(cls, path):
@@ -78,7 +78,7 @@ class Store(UDir):
             u_path = parts[1]
             dir_struc = UDir.name_to_dir_struc(parts[2])
             # 'item access'
-            using_sha = QQQ[parts[3]]
-            return Store(name, u_path, dir_struc, using_sha)
+            hashtype = HashTypes[parts[3]]
+            return Store(name, u_path, dir_struc, hashtype)
         else:
             raise DvczError("Invalid Store descriptor: '%s'" % text)

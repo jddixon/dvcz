@@ -11,7 +11,6 @@ import hashlib
 from buildlist import(check_dirs_in_path, generate_rsa_key,
                       read_rsa_key, rm_f_dir_contents)
 from rnglib import valid_file_name
-from xlattice import QQQ
 from xlattice.u import UDir
 
 from Crypto.PublicKey import RSA
@@ -21,8 +20,8 @@ if sys.version_info < (3, 6):
 
 __all__ = ['__version__', '__version_date__', 'DvczError']
 
-__version__ = '0.1.7'
-__version_date__ = '2017-01-03'
+__version__ = '0.1.8'
+__version_date__ = '2017-01-12'
 
 
 class DvczError(RuntimeError):

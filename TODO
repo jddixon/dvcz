@@ -44,8 +44,8 @@ py/dvcz/TODO
         from any existing uDir
 
 2016j-12-08, edited from -11-28
-    * modify dvc_commit to write to DVCZ_UDIR/in/ID/, where ID represents
-        the 40- or 64-char hex value under $HOME/.dvcz/id
+    * modify dvc_commit to write to DVCZ_UDIR/in/ID/, where ID 
+        represents the 40- or 64-char hex value under $HOME/.dvcz/id
     * rename dvc_commit dvc_commit_old, dvc_bkp2u dvc_commit            * DONE
     * FIX: countem generating incorrect counts
 

@@ -109,6 +109,9 @@ class DvcTestSetup(object):
 
     @property
     def stores_dir(self):
+        """
+        Return a path to the stores/ subdirectory.
+        """
         return self._stores_dir
 
 
@@ -125,6 +128,10 @@ class TestDvcSetup(unittest.TestCase):
         """
 
         cfg = DvcTestSetup()
+
+        # DEBUG
+        print('cfg.run_id = %s' % cfg.run_id)
+        # END
 
         self.assertTrue(valid_file_name(cfg.run_id))
         self.assertTrue(os.path.exists(cfg.run_dir))

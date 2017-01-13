@@ -14,7 +14,7 @@ from buildlist import(check_dirs_in_path, generate_rsa_key,
                       read_rsa_key, rm_f_dir_contents)
 from dvcz import DvczError
 from dvcz.project import Project
-from xlattice import QQQ
+from xlattice import HashTypes
 from xlattice.u import UDir
 
 from Crypto.PublicKey import RSA
@@ -26,7 +26,7 @@ if sys.version_info < (3, 6):
 # == adduser ========================================================
 
 
-def make_committer_id(pubkey, using_sha=QQQ.USING_SHA2):
+def make_committer_id(pubkey, hashtype=HashTypes.SHA2):
     """
     Create a unique committer ID derived from the user's RSA public key
     using this SHA type.
@@ -37,11 +37,11 @@ def make_committer_id(pubkey, using_sha=QQQ.USING_SHA2):
     """
 
     # pylint: disable=redefined-variable-type
-    if using_sha == QQQ.USING_SHA1:
+    if hashtype == HashTypes.SHA1:
         sha = hashlib.sha1()
-    elif using_sha == QQQ.USING_SHA2:
+    elif hashtype == HashTypes.SHA2:
         sha = hashlib.sha256()
-    elif using_sha == QQQ.USING_SHA3:
+    elif hashtype == HashTypes.SHA3:
         sha = hashlib.sha3_256()
     sha.update(pubkey.exportKey())  # PEM format
     sha.update(str(time.time()).encode('utf-8'))
@@ -86,7 +86,7 @@ def do_add_user(options):
         with open(path_to_id, 'r') as file:
             committer_id = file.read()
     else:
-        committer_id = make_committer_id(pubkey, options.using_sha)
+        committer_id = make_committer_id(pubkey, options.hashtype)
         with open(path_to_id, 'w+') as file:
             file.write(committer_id)
     # DEBUG
@@ -105,22 +105,22 @@ def do_add_user(options):
     os.makedirs(options.proj_dvcz_path, 0o755, exist_ok=True)
 
     # u_path --------------------------------------------------------
-    using_sha = options.using_sha
+    hashtype = options.hashtype
     if options.testing and options.u_path:
         if os.path.exists(options.u_path):
             rm_f_dir_contents(options.u_path)
 
     if options.u_path:
-        # if necessary create $U_DIR with requisite DIR_STRUC and using_sha
+        # if necessary create $U_DIR with requisite DIR_STRUC and hashtype
         # u_dir =
-        UDir.discover(options.u_path, using_sha=using_sha)
+        UDir.discover(options.u_path, hashtype=hashtype)
         # can get SHA type from u_dir
 
-        # create $U_DIR/in/$ID/ which is DIR_FLAT with the correct using_sha
+        # create $U_DIR/in/$ID/ which is DIR_FLAT with the correct hashtype
         my_in_path = os.path.join(options.u_path,
                                   os.path.join('in', committer_id))
         # my_in_dir =
-        UDir.discover(my_in_path, using_sha=using_sha)
+        UDir.discover(my_in_path, hashtype=hashtype)
 
 # CLASSES ===========================================================
 
@@ -200,8 +200,16 @@ class User(_User):
 
     def __str__(self):
         # possible ValueErrors here
-        sk_exp = self.sk_priv.exportKey('PEM').decode('utf-8')
-        ck_exp = self.ck_priv.exportKey('PEM').decode('utf-8')
+        sk_exp_ = self.sk_priv.exportKey('PEM')
+        # pylint is confused here
+        # pylint: disable=no-member
+        sk_exp = sk_exp_.decode('utf-8')
+
+        ck_exp_ = self.ck_priv.exportKey('PEM')
+        # pylint is confused here
+        # pylint: disable=no-member
+        ck_exp = ck_exp_.decode('utf-8')
+
         return """{0}
 {1}
 {2}
@@ -290,7 +298,7 @@ class _PubUser(object):
         # The login must always be a valid name, one including no
         # delimiters or other odd characters.
 
-        if not valid_file_name(login):
+        if not Project.valid_proj_name(login):
             raise DvczError("not a valid login: '%s'" % login)
         self._login = login
 
@@ -352,7 +360,7 @@ class Committer(User):
 
     def __init__(self, handle, login=os.environ['LOGNAME'],
                  sk_priv=None, ck_priv=None, key_bits=2048):
-        if not valid_file_name(handle):
+        if not Project.valid_proj_name(handle):
             raise DvczError("'%s' is not a valid handle" % handle)
         super().__init__(login, sk_priv, ck_priv, key_bits)
         self._handle = handle
@@ -438,7 +446,7 @@ class PubCommitter(_PubUser):
 
     def __init__(self, handle, login=os.environ['LOGNAME'],
                  sk_=None, ck_=None):
-        if not valid_file_name(handle):
+        if not Project.valid_proj_name(handle):
             raise DvczError("'%s' is not a valid handle" % handle)
         super().__init__(login, sk_, ck_)
         self._handle = handle
