@@ -9,7 +9,7 @@
 from dvcz import DvczError
 from dvcz.project import Project
 from xlattice import HashTypes
-from xlattice.u import UDir
+from xlattice.u import UDir, DirStruc
 
 # from Crypto.PublicKey import RSA
 
@@ -36,12 +36,13 @@ class Store(UDir):
 
     """
 
-    def __init__(self, name, u_path, dir_struc=UDir.DIR_FLAT,
+    def __init__(self, name, u_path, dir_struc=DirStruc.DIR_FLAT,
                  hashtype=HashTypes.SHA2, mode=0o755):
 
         if not Project.valid_proj_name(name):
             raise DvczError("not a valid store name: '%s'" % name)
-
+        if not isinstance(dir_struc, DirStruc):
+            raise DvczError("not a valid dir_struc: '%s'" % dir_struc)
         super().__init__(u_path, dir_struc, hashtype, mode)
         self._name = name
 
@@ -56,7 +57,8 @@ class Store(UDir):
     def __str__(self):
         return '::'.join([self.name,
                           self.u_path,
-                          UDir.DIR_STRUC_NAMES[self.dir_struc],
+                          # pylint: disable=no-member
+                          self.dir_struc.name,
                           self.hashtype.name])
 
     @classmethod
@@ -76,7 +78,16 @@ class Store(UDir):
         if pcount == 4:
             name = parts[0]
             u_path = parts[1]
-            dir_struc = UDir.name_to_dir_struc(parts[2])
+            ds_name = parts[2]
+            dir_struc = None
+            for _ in DirStruc:
+                if _.name == ds_name:
+                    dir_struc = _
+                    break
+            else:
+                raise DvczError(
+                    "Not the name of a valid dir_struc name: '%s'" % ds_name)
+
             # 'item access'
             hashtype = HashTypes[parts[3]]
             return Store(name, u_path, dir_struc, hashtype)

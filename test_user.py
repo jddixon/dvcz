@@ -26,8 +26,8 @@ class TestUser(unittest.TestCase):
         """
         user = User(login, sk_priv, ck_priv, key_bits)
         self.assertEqual(user.login, login)
-        self.assertEqual(user.sk_priv.size(), user.key_bits)
-        self.assertEqual(user.ck_priv.size(), user.key_bits)
+        self.assertEqual(user.sk_priv.size() + 1, user.key_bits)
+        self.assertEqual(user.ck_priv.size() + 1, user.key_bits)
 
         # round-trip it
         ser = user.__str__()

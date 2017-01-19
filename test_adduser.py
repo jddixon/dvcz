@@ -21,6 +21,7 @@ class TestAddUser(unittest.TestCase):
         pass
 
     def test_namespace(self):
+        """ STUB """
         pass
 
 if __name__ == '__main__':

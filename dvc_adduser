@@ -24,7 +24,7 @@ from optionz import dump_options
 from xlattice import (check_hashtype, parse_hashtype_etc, fix_hashtype)
 from xlattice.proc_lock import ProcLock
 from xlattice.util import timestamp_now
-from xlattice.u import UDir
+from xlattice.u import DirStruc
 
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
@@ -35,6 +35,7 @@ def get_args():
     """ Collect command-line arguments. """
 
     app_name = 'dvc_adduser %s' % __version__
+    struc_names = [_.name for _ in DirStruc]
 
     # parse the command line ----------------------------------------
 
@@ -50,10 +51,10 @@ def get_args():
     parser.add_argument('-k', '--key_bits', default=2048,
                         help='number of RSA key bits')
 
-    parser.add_argument('-s', '--dir_struc_name',
-                        choices=['DIR_FLAT', 'DIR16x16', 'DIR256x256'],
-                        default='DIR_FLAT',
-                        help="new dirStruc (DIR_FLAT, DIR16x16, or DIR256x256")
+    parser.add_argument('-s', '--dir_struc',
+                        choices=struc_names,
+                        default=DirStruc.DIR_FLAT,
+                        help="new dirStruc (%s)" % struc_names)
 
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
@@ -72,7 +73,7 @@ def get_args():
 
     # external factors or derived from the args
     args.app_name = app_name
-    args.dir_struc = UDir.name_to_dir_struc(args.dir_struc_name)
+    args.dir_struc = DirStruc(args.dir_struc)
     fix_hashtype(args)
     args.now = timestamp_now()
     args.proj_dir = os.getcwd()         # we can fiddle with this

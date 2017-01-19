@@ -61,9 +61,8 @@ def do_add_user(options):
     # user_dvcz_path ------------------------------------------------
     # this is $HOME/.dvcz unless testing
 
-    if os.path.exists(options.user_dvcz_path):
-        if options.force:
-            rm_f_dir_contents(options.user_dvcz_path)  # empties the directory
+    if os.path.exists(options.user_dvcz_path) and options.force:
+        rm_f_dir_contents(options.user_dvcz_path)  # empties the directory
 
     if not os.path.exists(options.user_dvcz_path):
         os.makedirs(options.user_dvcz_path, exist_ok=True, mode=0o755)
@@ -95,20 +94,18 @@ def do_add_user(options):
 
     # proj_dvcz_path ------------------------------------------------
     # if testing, remove it; otherwise just make sure that it exists
-    if options.testing:
-        if os.path.exists(options.proj_dvcz_path):
-            # DEBUG
-            print("deleting %s" % options.proj_dvcz_path)
-            # END
-            rm_f_dir_contents(options.proj_dvcz_path)      # empties directory
+    if options.testing and os.path.exists(options.proj_dvcz_path):
+        # DEBUG
+        print("deleting %s" % options.proj_dvcz_path)
+        # END
+        rm_f_dir_contents(options.proj_dvcz_path)      # empties directory
 
     os.makedirs(options.proj_dvcz_path, 0o755, exist_ok=True)
 
     # u_path --------------------------------------------------------
     hashtype = options.hashtype
-    if options.testing and options.u_path:
-        if os.path.exists(options.u_path):
-            rm_f_dir_contents(options.u_path)
+    if options.testing and options.u_path and os.path.exists(options.u_path):
+        rm_f_dir_contents(options.u_path)
 
     if options.u_path:
         # if necessary create $U_DIR with requisite DIR_STRUC and hashtype
@@ -143,10 +140,15 @@ class _User(object):
             raise DvczError("not a valid login: '%s'" % login)
         self._login = login
 
-        # XXX: caller can supply keys with different sizes -- and
-        # differing sizes.
+        # Caller can supply keys with different sizes.
+        if sk_priv:
+            if sk_priv.size() + 1 != key_bits:
+                sk_priv = None
+            elif ck_priv.size() + 1 != key_bits:
+                ck_priv = None
         if sk_priv is None:
             sk_priv = RSA.generate(key_bits)
+            ck_priv = None
         if ck_priv is None:
             ck_priv = RSA.generate(key_bits)
         # To write use
@@ -155,7 +157,7 @@ class _User(object):
         #   with open(path, 'rb') as file: sk_priv = RSA.importKey(file.read())
         self._sk_priv = sk_priv
         self._ck_priv = ck_priv
-        self._key_bits = sk_priv.size()
+        self._key_bits = sk_priv.size() + 1
 
     @property
     def login(self):
@@ -174,7 +176,11 @@ class _User(object):
 
     @property
     def key_bits(self):
-        """ Return the size of the RSA key. """
+        """
+        Return the size of the RSA key.
+
+        Note that PyCrypt's RSA size is 1 less than key_bits.
+        """
         return self._key_bits
 
 
@@ -283,7 +289,10 @@ class User(_User):
                 strings[offset], cls.END_LINE))
 
         # XXX Ignoring possiblity of differences key sizes
-        key_bits = sk_priv.size()
+        key_bits = sk_priv.size() + 1   # XXX TILT: PyCrypto returns eg 1023
+        # DEBUG
+        # print("create_from_string_array: found sk_priv size is %d" % key_bits)
+        # END
 
         return User(login, sk_priv, ck_priv, key_bits)
 

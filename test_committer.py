@@ -24,8 +24,8 @@ class TestCommitter(unittest.TestCase):
         committer = Committer(handle, login, sk_priv, ck_priv, key_bits)
         self.assertEqual(committer.handle, handle)
         self.assertEqual(committer.login, login)
-        self.assertEqual(committer.sk_priv.size(), committer.key_bits)
-        self.assertEqual(committer.ck_priv.size(), committer.key_bits)
+        self.assertEqual(committer.sk_priv.size() + 1, committer.key_bits)
+        self.assertEqual(committer.ck_priv.size() + 1, committer.key_bits)
 
         # round-trip it
         ser = committer.__str__()
