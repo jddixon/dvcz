@@ -8,11 +8,44 @@ import unittest
 from dvcz import DvczError
 from dvcz.store import Store
 from xlattice import HashTypes
-from xlattice.u import UDir
+from xlattice.u import DirStruc
 
 
 class TestStore(unittest.TestCase):
-    """ Test the Store object and related functions. """
+    """
+    Test the Store object and related functions.
+
+    In testing we create under tmp/ a unique runID for each test run.
+    Below this we create a dummy home directory:
+        tmp/RUN_ID/home/LOGIN/
+    and below this an equivalent to what in production would be .dvcz:
+        tmp/RUN_ID/home/LOGIN/dvcz/
+            USER_ID
+            projects/[PROJECT_NAME]*
+            stores/[STORE_NAME]*
+
+    For each store we create a UDir:
+        tmp/RUN_ID/STORE_NAME/
+            in/
+            tmp/
+            --hash--
+            --hash--
+            ...
+
+    And for each project we create a dummy project:
+        tmp/RUN_ID/PROJECT_NAME/
+            .dvczignore
+            .dvcz/
+                builds
+                lastBuildList
+                ...
+                version
+            -- arbitrary directory structure --
+
+    The simplest way to create such a dummy project is to copy a real
+    project directory there.
+
+    """
 
     def setUp(self):
         pass
@@ -30,29 +63,26 @@ class TestStore(unittest.TestCase):
 
         # round-trip it
         ser = store.__str__()
-        # DEBUG
-        # print("SERIALIZATION: %s" % ser)
-        # END
         store_b = Store.create_from_string(ser)
         self.assertEqual(store_b, store)
 
     def test_good_stores(self):
         """ Test various combinations of parameters that should succeed. """
-        for dir_struc in [UDir.DIR_FLAT, UDir.DIR16x16, UDir.DIR256x256]:
+        for dir_struc in DirStruc:
             for hashtype in HashTypes:
                 self.do_test_good('grinch', 'tmp/pqr', dir_struc, hashtype)
 
-    def do_test_bad_name(self, name, u_path,
-                         dir_struc=UDir.DIR_FLAT, hashtype=HashTypes.SHA2):
+    def do_test_bad_name(self, bad_name, u_path,
+                         dir_struc=DirStruc.DIR_FLAT, hashtype=HashTypes.SHA2):
         """ Verify that names that should be rejected are. """
         try:
-            _ = Store(name, u_path, dir_struc, hashtype)
-            self.fail("Store didn't detect bad name '%s'" % name)
+            _ = Store(bad_name, u_path, dir_struc, hashtype)
+            self.fail("Store didn't detect bad name '%s'" % bad_name)
         except DvczError:
             pass
 
     def test_bad_names(self):
-        """ Test some instances of invalid names. """
+        """ Test some instances of invalid names (ie, bad runIDs). """
         self.do_test_bad_name('', 'tmp/frog')
         self.do_test_bad_name(' ', 'tmp/frog')      # space
         self.do_test_bad_name('.', 'tmp/frog')      # dot
@@ -62,12 +92,14 @@ class TestStore(unittest.TestCase):
         self.do_test_bad_name('a b', 'tmp/frog')    # space
         self.do_test_bad_name('a\tb', 'tmp/frog')   # tab
 
-    def do_test_bad_path(self, name, u_path,
-                         dir_struc='', hashtype=HashTypes.SHA2):
+    # ---------------------------------------------------------------
+
+    def do_test_bad_path(self, name, bad_path,
+                         dir_struc=DirStruc.DIR16x16, hashtype=HashTypes.SHA2):
         """ Verify that a bad path to a store is rejected. """
         try:
-            _ = Store(name, u_path, dir_struc, hashtype)
-            self.fail("Store didn't detect bad u_path '%s'" % name)
+            _ = Store(name, bad_path, dir_struc, hashtype)
+            self.fail("Store didn't detect bad path '%s'" % name)
         except PermissionError:
             pass
 

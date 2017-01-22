@@ -1,5 +1,11 @@
 py/dvcz/CHANGES
 
+v0.1.10
+    2017-01-22
+        * improve specs in test_store.py, dvcz/store.py             SLOC 1919
+v0.1.9
+    2017-01-19
+        * get DIR_FLAT etc from DirStruc; minor bug fixes           SLOC 1840
 v0.1.8
     2017-01-12
         * modify to conform to revised xlattice_py API              SLOC 1821
@@ -87,6 +93,8 @@ v0.0.2
 v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
+
+
 
 
 
