@@ -4,10 +4,24 @@
 
 """
 Create a project BuildList and post project files to the committer's
-subdirectory of in/ in DVCZ's content-keyed store.
+subdirectory of in/ in DVCZ's content-keyed store.  That is, this does
+a commit to a local repository, one on the same host.
 
 If we are not in a project directory (one with a .dvcz/ subdirectory) we
-search upward to find one and then make that our working directory.
+search upward to find one and then make that our working directory except
+that $HOME is not an acceptable project directory.
+
+The BuildList created is written to .dvcz/lastBuildList in the project
+directory.  The commit is logged by appending a single line to
+.dvcz/builds.  That line looks like
+    CCYY-MM-D HH:MM:SS vN.N.N HASH
+where the first two fields are the UTC timestamp.  This is followed by the
+three or four-part decimal version number vN.N.N, where N represents
+a decimal number in the range 0..255 inclusive.  The HASH field is the
+hash of the contents of the BuildList, its content key, in hexadecimal
+form.  If SHA1 is used for the hash, the hash consists of 40 characters;
+if SHA2 or SHA3 is used, it is 64 hex characters long.
+
 """
 
 import os
@@ -246,8 +260,6 @@ def show_args(args):
     """
     if args.verbose or args.just_show:
         print("%s %s\n" % (args.app_name, __version_date__))
-
-    if args.verbose or args.just_show:
         print(dump_options(args))
 
     if args.just_show:

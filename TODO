@@ -1,5 +1,11 @@
 py/dvcz/TODO
 
+2017-01-18
+    * PROBLEM: UDir.dir_struc is an int; should be a member of          * FIXED
+        DirStruc (so fix xlattice_py/xlattice/u/__init__.py)            * FIXED
+    * test_user.py has failures because PyCrypto rsa key size() is      * FIXED
+        key_bits - 1                                                    * FIXED
+
 2016-12-28
     * test_adduser.py is just a STUB
     * need dvc_admin utility to manage the system

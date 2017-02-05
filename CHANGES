@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.11
+    2017-02-04
+        * correct size of RSA keys (off by 1); minor bug fixes      SLOC 1925
 v0.1.10
     2017-01-22
         * improve specs in test_store.py, dvcz/store.py             SLOC 1919
@@ -93,6 +96,7 @@ v0.0.2
 v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
+
 
 
 
