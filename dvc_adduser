@@ -109,10 +109,8 @@ def elaborate_args(parser, args):
 
     if args.testing:
         args.proj_dir = os.path.join('tmp', 'proj')
-        args.user_dvcz_path = os.path.join('tmp',
-                                           os.path.join('home', 'dvcz'))
-        args.proj_dvcz_path = os.path.join('tmp',
-                                           os.path.join('proj', 'dvcz'))
+        args.user_dvcz_path = os.path.join('tmp', 'home', 'dvcz')
+        args.proj_dvcz_path = os.path.join('tmp', 'proj', 'dvcz')
     else:
         # for now, assume we are in the right directory
         args.proj_dir = os.getcwd()
@@ -131,8 +129,7 @@ def elaborate_args(parser, args):
               args.proj_dvcz_path)
         sys.exit(1)
 
-    args.key_path = os.path.join(args.user_dvcz_path,
-                                 os.path.join('node', 'skPriv.pem'))
+    args.key_path = os.path.join(args.user_dvcz_path, 'node', 'skPriv.pem')
 
     if args.testing:
         args.u_path = os.path.join('tmp', 'U')
@@ -142,8 +139,6 @@ def show_args(args):
     """ Maybe show options and such. """
     if args.verbose or args.just_show:
         print("%s %s" % (args.app_name, __version_date__))
-
-    if args.verbose or args.just_show:
         print(dump_options(args))
     if args.just_show:
         sys.exit(0)

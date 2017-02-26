@@ -1,5 +1,14 @@
 py/dvcz/CHANGES
 
+v0.1.12
+    2017-02-25
+        * actually add test_committer.py                            SLOC 2206
+v0.1.11
+    2017-02-04
+        * correct size of RSA keys (off by 1); minor bug fixes      SLOC 1925
+v0.1.10
+    2017-01-22
+        * improve specs in test_store.py, dvcz/store.py             SLOC 1919
 v0.1.9
     2017-01-19
         * get DIR_FLAT etc from DirStruc; minor bug fixes           SLOC 1840
@@ -120,3 +129,9 @@ v0.0.1
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> devel

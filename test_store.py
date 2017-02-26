@@ -12,7 +12,40 @@ from xlattice.u import DirStruc
 
 
 class TestStore(unittest.TestCase):
-    """ Test the Store object and related functions. """
+    """
+    Test the Store object and related functions.
+
+    In testing we create under tmp/ a unique runID for each test run.
+    Below this we create a dummy home directory:
+        tmp/RUN_ID/home/LOGIN/
+    and below this an equivalent to what in production would be .dvcz:
+        tmp/RUN_ID/home/LOGIN/dvcz/
+            USER_ID
+            projects/[PROJECT_NAME]*
+            stores/[STORE_NAME]*
+
+    For each store we create a UDir:
+        tmp/RUN_ID/STORE_NAME/
+            in/
+            tmp/
+            --hash--
+            --hash--
+            ...
+
+    And for each project we create a dummy project:
+        tmp/RUN_ID/PROJECT_NAME/
+            .dvczignore
+            .dvcz/
+                builds
+                lastBuildList
+                ...
+                version
+            -- arbitrary directory structure --
+
+    The simplest way to create such a dummy project is to copy a real
+    project directory there.
+
+    """
 
     def setUp(self):
         pass
@@ -49,7 +82,7 @@ class TestStore(unittest.TestCase):
             pass
 
     def test_bad_names(self):
-        """ Test some instances of invalid names. """
+        """ Test some instances of invalid names (ie, bad runIDs). """
         self.do_test_bad_name('', 'tmp/frog')
         self.do_test_bad_name(' ', 'tmp/frog')      # space
         self.do_test_bad_name('.', 'tmp/frog')      # dot

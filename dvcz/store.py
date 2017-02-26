@@ -1,6 +1,50 @@
 # dvcz/store.py
 
-""" Our distributed version control system. """
+"""
+Content-keyed store for our distributed version control system.
+
+In production serialized Store descriptors for a given user are collected under
+    $HOME/.dvcz/stores/
+That is, stores/ is a collection of files, where each file is a
+serialized Store.  The name of the file is the name of the Store.
+Such names are guaranteed to be unique within stores/.
+
+The store itself is not serialized.  What is serialized is the Store,
+whcih contains metadata about the store.
+/
+Each store is a UDir, a content-keyed store, and so looks like
+
+    PATH_TO_STORE/
+        in/
+        tmp/
+        --hash--
+        --hash--
+        ...
+
+Depending on the directory structure and hash type, `--hash--` will
+represent either a 4-bit/single hex digit directory name, an
+8-bit/two hex digit directory name, or a 160-bit/40 hext digit
+content key or a 256-bit/64 hex digit file name, where the file
+name is the hash of the file contents.
+
+`in/` and `tmp/` are scratch (temporary) UDirs used by the system.
+Each user has a unique 256-bit/32-byte/64 hex digit userID.  A
+commit copies user files into the store.  Files are initially
+copied to a subdirectory of `in/` which is itself a UDir with a
+DIR_FLAT directory structure.  So the commit operation creates
+
+    in/
+        USER_ID/        # a UDir, DIR_FLAT
+            --hash--
+            --hash--
+            --hash--
+            ...
+            --hash--
+
+If N files are being committed, N new entries will appear below
+`in/USER_ID` when the operation is complete.`:
+
+"""
 
 #import hashlib
 
@@ -21,7 +65,7 @@ __all__ = ['Store']
 
 class Store(UDir):
     """
-    Specifies a content-keyed store.
+    Link a name to a content-keyed store.
 
     The name should be unique within the context and must be a valid store
     name.  The name need have nothing to do with u_path.  Currently the
@@ -29,7 +73,7 @@ class Store(UDir):
 
     If the directory at u_path already exists, its directory
     structure (dir_struc) and SHA hash type (hashtype) are discovered
-    and override the attributes supplied.
+    and override any attributes supplied.
 
     If u_path does not exist, the directory is created using the attributes
     passed.
@@ -49,8 +93,10 @@ class Store(UDir):
     @property
     def name(self):
         """
-        Return the name assigned to the store.  This is a valid store
-        name, a single word incorporating no delimiters.
+        Return the name assigned to the store.
+
+        This is a convenience.  It is a valid store name, a single word
+        incorporating no delimiters.
         """
         return self._name
 

@@ -114,8 +114,7 @@ def do_add_user(options):
         # can get SHA type from u_dir
 
         # create $U_DIR/in/$ID/ which is DIR_FLAT with the correct hashtype
-        my_in_path = os.path.join(options.u_path,
-                                  os.path.join('in', committer_id))
+        my_in_path = os.path.join(options.u_path, 'in', committer_id)
         # my_in_dir =
         UDir.discover(my_in_path, hashtype=hashtype)
 
