@@ -23,7 +23,7 @@ a group of loosely coordinated servers.</p>
 
 <p>dvcz is one of a number of projects using
 <a href="https://www.github.com">Github</a>
-for storage.  Each of these has a <strong><code>.dvcz</code></strong> subdirectory and a number of
+for backup.  Each of these has a <strong><code>.dvcz</code></strong> subdirectory and a number of
 scripts in the project's root directory.</p>
 
 <h3>
@@ -36,8 +36,10 @@ they include:</p>
 <li>DEV_BASE, the path to the directory containing project directories</li>
 <li>DVCZ_DIR, which might be for example <code>"/var/app/sharedev"</code>
 </li>
-<li><p>DVCZ_UDIR, where files are stored by content key; eg <code>"/var/app/sharedev/U"</code></p></li>
-<li><p>DVCZ_USER_DIR, path to this user's .dvcz/, so $HOME/.dvcz</p></li>
+<li>DVCZ_UDIR, where files are stored by content key; eg <code>"/var/app/sharedev/U"</code>
+</li>
+<li>DVCZ_USER_DIR, path to this user's .dvcz/, so <code>$HOME/.dvcz</code>
+</li>
 <li>DVCZ_AUTHOR, the double-quoted name of the author, such as <code>"John Smith"</code>
 </li>
 <li>DVCZ_AUTHOR_EMAIL, such as <code>"john.smith@example.com"</code>
@@ -47,7 +49,7 @@ they include:</p>
 </ul>
 
 <p>On a Linux system these are conventionally set in <code>$HOME/.bashrc</code>, a bash
-script, with a line like</p>
+script, with lines like</p>
 
 <pre><code>export DEV_BASE="$HOME/dev"
 </code></pre>
@@ -115,7 +117,34 @@ committed).  The content key is 40 hexadecimal digits if using <code>SHA1</code>
 and 64 hex digits if using <code>SHA2</code>.</p>
 
 <h3>
-<a id="user-content-bkp2u-script" class="anchor" href="#bkp2u-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>bkp2U Script</h3>
+<a id="user-content-bash-scripts" class="anchor" href="#bash-scripts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bash Scripts</h3>
+
+<p>Currently each dvcz-assisted root project directory contains</p>
+
+<ul>
+<li>
+<code>bkp2U</code>, which backs the project up</li>
+<li>
+<code>countem</code>, which generates a rough number of lines of source code</li>
+<li>
+<code>styleit</code>, which styles code files appropriately for the language</li>
+<li>
+<code>test.all</code>, which runs language-specific tests</li>
+</ul>
+
+<p>Python projects also have</p>
+
+<ul>
+<li>
+<code>checkCoverage</code>, which checks the degree to which tests cover the Python library</li>
+<li>
+<code>doPyLint</code>, which runs the utility <code>pylint</code> on Python language project files</li>
+<li>
+<code>installit</code>, which does a Python build, creating a tarball</li>
+</ul>
+
+<h4>
+<a id="user-content-bkp2u-script" class="anchor" href="#bkp2u-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>bkp2U Script</h4>
 
 <p>This is a bash script in the project's root directory.  This is
 <code>$DEV_BASE/$PROJECT</code> and so might resemble <code>/home/jdd/dev/dvcz</code>.</p>
@@ -137,10 +166,13 @@ file is something like <code>/home/jdd/.dvcz/node/skPriv.pem</code>.</p>
 <p>The signed build list is then (a) stored in <code>$DVCZ_UDIR</code> and (b) written
 to <code>.dvcz/lastBuildList</code>.</p>
 
-<p><code>bkp2U</code> will be replaced by <code>dvc_commit</code>.</p>
+<p><code>bkp2U</code> will eventually be replaced by <code>dvc_commit</code>.</p>
 
 <h3>
-<a id="user-content-dvc_adduser" class="anchor" href="#dvc_adduser" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dvc_adduser</h3>
+<a id="user-content-utilities" class="anchor" href="#utilities" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Utilities</h3>
+
+<h4>
+<a id="user-content-dvc_adduser" class="anchor" href="#dvc_adduser" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dvc_adduser</h4>
 
 <p>This utility sets up a committer's <code>.dvcz</code> directory if necessary and then
 adds a subdirectory to <code>uDir</code> for used by the committer in submitting files
@@ -180,8 +212,8 @@ optional arguments:
   -v, --verbose         be chatty
 </code></pre>
 
-<h3>
-<a id="user-content-dvc_commit" class="anchor" href="#dvc_commit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dvc_commit</h3>
+<h4>
+<a id="user-content-dvc_commit" class="anchor" href="#dvc_commit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>dvc_commit</h4>
 
 <pre><code>usage: dvc_commit [-h] [-j] [-M MATCH_PAT] [-p PROJ_PATH] [-T] [-V] [-1] [-2]
                   [-3] [-u U_PATH] [-v] [-X EXCLUSIONS]
