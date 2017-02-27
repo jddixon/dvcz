@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.13
+    2017-02-27
+        * update and improve docs                                   SLOC 2208
 v0.1.12
     2017-02-25
         * actually add test_committer.py                            SLOC 2206
@@ -129,9 +132,7 @@ v0.0.1
 
 
 
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> devel
+
