@@ -1,0 +1,147 @@
+#!/usr/bin/python3
+#
+# ~/dev/py/dvcz/dvc_check_builds
+
+"""
+Verify that BuildLists listed in .dvcz/builds have the correct digital
+signatures and that files listed are present in the content-keyed store
+at u_path.
+
+We assume that all BuildLists use the same hash type (SHA1, SHA2, etc)
+as the content-keyed store.
+"""
+
+from argparse import ArgumentParser
+import os
+import sys
+
+from dvcz import(__version__, __version_date__)
+from dvcz.builds import check_builds
+
+from optionz import dump_options
+from xlattice.proc_lock import ProcLock
+from xlattice.u import DirStruc
+from xlattice.util import timestamp_now
+
+if sys.version_info < (3, 6):
+    # pylint: disable=unused-import
+    import sha3         # monkey-patches hashlib
+
+
+def get_args():
+    """ Collect command-line arguments. """
+
+    app_name = 'dvc_check_builds v%s' % __version__
+
+    # parse the command line ----------------------------------------
+
+    desc = 'Check BuildLists in .dvcz/builds.'
+
+    parser = ArgumentParser(description=desc)
+
+    parser.add_argument('-j', '--just_show', action='store_true',
+                        help='show options and exit')
+
+    parser.add_argument('-T', '--testing', action='store_true',
+                        help='this is a test run')
+
+    parser.add_argument('-V', '--show_version', action='store_true',
+                        help='display version number and exit')
+
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='be chatty')
+
+    args = parser.parse_args()
+
+    if args.show_version:
+        print(app_name)
+        sys.exit(0)
+
+    # external factors or derived from the args
+    args.app_name = app_name
+    args.now = timestamp_now()
+    args.proj_dir = os.getcwd()         # we can fiddle with this
+
+    return parser, args
+
+
+def elaborate_args(parser, args):
+    """
+    Check and possibly edit command-line arguments.
+
+    We want to leave here having set the following additional options:
+    * home                  # $HOME or tmp/home/
+    * proj_parent           # ../               # WHERE WE GET FILES
+    # proj_dir              # ./ or tmp/proj    # WHERE .dvcz IS
+    * user_dvcz_path        # $HOME/.dvcz or tmp/home/
+    * proj_dvcz_path        # $PROJ_DIR/.dvcz
+    * key_path              # $HOME/node/shaPriv.pem
+    * u_dir                 # if testing, tmp/U
+
+    """
+
+    _ = parser
+
+    if args.testing:
+        args.home = os.path.join('tmp', 'home')
+    else:
+        args.home = os.environ['HOME']
+
+    print("DEBUG: home is %s" % args.home)
+
+    if args.testing:
+        args.proj_dir = os.path.join('tmp', 'proj')
+        args.user_dvcz_path = os.path.join('tmp', 'home', 'dvcz')
+        args.proj_dvcz_path = os.path.join('tmp', 'proj', 'dvcz')
+    else:
+        # for now, assume we are in the right directory
+        args.proj_dir = os.getcwd()
+        args.user_dvcz_path = os.path.join(os.environ['HOME'], '.dvcz')
+        args.proj_dvcz_path = os.path.join(args.proj_dir, 'dvcz')
+
+    if os.path.exists(args.user_dvcz_path) and \
+            not os.path.isdir(args.user_dvcz_path):
+        print("home dvcz directory '%s' isn't a directory" %
+              args.user_dvcz_path)
+        sys.exit(1)
+
+    if os.path.exists(args.proj_dvcz_path) and\
+            not os.path.isdir(args.proj_dvcz_path):
+        print("proj dvcz directory '%s' isn't a directory" %
+              args.proj_dvcz_path)
+        sys.exit(1)
+
+    args.key_path = os.path.join(args.user_dvcz_path, 'node', 'skPriv.pem')
+
+    if args.testing:
+        args.u_path = os.path.join('tmp', 'U')
+
+
+def show_args(args):
+    """ Maybe show options and such. """
+    if args.verbose or args.just_show:
+        print("%s %s" % (args.app_name, __version_date__))
+        print(dump_options(args))
+    if args.just_show:
+        sys.exit(0)
+
+
+def main():
+    """
+    Collect command line options and execute the command if required.
+    """
+
+    # collect and validate command line arguments
+    parser, args = get_args()
+    elaborate_args(parser, args)
+    show_args(args)
+
+    what_we_are_locking = os.path.join(os.environ['HOME'], '.dvcz')
+    try:
+        mgr = ProcLock(what_we_are_locking)
+        do_add_user(args)
+    finally:
+        mgr.unlock()
+
+if __name__ == '__main__':
+    main()

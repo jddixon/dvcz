@@ -3,8 +3,9 @@
 if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/dvcz
- 
+  
   ./test_adduser.py
+  ./test_committer.py
   ./test_dvc_setup.py
   ./test_get_proj_info.py
   ./test_project.py

@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.14
+    2017-03-09
+        * skeletal dvcz_check_builds; update web pages              SLOC 2331
 v0.1.13
     2017-02-27
         * update and improve docs                                   SLOC 2208
@@ -102,6 +105,7 @@ v0.0.2
 v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
+
 
 
 
