@@ -45,6 +45,9 @@ def get_args():
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
 
+    parser.add_argument('-u', '--u_path', default='/var/app/sharedev/U',
+                        help='path to content-keyed store')
+
     parser.add_argument('-V', '--show_version', action='store_true',
                         help='display version number and exit')
 
@@ -60,7 +63,7 @@ def get_args():
     # external factors or derived from the args
     args.app_name = app_name
     args.now = timestamp_now()
-    args.proj_dir = os.getcwd()         # we can fiddle with this
+    args.proj_path = os.getcwd()         # we can fiddle with this
 
     return parser, args
 
@@ -72,11 +75,11 @@ def elaborate_args(parser, args):
     We want to leave here having set the following additional options:
     * home                  # $HOME or tmp/home/
     * proj_parent           # ../               # WHERE WE GET FILES
-    # proj_dir              # ./ or tmp/proj    # WHERE .dvcz IS
+    # proj_path              # ./ or tmp/proj    # WHERE .dvcz IS
     * user_dvcz_path        # $HOME/.dvcz or tmp/home/
     * proj_dvcz_path        # $PROJ_DIR/.dvcz
     * key_path              # $HOME/node/shaPriv.pem
-    * u_dir                 # if testing, tmp/U
+    * u_path                # if testing, tmp/U
 
     """
 
@@ -87,17 +90,15 @@ def elaborate_args(parser, args):
     else:
         args.home = os.environ['HOME']
 
-    print("DEBUG: home is %s" % args.home)
-
     if args.testing:
-        args.proj_dir = os.path.join('tmp', 'proj')
+        args.proj_path = os.path.join('tmp', 'proj')
         args.user_dvcz_path = os.path.join('tmp', 'home', 'dvcz')
-        args.proj_dvcz_path = os.path.join('tmp', 'proj', 'dvcz')
+        args.proj_dvcz_path = os.path.join('tmp', 'proj', '.dvcz')
     else:
         # for now, assume we are in the right directory
-        args.proj_dir = os.getcwd()
+        args.proj_path = os.getcwd()
         args.user_dvcz_path = os.path.join(os.environ['HOME'], '.dvcz')
-        args.proj_dvcz_path = os.path.join(args.proj_dir, 'dvcz')
+        args.proj_dvcz_path = os.path.join(args.proj_path, '.dvcz')
 
     if os.path.exists(args.user_dvcz_path) and \
             not os.path.isdir(args.user_dvcz_path):
@@ -139,7 +140,7 @@ def main():
     what_we_are_locking = os.path.join(os.environ['HOME'], '.dvcz')
     try:
         mgr = ProcLock(what_we_are_locking)
-        do_add_user(args)
+        check_builds(args.proj_path, args.u_path, args.verbose)
     finally:
         mgr.unlock()
 
