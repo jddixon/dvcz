@@ -10,7 +10,7 @@ a group of loosely coordinated servers.
 
 dvcz is one of a number of projects using
 [Github](https://www.github.com)
-for storage.  Each of these has a **`.dvcz`** subdirectory and a number of
+for backup.  Each of these has a **`.dvcz`** subdirectory and a number of
 scripts in the project's root directory.
 
 ### Environmental Variables
@@ -21,14 +21,13 @@ they include:
 * DEV_BASE, the path to the directory containing project directories
 * DVCZ_DIR, which might be for example `"/var/app/sharedev"`
 * DVCZ_UDIR, where files are stored by content key; eg `"/var/app/sharedev/U"`
-
-* DVCZ_USER_DIR, path to this user's .dvcz/, so $HOME/.dvcz
+* DVCZ_USER_DIR, path to this user's .dvcz/, so `$HOME/.dvcz`
 * DVCZ_AUTHOR, the double-quoted name of the author, such as `"John Smith"`
 * DVCZ_AUTHOR_EMAIL, such as `"john.smith@example.com"`
 * DVCZ_PATH_TO_KEYS, conventionally `"$DVCZ_USER_DIR/node"`
 
 On a Linux system these are conventionally set in `$HOME/.bashrc`, a bash
-script, with a line like
+script, with lines like
 
     export DEV_BASE="$HOME/dev"
 
@@ -77,7 +76,22 @@ then the content key (the SHA hash of the contents of the BuildLists
 committed).  The content key is 40 hexadecimal digits if using `SHA1`
 and 64 hex digits if using `SHA2`.
 
-### bkp2U Script
+### Bash Scripts
+
+Currently each dvcz-assisted root project directory contains
+
+* `bkp2U`, which backs the project up
+* `countem`, which generates a rough number of lines of source code
+* `styleit`, which styles code files appropriately for the language
+* `test.all`, which runs language-specific tests
+
+Python projects also have
+
+* `checkCoverage`, which checks the degree to which tests cover the Python library
+* `doPyLint`, which runs the utility `pylint` on Python language project files
+* `installit`, which does a Python build, creating a tarball
+
+#### bkp2U Script
 
 This is a bash script in the project's root directory.  This is
 `$DEV_BASE/$PROJECT` and so might resemble `/home/jdd/dev/dvcz`.
@@ -99,9 +113,11 @@ file is something like `/home/jdd/.dvcz/node/skPriv.pem`.
 The signed build list is then (a) stored in `$DVCZ_UDIR` and (b) written
 to `.dvcz/lastBuildList`.
 
-`bkp2U` will be replaced by `dvc_commit`.
+`bkp2U` will eventually be replaced by `dvc_commit`.
 
-### dvc_adduser
+### Utilities
+
+#### dvc_adduser
 
 This utility sets up a committer's `.dvcz` directory if necessary and then
 adds a subdirectory to `uDir` for used by the committer in submitting files
@@ -136,7 +152,7 @@ If either of these is missing the utility will create it.
                             path to uDir
       -v, --verbose         be chatty
 
-### dvc_commit
+#### dvc_commit
 
     usage: dvc_commit [-h] [-j] [-M MATCH_PAT] [-p PROJ_PATH] [-T] [-V] [-1] [-2]
                       [-3] [-u U_PATH] [-v] [-X EXCLUSIONS]
