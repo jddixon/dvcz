@@ -1,5 +1,14 @@
 py/dvcz/TODO
 
+2017-03-17
+    * dvc_check_builds:
+        - value of proj_parent arg?
+        - value of user_dvcz_path?
+        - value of key_path?
+        - value of args.now, timestamp_now() ?
+
+        - should check dig sig on BuildLists
+
 2017-01-18
     * PROBLEM: UDir.dir_struc is an int; should be a member of          * FIXED
         DirStruc (so fix xlattice_py/xlattice/u/__init__.py)            * FIXED
