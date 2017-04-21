@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.16
+    2017-04-21
+        * drop dist/* from repo plus minor edits                    SLOC 2373
 v0.1.15
     2017-03-16
         * dvc_check_builds works                                    SLOC 2372
@@ -144,3 +147,7 @@ v0.0.1
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> devel

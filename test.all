@@ -11,7 +11,6 @@ then
   ./test_project.py
   ./test_store.py
   ./test_user.py
-  ./test_dummy.sh
   
 else
   echo "DEV_BASE is not defined"
