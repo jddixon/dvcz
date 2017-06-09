@@ -5,7 +5,7 @@
 import re
 from distutils.core import setup
 __version__ = re.search(r"__version__\s*=\s*'(.*)'",
-                        open('dvcz/__init__.py').read()).group(1)
+                        open('src/dvcz/__init__.py').read()).group(1)
 
 # see http://docs.python.org/distutils/setupscript.html
 
@@ -14,9 +14,9 @@ setup(name='dvcz',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       py_modules=[],
-      packages=['dvcz'],
+      packages=['src/dvcz'],
       # following could be in scripts/ subdir
-      scripts=['dvc_adduser', 'dvc_commit'],
+      scripts=['src/dvc_adduser', 'src/dvc_commit', 'src/dvc_check_builds'],
       description='a simple distributed version control system',
       url='https://jddixon.github.io/dvcz',
       classifiers=[

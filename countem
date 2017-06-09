@@ -6,7 +6,7 @@ then
   
   rm -rf build/* tmp/* 
   
-  pySloc -L py dvc_adduser dvc_commit  -X cover -X htmlcov -X dist -v $@
+  pySloc -L py src/dvc_adduser src/dvc_commit src/dvc_check_builds  -X cover -X htmlcov -X dist -v $@
 else
   echo "DEV_BASE is not defined"
 fi

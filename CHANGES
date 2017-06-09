@@ -1,5 +1,17 @@
 py/dvcz/CHANGES
 
+v0.1.16
+    2017-06-09
+        * restructure for pylint                                    SLOC 2369
+v0.1.15
+    2017-03-16
+        * dvc_check_builds works                                    SLOC 2372
+v0.1.14
+    2017-03-09
+        * skeletal dvcz_check_builds; update web pages              SLOC 2331
+v0.1.13
+    2017-02-27
+        * update and improve docs                                   SLOC 2208
 v0.1.12
     2017-02-25
         * actually add test_committer.py                            SLOC 2206
@@ -99,6 +111,10 @@ v0.0.2
 v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
+
+
+
+
 
 
 

@@ -14,7 +14,7 @@ that $HOME is not an acceptable project directory.
 The BuildList created is written to .dvcz/lastBuildList in the project
 directory.  The commit is logged by appending a single line to
 .dvcz/builds.  That line looks like
-    CCYY-MM-D HH:MM:SS vN.N.N HASH
+    CCYY-MM-DD HH:MM:SS vN.N.N HASH
 where the first two fields are the UTC timestamp.  This is followed by the
 three or four-part decimal version number vN.N.N, where N represents
 a decimal number in the range 0..255 inclusive.  The HASH field is the
@@ -287,6 +287,7 @@ def main():
 
     finally:
         os.chdir(basedir)
+
 
 if __name__ == '__main__':
     main()
