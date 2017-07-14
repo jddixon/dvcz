@@ -1,3 +1,8 @@
-# should add test*.py
+#!/usr/bin/env bash
 
-pylint setup.py src/dvc_commit src/dvc_adduser src/dvcz tests/test*.py
+if [ ! -z "${DEV_BASE// }" ]
+then
+  pylint setup.py src/* tests/*
+else
+  echo "DEV_BASE is not defined"
+fi

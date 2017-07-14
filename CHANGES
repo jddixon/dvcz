@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.17
+    2017-07-14
+        * rewrite setup.py, MANIFEST.in; edit other config fieles  SLOC 2347
 v0.1.16
     2017-06-09
         * restructure for pylint                                    SLOC 2369
@@ -111,6 +114,7 @@ v0.0.2
 v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
+
 
 
 

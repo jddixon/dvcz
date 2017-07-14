@@ -67,5 +67,6 @@ class TestProject(unittest.TestCase):
         """ Test a range of invalid project paths. """
         self.do_test_bad_path('frog', '/frog')      # no permission to write
 
+
 if __name__ == '__main__':
     unittest.main()

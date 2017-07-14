@@ -24,5 +24,6 @@ class TestAddUser(unittest.TestCase):
         """ STUB """
         pass
 
+
 if __name__ == '__main__':
     unittest.main()

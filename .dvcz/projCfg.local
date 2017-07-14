@@ -9,4 +9,5 @@ dir:clr:tmp
 
 # globals
 py:global:dvc_adduser
+py:global:dvc_check_builds
 py:global:dvc_commit

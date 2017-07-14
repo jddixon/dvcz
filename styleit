@@ -4,9 +4,8 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/dvcz
   
-  autopep8 -air src/dvcz 
-  autopep8 -ai src/dvc_adduser src/dvc_commit src/dvc_check_builds *.py
-  echo "not styling abc/ subdir"
+  autopep8 -air src tests
+  autopep8 -ai  setup.py
   
 else
   echo "DEV_BASE is not defined"

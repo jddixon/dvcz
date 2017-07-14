@@ -111,5 +111,6 @@ class TestGetProjInfo(unittest.TestCase):
         finally:
             os.chdir(basedir)
 
+
 if __name__ == '__main__':
     unittest.main()
