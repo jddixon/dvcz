@@ -1,4 +1,4 @@
------BEGIN RSA PUBLIC KEY-----
+-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl9xsFHvzEsi3G8q8dUOM
 3v4WLJefw8Kv0hHBGFPFQF1WRPldwPGNdVKql8zcO52KO4hzFNHNSBCGgH8cbtAk
 mLWB78ackABFJzhY9TEbPkLnoMXJHAXQpZK/JAudSixuAZIXYtIyBWfgLaHjurAT
@@ -6,40 +6,31 @@ mLWB78ackABFJzhY9TEbPkLnoMXJHAXQpZK/JAudSixuAZIXYtIyBWfgLaHjurAT
 Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
------END RSA PUBLIC KEY-----
-dvcz v0.1.16
-2017-04-21 19:14:08
+-----END PUBLIC KEY-----
+dvcz v0.1.17
+2017-07-14 23:27:11
 # BEGIN CONTENT #
 dvcz
  .dvcz
-  builds 6d035693b08803a2c89c20e8af28da6da4676291
+  builds 0a29406a10df0e2dbf7884895c8a00ed788edd60
   copyright 9ba73bf798bce641eb5082b855c6788fe7ea5833
-  lastBuildList 49805b3d56d0f3d3bc5df2781829fe5a6bf89333
+  lastBuildList 7e78f7077a48288f9297f5ef7ec4044f56b3b15c
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  projCfg 87688d8fd1ac6573c994110f9af5661217005499
-  projCfg.local 91e385caf68008034a6b0070e3002240c9feefbf
-  version b44570827bf0b647415571d3db0f3a1060ec5aaa
+  projCfg f88bac7b49f6faf0c4d4b0fe39b412b9fa68e349
+  projCfg.local 027524ed523508d257a7a6ab66147327ac5cd675
+  version 5eec3110cf6ae3403347698f25e306fee909b76f
  .gitignore 5185a3cb0539828e50edfc25d60c80ae291197fa
- CHANGES af7dc8aca9ef186f60ea21e5e3880baf5472448d
- LICENSE-MIT.md e82e359e6de3e83b487ab0eda0679762159a3d9d
- MANIFEST.in 411b2ccb09758078af3c3ffed4fab5e1214cea5c
+ CHANGES 09b609dc041459e224f77d1e086bdce7f0ec349e
+ LICENSE-MIT.md 1aadfd51d28fc4b9e3f5929212794dd121b13e26
+ MANIFEST.in ab66c4ba9f7b7352eb828e32839a387bf990125b
  README.md 9779f6700edcd73f39b69277503c06d2da26cd9c
  TODO e62a10bb8cae220fbf1ba365ac5d461f90b88739
  abc
   def
  bkp2U 1c830549f3c57c590cb52f5a69918b657287237c
- checkCoverage 7c5dd3c55453ef550cb93323736307234efb2dce
- countem 89f614cd613db1e58bed14ba5c39a4da3cdd26db
- doPyLint bd8b80a2d08cab4a105a3243b5b6a2683c861710
- dvc_adduser aa22d26736279ba04bf5af05be75d7a0665c6c98
- dvc_check_builds 89f84801612a4d22786dcdfbe3401de54f1d11f1
- dvc_commit f5a23af3fea80b7ce2159c5dcc4f1a93b0974d07
- dvcz
-  __init__.py fe15b0c2471a4790344e3b703ae3d67d45b2c218
-  builds.py 62fcfdb15167c9c9b2b43fff819676670b08bb52
-  project.py a2a8455a696d7c7278b33a034c0c09e4150e52a3
-  store.py 376145f4ce9d0acb6f14251c33d596807f708df3
-  user.py dab7fc75e7ff85b5d9a941f65a2bbd0051b1f525
+ checkCoverage 77af0269ce15a2599ba8d374e04cd493e8308c58
+ countem 5b5302651b8ad69aab83adba51a870370b70869a
+ doPyLint 31321ad99eb3b9ac0928a68c29a8b5b88c9472fb
  ghpDoc
   css
    LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
@@ -58,16 +49,28 @@ dvcz
   test_directory_structure.md 0fb9f2f256d20f0f9357f908a130e6be65fb579d
  installit 5108adbba14955e85087a1bd33fd129e55c9ba21
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- setup.py 135df72a2aee4f6a558edac186d4ead3cef720d2
- styleit 8316570eb1eaa6d397cf9652c8b0d8e0fe40af8d
- test.all c9de807822c8e5bf7ddd9e41c61766950d4859aa
- test_adduser.py 46962cee632c7ad7607ac503367691686bf3068d
- test_committer.py 4df46448ccda8131803e15c78b7d297443c2d1dc
- test_dvc_setup.py 8ab3b5569cb71568ee65160c0e91fde345f6812a
- test_get_proj_info.py 35434b6d49d9ff055e7ff97d5b4e62f66fe3e51b
- test_project.py fc8bbf767f0e24e4197c118f7db6f4c64db0308c
- test_store.py 33ddd5fcb8d1261e19eae0d344c30b4ba654498d
- test_user.py 68f6b357b6fe16db031d3e9aa95f3d954731f988
+ setup.py 8ff64b984482fc2d697de4bfe1a3de297ca5aea3
+ src
+  dvc_adduser 97428acb7eb3f4eb54a62742efbdf3a5e0e91371
+  dvc_check_builds 6b8071c6808bdacb7cbb4398bf8684874f673744
+  dvc_commit 387c1748ffc417c7ec970fd1169576123c91e406
+  dvcz
+   __init__.py df075850175746d0caf54241dbf9097cd2e0028e
+   builds.py 62fcfdb15167c9c9b2b43fff819676670b08bb52
+   project.py a2a8455a696d7c7278b33a034c0c09e4150e52a3
+   store.py 376145f4ce9d0acb6f14251c33d596807f708df3
+   user.py dab7fc75e7ff85b5d9a941f65a2bbd0051b1f525
+ styleit 02114eff515f7e6f769b8a6200fd8ed58b7e98cd
+ test.all cd7ccfde43962ca802d91177f0e366ce4cb976d9
+ test_dummy.sh cc29ade0553bea239d730169a2fb07a645fbc273
+ tests
+  test_adduser.py 16ed3f8b73060922bc5a3dcd07aed4776a89ac2c
+  test_committer.py 4df46448ccda8131803e15c78b7d297443c2d1dc
+  test_dvc_setup.py 52fc1986e7ea046d7984746354594b991a21350d
+  test_get_proj_info.py 91e492351dc62c1d207e0d61b6787a5db3e465c3
+  test_project.py 9792998777db716f9c332c9c802d81e2d0232e7d
+  test_store.py 643ebe337ffc6f8206dbd978a11041dcc7c3c8e7
+  test_user.py 68f6b357b6fe16db031d3e9aa95f3d954731f988
 # END CONTENT #
 
 YWHNMmjLNvo0lW/z6cf+3c8fX98rUDnykP9GpWNOB4uBD6AEzqKhu639TOoG3CJzXKiDt5wEcxe57iHgjsi6ZZqQLJnPDclcgsSMGKWRISvy6k+aGgcV1trWwxxXYcOMZi+E+tjnHu0RLyb+WLg41VhoZQV1iNIDYoe0sOWJHaYa9DdvVpx1cb6XqTaxQOxZbvP7EWPFXqPHVC8Sk4AHuFyLcta+gczmad0MJ8c52aVEvD1r0y9XtKf3nz3RO8/b7ReliyFjb52hd3HMa0rZZ9zR5blk6sw08E17YKsOD0u2aZ40mjcN9SsMLnfrJwjjJaPa59Cs7eBlCreqn41hjA==

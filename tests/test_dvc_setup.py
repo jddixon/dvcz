@@ -156,5 +156,6 @@ class TestDvcSetup(unittest.TestCase):
         self.assertTrue(os.path.exists(cfg.projects_dir))
         self.assertTrue(os.path.exists(cfg.stores_dir))
 
+
 if __name__ == '__main__':
     unittest.main()
