@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>test_directory_structure</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
+  <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="css/ghp.css" />
+</head>
+<body>
+<div class="content">
+<h1>Dvcz Test Directory Structure</h1>
+<h2>Directory Overview</h2>
+<p>The class <code>DvcTestSetup</code> is used to create a test directory under <code>tmp/</code>
+in the current directory.  This looks like:</p>
+<pre><code>tmp/
+  RUN_ID/               # unique 8-character file name
+    home/
+      LOGIN/
+        dvcz/
+          committers/
+            HANDLE      # serialized Committer object
+            ...         #   containing secret keys, etc
+          stores/
+            STORE_NAME  # serialized Store object
+            ...         * more such
+    projects/
+      PROJECT_NAME/     # per-project subdirectory
+        dvcz/
+          builds        # list of BuildLists, timestamp plus hash
+          lastBuildList
+      ...               # additional per-project subdirs
+    stores/
+      STORE_NAME/
+        SHA_SIG         # hex value of SHAx_HEX_NONE, where x is 1, 2, or 3
+        in/
+          USER_ID
+            SHA_SIG
+            in/
+            tmp/
+            CONTENT_KEY # hash of data file
+            ...         # more hashes
+          ...           # more USER_ID subdirs
+</code></pre>
+<p>Here <code>run_id</code> is an 8-character file name not already in use under <code>tmp</code>,
+so <code>run_dir</code> is <code>tmp/RUN_ID</code>.  This has</p>
+<ul>
+<li>home,</li>
+<li>projects, and</li>
+<li>stores</li>
+</ul>
+<p>subdirectories.</p>
+<h2>home</h2>
+<p>In each <code>run_dir</code> there is a dummy <code>home/LOGIN</code> directory,
+and under that a <code>dvcz</code> directory that corresponds to <code>$HOME/.dvcz</code>.
+The login may have any number of associated <strong>Committer</strong> objects.
+The serialization of each Committer is to be found in a file whose
+name is the Committer's handle.  The Committer's RSA key, <code>skPriv</code>,
+is used for digital signatures on <code>BuildList</code>s created during test
+runs</p>
+<p>While in current use there is only one <code>LOGIN</code> subdirectory, it is
+possible that in future there will be many such subdirectories, one
+for each login using the test directory.</p>
+<h2>projects</h2>
+<p>At the same level as the <code>home/</code> directory there is a <code>projects/</code>
+directory and under that a per-project subdirectory with the same
+name of as the project.  Each such project directory will contain a
+<code>dvcz/</code> subdirectory.  At the time of writing <code>dvcz/</code> contains only
+<code>builds</code> and <code>lastBuildList</code>.</p>
+<p>And at the same level as <code>home/</code> and <code>projects/</code> is the <code>stores/</code>
+subdirectory.  This contains the dummy content-keyed stores used
+in the test runs.  Each such store has a unique name.  Each has
+an <code>in/</code> directory and within that a subdirectory for each Committer
+accessing the store.  Each such subdirectory has the Committers's
+32-byte <code>user_id</code> as its name.  The subdirectory itself is a single-level
+<code>FLAT_DIR</code> content-keyed store.  This will contain <code>in/</code> and <code>tmp/</code>
+subdirectories, an <code>SHA_SIG</code> file, and zero or more data files named
+with their content keys, each such content key being the SHA hash
+of the file content.  The type of SHA hash used will be the same as
+the type of hash used to encrypt None as <code>SHA_SIG</code>.</p>
+<p>Currently, the store under <code>STORE_NAME</code> may be organized in any of three
+ways: <code>DIR_FLAT</code>, <code>DIR16x16</code>, and <code>DIR256x256</code>.  In the first case
+<code>SHA_SIG</code> is the full value of the quantity.  So if this is SHA1_HEX_NONE,
+for example, then <code>SHA_SIG</code> is <code>da39a3ee...0709</code> (where I omit 28 hex chars
+for clarity).  But if the directory structure is <code>DIR16x16</code>, only the first
+nibble appears in the top directory and the second in the middle directory,
+so <code>SHA_SIG</code> appears in the file system as <code>d/a/da39a3ee...0709</code>.  And
+similarly if the directory structure is <code>DIR256x256</code> the value in the
+file system is <code>da/39/da39a3ee...0709</code>.</p>
+<p>Note that the <code>in/</code> subdirectories are always <code>DIR_FLAT</code>, so only the
+simple form is used; for example, <code>da39a3e...0709</code> in the case where
+<code>SHA_SIG</code> is <code>SHA1_HEX_NONE</code>.</p>  <div class="f">
+    <hr />
+    <div class="license">
+      <p><a href="LICENSE-MIT.html">SOFTWARE LICENSE</a></p>
+    </div>
+    <div class="project">
+      github <a href="https://github.com/jddixon/test_directory_structure">      <img src="img/GitHub-Mark-32px.png" 
+        alt="link to project"  
+        style="display: inline-block; margin-left: 0 auto; margin-right: 0 auto">
+       </a> project
+    </div>
+    <div class="logo" >
+      <a href="https://jddixon.github.io/xlattice/">
+      <img src="img/xlattice-2014.jpg" alt="the XLattice Project" style="float: right;" >
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
