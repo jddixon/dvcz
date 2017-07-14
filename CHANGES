@@ -6,6 +6,9 @@ v0.1.17
 v0.1.16
     2017-06-09
         * restructure for pylint                                    SLOC 2369
+v0.1.16
+    2017-04-21
+        * drop dist/* from repo plus minor edits                    SLOC 2373
 v0.1.15
     2017-03-16
         * dvc_check_builds works                                    SLOC 2372
@@ -151,4 +154,7 @@ v0.0.1
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> efca6a131a5b1c90be3762d3b135e559c3f71478
