@@ -46,7 +46,7 @@ If N files are being committed, N new entries will appear below
 
 """
 
-#import hashlib
+# import hashlib
 
 # from buildlist import(check_dirs_in_path, generate_rsa_key,
 #                      read_rsa_key, rm_f_dir_contents)

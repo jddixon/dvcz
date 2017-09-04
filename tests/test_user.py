@@ -54,7 +54,7 @@ class TestUser(unittest.TestCase):
     def do_test_bad_login(self, login, sk_priv, ck_priv, key_bits):
         """Verify that bad login strings are rejected. """
         try:
-            _ = User(login, sk_priv, ck_priv, key_bits)
+            User(login, sk_priv, ck_priv, key_bits)
             self.fail("User didn't detect bad login '%s'" % login)
         except DvczError:
             pass
