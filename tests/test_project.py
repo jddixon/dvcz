@@ -43,7 +43,7 @@ class TestProject(unittest.TestCase):
     def do_test_bad_name(self, name, path, main_lang=''):
         """ Verify that a known-bad name is rejected. """
         try:
-            _ = Project(name, path, main_lang)
+            Project(name, path, main_lang)
             self.fail("Project didn't detect bad name '%s'" % name)
         except DvczError:
             pass
@@ -58,7 +58,7 @@ class TestProject(unittest.TestCase):
     def do_test_bad_path(self, name, path, main_lang=''):
         """ Verify that a known-bad path to a project is rejected. """
         try:
-            _ = Project(name, path, main_lang)
+            Project(name, path, main_lang)
             self.fail("Project didn't detect bad path '%s'" % name)
         except PermissionError:
             pass

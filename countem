@@ -6,7 +6,7 @@ then
   
   rm -rf build/* tmp/* 
   
-  pySloc -L py  -X cover -X htmlcov -X dist -v $@ dvcz src/dvc_adduser src/dvc_check_builds src/dvc_commit tests/test_adduser.py tests/test_committer.py tests/test_dvc_setup.py tests/test_get_proj_info.py tests/test_project.py tests/test_store.py tests/test_user.py setup.py
+  pySloc -L py  -X cover -X htmlcov -X dist -v $@ src/dvcz src/dvc_adduser src/dvc_check_builds src/dvc_commit tox.ini requirements.txt test_requirements.txt tests/test_adduser.py tests/test_committer.py tests/test_dvc_setup.py tests/test_get_proj_info.py tests/test_project.py tests/test_store.py tests/test_user.py setup.py
 else
   echo "DEV_BASE is not defined"
 fi

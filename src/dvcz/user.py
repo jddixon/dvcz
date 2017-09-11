@@ -22,6 +22,7 @@ from Crypto.PublicKey import RSA
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
     import sha3
+    assert sha3     # suppress warning
 
 # == adduser ========================================================
 
@@ -151,7 +152,8 @@ class _User(object):
         if ck_priv is None:
             ck_priv = RSA.generate(key_bits)
         # To write use
-        #   with open(path, 'wb+') as file: file.write(sk_priv.exportKey('PEM'))
+        #   with open(path, 'wb+') as file:
+        #       file.write(sk_priv.exportKey('PEM'))
         # To read use
         #   with open(path, 'rb') as file: sk_priv = RSA.importKey(file.read())
         self._sk_priv = sk_priv
@@ -290,7 +292,8 @@ class User(_User):
         # XXX Ignoring possiblity of differences key sizes
         key_bits = sk_priv.size() + 1   # XXX TILT: PyCrypto returns eg 1023
         # DEBUG
-        # print("create_from_string_array: found sk_priv size is %d" % key_bits)
+        # print("create_from_string_array: found sk_priv size is %d" %
+        #        key_bits)
         # END
 
         return User(login, sk_priv, ck_priv, key_bits)

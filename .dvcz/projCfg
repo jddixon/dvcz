@@ -29,6 +29,9 @@ code:std:pylintrc
 code:std:.coveragerc
 code:std:check.summary
 code:std:MANIFEST.in
+code:std:tox.ini
+code:std:requirements.txt
+code:std:test_requirements.txt
 txt:std:LICENSE-MIT.md
 txt:std:CHANGES
 txt:std:README.md
@@ -41,15 +44,8 @@ bash:std:test.all
 bash:std:doPyLint
 bash:std:checkCoverage
 bash:local:test_dummy.sh
+py:std:setup.cfg
 py:std:setup.py
 py:global:dvc_adduser
 py:global:dvc_check_builds
 py:global:dvc_commit
-py:global:dvc_check_builds
-py:test:test_adduser.py
-py:test:test_committer.py
-py:test:test_dvc_setup.py
-py:test:test_get_proj_info.py
-py:test:test_project.py
-py:test:test_store.py
-py:test:test_user.py

@@ -7,29 +7,33 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-dvcz v0.1.17
-2017-07-14 23:27:11
+dvcz v0.1.19
+2017-09-11 19:14:28
 # BEGIN CONTENT #
 dvcz
+ .cache
+  v
+   cache
+    lastfailed bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f
  .dvcz
-  builds 0a29406a10df0e2dbf7884895c8a00ed788edd60
+  builds 68d47caad3933edaf13404802424200987a980c1
   copyright 9ba73bf798bce641eb5082b855c6788fe7ea5833
-  lastBuildList 7e78f7077a48288f9297f5ef7ec4044f56b3b15c
+  lastBuildList 8b6beb24ee6c976e94589037f8d2ede4a83d0af1
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  projCfg f88bac7b49f6faf0c4d4b0fe39b412b9fa68e349
+  projCfg 7c7226e88343fcc51d61cd7ded821862871a3155
   projCfg.local 027524ed523508d257a7a6ab66147327ac5cd675
-  version 5eec3110cf6ae3403347698f25e306fee909b76f
- .gitignore 5185a3cb0539828e50edfc25d60c80ae291197fa
- CHANGES 09b609dc041459e224f77d1e086bdce7f0ec349e
+  version 442b2b2a49e0a8a6b13afd9a99e95e1486bda15c
+ .gitignore c8129c7133b7a7755cefd3dfc62a9af7bc306aa0
+ CHANGES 95278eed7179f901888f86377af07876031172e4
  LICENSE-MIT.md 1aadfd51d28fc4b9e3f5929212794dd121b13e26
- MANIFEST.in ab66c4ba9f7b7352eb828e32839a387bf990125b
+ MANIFEST.in ee87ecf6928c0c4c69376734eba9cf532ce748b1
  README.md 9779f6700edcd73f39b69277503c06d2da26cd9c
  TODO e62a10bb8cae220fbf1ba365ac5d461f90b88739
  abc
   def
  bkp2U 1c830549f3c57c590cb52f5a69918b657287237c
  checkCoverage 77af0269ce15a2599ba8d374e04cd493e8308c58
- countem 5b5302651b8ad69aab83adba51a870370b70869a
+ countem 94cf61b37a3a2b7c0ea9bc5e6ed3879b14d173f6
  doPyLint 31321ad99eb3b9ac0928a68c29a8b5b88c9472fb
  ghpDoc
   css
@@ -49,28 +53,31 @@ dvcz
   test_directory_structure.md 0fb9f2f256d20f0f9357f908a130e6be65fb579d
  installit 5108adbba14955e85087a1bd33fd129e55c9ba21
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- setup.py 8ff64b984482fc2d697de4bfe1a3de297ca5aea3
+ requirements.txt da51e3c121c49096f3262a3e62f62f958b9c68dc
+ setup.py c67860c49f2d7e8f964d833b119bdeb271970eae
  src
   dvc_adduser 97428acb7eb3f4eb54a62742efbdf3a5e0e91371
   dvc_check_builds 6b8071c6808bdacb7cbb4398bf8684874f673744
   dvc_commit 387c1748ffc417c7ec970fd1169576123c91e406
   dvcz
-   __init__.py df075850175746d0caf54241dbf9097cd2e0028e
-   builds.py 62fcfdb15167c9c9b2b43fff819676670b08bb52
+   __init__.py 3fde220ec504249ac329a9eb29af667a410ff4db
+   builds.py 9189f490911bc60ba38c3984790cacdc144cc5dc
    project.py a2a8455a696d7c7278b33a034c0c09e4150e52a3
-   store.py 376145f4ce9d0acb6f14251c33d596807f708df3
-   user.py dab7fc75e7ff85b5d9a941f65a2bbd0051b1f525
+   store.py 150832967f431abca8b5c7eebcf5212363faf15b
+   user.py bf50e304dced854aac1df6da8e2170f5cbbbf1b3
  styleit 02114eff515f7e6f769b8a6200fd8ed58b7e98cd
  test.all cd7ccfde43962ca802d91177f0e366ce4cb976d9
  test_dummy.sh cc29ade0553bea239d730169a2fb07a645fbc273
+ test_requirements.txt cfe772624b59ddd31ceb7b1066f49c5c141d9a36
  tests
-  test_adduser.py 16ed3f8b73060922bc5a3dcd07aed4776a89ac2c
-  test_committer.py 4df46448ccda8131803e15c78b7d297443c2d1dc
+  test_adduser.py c709af514540bb165a0f8f2ecd3ac1cb8b0ebbe4
+  test_committer.py 6664c171851ae52d13849c83edee3e2a4789c74c
   test_dvc_setup.py 52fc1986e7ea046d7984746354594b991a21350d
   test_get_proj_info.py 91e492351dc62c1d207e0d61b6787a5db3e465c3
-  test_project.py 9792998777db716f9c332c9c802d81e2d0232e7d
-  test_store.py 643ebe337ffc6f8206dbd978a11041dcc7c3c8e7
-  test_user.py 68f6b357b6fe16db031d3e9aa95f3d954731f988
+  test_project.py 8aac29365a238751591a1b2ab56bf814e571c4fb
+  test_store.py 373a0b4dcc537f4b027689dbfc36ef1fa023e5ac
+  test_user.py f1f28e28f37a46dd51a91bec115baeb69f12a500
+ tox.ini 19db838e7c9b59d70fe91492bbaa5c4fd7029c28
 # END CONTENT #
 
-VcyeaL5wplRtUNem/KURtz2H0esObQ7tcxf6KbysxU6pi3KsrcT5DGZLFpE3fPbi7XBbFnsf0hrNes5drMqVeG27ILTLQ+uUacmkNulVETZlg1YMR8nEEeB8eJno9NUzTTYHfGw3KeZBrmk/90itCa9Hp4fT2f0kAuYDn26WTLOlP3LDN7Dyss0VpRVEyt0AHTpqxXvN1Wq1Nimp/+GdBFZn63jM62UcPqPhEcAGMLL6/5a8LuT9gsfv3biBzsWabcYrn5JOqp1XBtyHldkClX7Bl1AmqFqhjBSsR7yiGsNA7mv/xQjybvZNA9ECGWWkmX9cdto9SAYktwCVH0vlCg==
+NfeDsDAHwvhHS3EXoS4hn2RxuOAq0IvrgS9ELic4qZw2d73yaxQZFtrhdKuPwnV2vkmVjLaIJ5dlHoW1cj9xALsT2ARzqGWpykF5nMZ9mxicQQzmcoVF3TeeHQRUn1KpiD52oCTTvU01+mvqOXKRW6bn/RA2RKM0IbAwtJy/n4eJuzBSucCkZu24pWejavm9LFFTqapIuQRkF9caivUK9uXiofyGSTss5tWrcUvdapdTrhjr2Irrazx2Z6bO9HwGQN4ESSk9hZO/UoXBYr1KdOPDckmc5uwOV/w/H7H1RurrDON6hgC69EMRQhGBrWGYQnWUdenJwE4nfDV7lUIs6w==

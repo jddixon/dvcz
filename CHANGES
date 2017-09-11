@@ -1,14 +1,17 @@
 py/dvcz/CHANGES
 
+v0.1.19
+    2017-09-11
+        * correct requirements.txt                                  SLOC 2390
+v0.1.18
+    2017-09-04
+        * pep8 fixes; correct tox.ini                               SLOC 2380
 v0.1.17
     2017-07-14
-        * rewrite setup.py, MANIFEST.in; edit other config fieles  SLOC 2347
+        * rewrite setup.py, MANIFEST.in; edit other config fieles   SLOC 2347
 v0.1.16
     2017-06-09
         * restructure for pylint                                    SLOC 2369
-v0.1.16
-    2017-04-21
-        * drop dist/* from repo plus minor edits                    SLOC 2373
 v0.1.15
     2017-03-16
         * dvc_check_builds works                                    SLOC 2372
@@ -119,42 +122,3 @@ v0.0.1
         * initial commit                                            SLOC   48
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-
-=======
->>>>>>> efca6a131a5b1c90be3762d3b135e559c3f71478

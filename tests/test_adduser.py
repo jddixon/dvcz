@@ -3,12 +3,12 @@
 
 """ Test the do_add_user() function invoked by dvc_adduser. """
 
-#from argparse import Namespace
-#import os
+# from argparse import Namespace
+# import os
 import unittest
 #
-#from dvcz import DvczError
-#from dvcz.project import get_proj_info
+# from dvcz import DvczError
+# from dvcz.project import get_proj_info
 
 
 class TestAddUser(unittest.TestCase):

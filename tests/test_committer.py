@@ -30,7 +30,7 @@ class TestCommitter(unittest.TestCase):
         # round-trip it
         ser = committer.__str__()
         # DEBUG
-        #print("SERIALIZATION:\n%s" % ser)
+        # print("SERIALIZATION:\n%s" % ser)
         # END
         committer_b = Committer.create_from_string(ser)
         self.assertEqual(committer_b, committer)
@@ -49,7 +49,7 @@ class TestCommitter(unittest.TestCase):
     def do_test_bad_handle(self, handle, login, sk_priv, ck_priv, key_bits):
         """ Verify that a known-bad handle is rejected. """
         try:
-            _ = Committer(handle, login, sk_priv, ck_priv, key_bits)
+            Committer(handle, login, sk_priv, ck_priv, key_bits)
             self.fail("Committer didn't detect bad handle '%s'" % handle)
         except DvczError:
             pass

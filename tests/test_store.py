@@ -76,7 +76,7 @@ class TestStore(unittest.TestCase):
                          dir_struc=DirStruc.DIR_FLAT, hashtype=HashTypes.SHA2):
         """ Verify that names that should be rejected are. """
         try:
-            _ = Store(bad_name, u_path, dir_struc, hashtype)
+            Store(bad_name, u_path, dir_struc, hashtype)
             self.fail("Store didn't detect bad name '%s'" % bad_name)
         except DvczError:
             pass
@@ -98,7 +98,7 @@ class TestStore(unittest.TestCase):
                          dir_struc=DirStruc.DIR16x16, hashtype=HashTypes.SHA2):
         """ Verify that a bad path to a store is rejected. """
         try:
-            _ = Store(name, bad_path, dir_struc, hashtype)
+            Store(name, bad_path, dir_struc, hashtype)
             self.fail("Store didn't detect bad path '%s'" % name)
         except PermissionError:
             pass
