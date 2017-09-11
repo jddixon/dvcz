@@ -1,3 +1,5 @@
 # dvcz/requirements.txt
-pycrypto
+pycrypt
+setuptools
+pysha3
 

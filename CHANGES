@@ -1,5 +1,11 @@
 py/dvcz/CHANGES
 
+<<<<<<< HEAD
+=======
+v0.1.19
+    2017-09-11
+        * correct requirements.txt                                  SLOC 2390
+>>>>>>> devel
 v0.1.18
     2017-09-04
         * pep8 fixes; correct tox.ini                               SLOC 2380
@@ -118,3 +124,7 @@ v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> devel
