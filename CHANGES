@@ -1,11 +1,11 @@
 py/dvcz/CHANGES
 
-<<<<<<< HEAD
-=======
+v0.1.20
+    2017-09-27
+        * add projConfig.toml, correct version nbr in setup.py      SLOC 2418
 v0.1.19
     2017-09-11
         * correct requirements.txt                                  SLOC 2390
->>>>>>> devel
 v0.1.18
     2017-09-04
         * pep8 fixes; correct tox.ini                               SLOC 2380
@@ -125,6 +125,10 @@ v0.0.1
         * initial commit                                            SLOC   48
 
 <<<<<<< HEAD
+=======
+
+<<<<<<< HEAD
+>>>>>>> devel
 =======
 
 >>>>>>> devel
