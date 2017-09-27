@@ -7,24 +7,21 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-dvcz v0.1.19
-2017-09-11 19:14:28
+dvcz v0.1.20
+2017-09-27 19:51:28
 # BEGIN CONTENT #
 dvcz
- .cache
-  v
-   cache
-    lastfailed bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f
  .dvcz
-  builds 68d47caad3933edaf13404802424200987a980c1
+  builds b2da3351d3b4411d06532c49a163788f99a669d9
   copyright 9ba73bf798bce641eb5082b855c6788fe7ea5833
-  lastBuildList 8b6beb24ee6c976e94589037f8d2ede4a83d0af1
+  lastBuildList 26dfba9d75a648d4d85aa2f64b3253ad0e5b668f
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg 7c7226e88343fcc51d61cd7ded821862871a3155
   projCfg.local 027524ed523508d257a7a6ab66147327ac5cd675
-  version 442b2b2a49e0a8a6b13afd9a99e95e1486bda15c
+  projConfig.toml 6955495f1a1330127dacdf6f5b89bcd5737f2f90
+  version 1ca3f9070481f2d126c8ad53ac0fb04e0d40b78f
  .gitignore c8129c7133b7a7755cefd3dfc62a9af7bc306aa0
- CHANGES 95278eed7179f901888f86377af07876031172e4
+ CHANGES edca8968f1491493fbc8b8b17a3ea439f1c75288
  LICENSE-MIT.md 1aadfd51d28fc4b9e3f5929212794dd121b13e26
  MANIFEST.in ee87ecf6928c0c4c69376734eba9cf532ce748b1
  README.md 9779f6700edcd73f39b69277503c06d2da26cd9c
@@ -54,13 +51,13 @@ dvcz
  installit 5108adbba14955e85087a1bd33fd129e55c9ba21
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  requirements.txt da51e3c121c49096f3262a3e62f62f958b9c68dc
- setup.py c67860c49f2d7e8f964d833b119bdeb271970eae
+ setup.py 3a7909721dffa1c1217e501d5643abd36cf7b037
  src
   dvc_adduser 97428acb7eb3f4eb54a62742efbdf3a5e0e91371
   dvc_check_builds 6b8071c6808bdacb7cbb4398bf8684874f673744
   dvc_commit 387c1748ffc417c7ec970fd1169576123c91e406
   dvcz
-   __init__.py 3fde220ec504249ac329a9eb29af667a410ff4db
+   __init__.py 927e0c8452e47555a78f685fcc6e007fe2cd63c6
    builds.py 9189f490911bc60ba38c3984790cacdc144cc5dc
    project.py a2a8455a696d7c7278b33a034c0c09e4150e52a3
    store.py 150832967f431abca8b5c7eebcf5212363faf15b
@@ -77,7 +74,7 @@ dvcz
   test_project.py 8aac29365a238751591a1b2ab56bf814e571c4fb
   test_store.py 373a0b4dcc537f4b027689dbfc36ef1fa023e5ac
   test_user.py f1f28e28f37a46dd51a91bec115baeb69f12a500
- tox.ini 19db838e7c9b59d70fe91492bbaa5c4fd7029c28
+ tox.ini 811304f20e91d3cdfd433720d71fd6f12cf42e8c
 # END CONTENT #
 
-NfeDsDAHwvhHS3EXoS4hn2RxuOAq0IvrgS9ELic4qZw2d73yaxQZFtrhdKuPwnV2vkmVjLaIJ5dlHoW1cj9xALsT2ARzqGWpykF5nMZ9mxicQQzmcoVF3TeeHQRUn1KpiD52oCTTvU01+mvqOXKRW6bn/RA2RKM0IbAwtJy/n4eJuzBSucCkZu24pWejavm9LFFTqapIuQRkF9caivUK9uXiofyGSTss5tWrcUvdapdTrhjr2Irrazx2Z6bO9HwGQN4ESSk9hZO/UoXBYr1KdOPDckmc5uwOV/w/H7H1RurrDON6hgC69EMRQhGBrWGYQnWUdenJwE4nfDV7lUIs6w==
+jqDg1OZXYd6vIxM8PCuF8VJfwOw7pkgp0tyvsX2NKhhdtn2GhnFAJ6UznwbUeap5bKb5HJAR/uzLFDuAxO+5PIbMdga0GvGK78c+WaPiiZQCZm6VYa7vqKdPhN2rbVO1Vgf5dAktV+oAQnvXRaVsgWq5FnYsnNWl8HA3JLjanQ4ekYbjGrtzA7VLevbI5ET3ZlzGAFv9IvRpuct9MVyOYoSnyhjsXmg37n/cHmgihvBTyYcHBt+YcUPikqAMLhlr3Y5T7qcTkpi35dYsN49lzRTJgNzUCRxZGv4uG4kuJ6O8mQcKQ1vAzMUthFF969VHtEk3VN54S+cs9mwp+SxwTA==

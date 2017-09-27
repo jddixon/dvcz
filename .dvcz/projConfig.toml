@@ -1,0 +1,37 @@
+# projConfig.toml for dvcz
+
+[meta]
+    version= '0.1.0'
+
+[project]
+    name = 'dvcz'               # external name = distribution name
+    package = 'dvcz'            # internal name
+    main_lang = 'py'
+    version = '0.1.20'
+    version_date = '2017-09-27'
+    author = 'Jim Dixon'
+    author_email = 'jdd@gmail.com'
+    description='distributed version control system'
+    copyright = '2016-2017'
+    dev_status = 'pre-alpha'
+    license = 'mit'
+    relpath = 'py/dvcz'
+    state = 'shared'
+    url = 'https://jddixon.github.io/dvcz'
+
+[py]
+    packages = ['dvcz']
+    package_dir = ['src']
+    test_dir = 'tests'
+    py_modules = []
+    scripts=['src/bl_check', 'src/bl_createtestdata1', 'src/bl_listgen',
+    ext_modules = []
+
+    # sdReq output
+    distshare = ['buildlist','optionz','rnglib','xlattice_py']
+    requirements=['pycrypt','pysha3','setuptools']
+    test_requirements=[]
+
+    # trove stuff is TBD
+
+

@@ -12,7 +12,7 @@ if exists('README.md'):
         long_desc = file.read()
 
 setup(name='dvcz',
-      version='0.1.18',
+      version='0.1.20',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       long_description=long_desc,
@@ -22,7 +22,7 @@ setup(name='dvcz',
       include_package_data=False,
       zip_safe=False,
       scripts=['src/dvc_adduser', 'src/dvc_check_builds', 'src/dvc_commit'],
-      description='default proj desc',
+      description='distributed version control system',
       url='https://jddixon.github.io/dvcz',
       classifiers=[
           'Development Status :: 2 - Pre-Alpha',
