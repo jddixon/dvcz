@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.21
+    2017-12-09
+        * pylint; minor bug fixes                                   SLOC 2413
 v0.1.20
     2017-09-27
         * add projConfig.toml, correct version nbr in setup.py      SLOC 2418
@@ -123,6 +126,7 @@ v0.0.2
 v0.0.1
     2016-03-31
         * initial commit                                            SLOC   48
+
 
 
 

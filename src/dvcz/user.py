@@ -37,7 +37,6 @@ def make_committer_id(pubkey, hashtype=HashTypes.SHA2):
     Returns a 40- or 64-character hex value.
     """
 
-    # pylint: disable=redefined-variable-type
     if hashtype == HashTypes.SHA1:
         sha = hashlib.sha1()
     elif hashtype == HashTypes.SHA2:
@@ -196,6 +195,7 @@ class User(_User):
 
     def __init__(self, login=os.environ['LOGNAME'],
                  sk_priv=None, ck_priv=None, key_bits=2048):
+        # pylint: disable=useless-super-delegation
         super().__init__(login, sk_priv, ck_priv, key_bits)
 
     def __eq__(self, other):

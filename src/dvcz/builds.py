@@ -30,22 +30,22 @@ def _check_builds_line(line, u_dir, hashtype, verbose=False):
     else:
         print("BAD HASH FIELD:\n  %s" % line)
         return
-    m = regexp.match(line)
-    if m:
-        timestamp = m.group(1)
-        version = m.group(2)
-        hash = m.group(3)
+    matches = regexp.match(line)
+    if matches:
+        timestamp = matches.group(1)
+        version = matches.group(2)
+        my_hash = matches.group(3)
         if verbose:
             print("timestamp: %s" % timestamp)
             print("version:   v%s" % version)
-            print("hash:      %s" % hash)
+            print("my_hash:   %s" % my_hash)
     else:
         print("\nCANNOT PARSE LINE:\n  %s" % line)
         return
 
-    data = u_dir.get_data(hash)
+    data = u_dir.get_data(my_hash)
     if not data:
-        print("\nCANNOT FIND BUILD LIST AT %s IN %s" % (hash, u_path))
+        print("\nCANNOT FIND BUILD LIST AT %s IN %s" % (my_hash, u_path))
         return
 
     # POSSIBLE DECODE ERROR
@@ -54,11 +54,11 @@ def _check_builds_line(line, u_dir, hashtype, verbose=False):
     try:
         blist = BuildList.parse(text, hashtype)
     except BLError as exc:
-        print("EXCEPTION PARSING LINE:\n  %s" % line)
+        print("EXCEPTION %s PARSING LINE:\n  %s" % (exc, line))
         return
 
     files_not_found = blist.check_in_u_dir(u_path)
-    if files_not_found and len(files_not_found):
+    if files_not_found:
         print("\nLINE: %s" % line)
         print("SOME BUILD LIST FILES NOT FOUND:")
         for file in files_not_found:
