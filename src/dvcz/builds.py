@@ -25,7 +25,9 @@ def _check_builds_line(line, u_dir, hashtype, verbose=False):
 
     if hashtype == HashTypes.SHA1:
         regexp = LINE1_RE
-    elif hashtype == HashTypes.SHA2 or hashtype == HashTypes.SHA3:
+    elif hashtype == HashTypes.SHA2 or \
+            hashtype == HashTypes.SHA3 or \
+            hashtype == hashTypes.BLAKE2B:
         regexp = LINE2_RE
     else:
         print("BAD HASH FIELD:\n  %s" % line)

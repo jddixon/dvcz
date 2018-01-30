@@ -43,6 +43,10 @@ def make_committer_id(pubkey, hashtype=HashTypes.SHA2):
         sha = hashlib.sha256()
     elif hashtype == HashTypes.SHA3:
         sha = hashlib.sha3_256()
+    elif hashtype == HashTypes.BLAKE2B:
+        sha = hashlib.blake2b(digest_size=32)
+    else:
+        raise NotImplementedError
     sha.update(pubkey.exportKey())  # PEM format
     sha.update(str(time.time()).encode('utf-8'))
     return sha.hexdigest()
