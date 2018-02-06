@@ -148,6 +148,7 @@ If either of these is missing the utility will create it.
       -1, --using_sha1      using the 160-bit SHA1 hash
       -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
       -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+      -B, --using_blake2b   using the blake2b hash with 256-bit digest
       -u U_PATH, --u_path U_PATH
                             path to uDir
       -v, --verbose         be chatty
@@ -171,6 +172,7 @@ If either of these is missing the utility will create it.
       -1, --using_sha1      using the 160-bit SHA1 hash
       -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
       -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+      -B, --using_blake2b   using the blake2b hash with 256-bit digest
       -u U_PATH, --u_path U_PATH
                             path to uDir
       -v, --verbose         be chatty

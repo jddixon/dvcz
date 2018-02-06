@@ -20,7 +20,7 @@ three or four-part decimal version number vN.N.N, where N represents
 a decimal number in the range 0..255 inclusive.  The HASH field is the
 hash of the contents of the BuildList, its content key, in hexadecimal
 form.  If SHA1 is used for the hash, the hash consists of 40 characters;
-if SHA2 or SHA3 is used, it is 64 hex characters long.
+if SHA2, SHA3, or blake2b is used, it is 64 hex characters long.
 
 """
 

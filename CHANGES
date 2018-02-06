@@ -1,5 +1,8 @@
 py/dvcz/CHANGES
 
+v0.1.22
+    2018-01-30
+        * add skeletal blake2b support                              SLOC 2411
 v0.1.21
     2017-12-09
         * pylint; minor bug fixes                                   SLOC 2413
