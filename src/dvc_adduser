@@ -23,8 +23,8 @@ from dvcz.user import do_add_user
 from optionz import dump_options
 from xlattice import (check_hashtype, parse_hashtype_etc, fix_hashtype)
 from xlattice.proc_lock import ProcLock
-from xlattice.util import timestamp_now
-from xlattice.u import DirStruc
+from xlutil import timestamp_now
+from xlu import DirStruc
 
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import

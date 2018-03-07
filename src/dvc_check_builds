@@ -20,8 +20,8 @@ from dvcz.builds import check_builds
 
 from optionz import dump_options
 from xlattice.proc_lock import ProcLock
-# from xlattice.u import DirStruc
-from xlattice.util import timestamp_now
+# from xlu import DirStruc
+from xlutil import timestamp_now
 
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import

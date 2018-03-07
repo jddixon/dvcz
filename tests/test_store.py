@@ -8,7 +8,7 @@ import unittest
 from dvcz import DvczError
 from dvcz.store import Store
 from xlattice import HashTypes
-from xlattice.u import DirStruc
+from xlu import DirStruc
 
 
 class TestStore(unittest.TestCase):

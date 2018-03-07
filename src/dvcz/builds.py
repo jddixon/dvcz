@@ -6,7 +6,7 @@ import re
 from buildlist import BLError, BuildList
 from dvcz import DvczError
 from xlattice import HashTypes
-from xlattice.u import UDir
+from xlu import UDir
 
 __all__ = ['check_builds', ]
 

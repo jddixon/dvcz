@@ -15,7 +15,7 @@ from buildlist import(check_dirs_in_path, generate_rsa_key,
 from dvcz import DvczError
 from dvcz.project import Project
 from xlattice import HashTypes
-from xlattice.u import UDir
+from xlu import UDir
 
 from Crypto.PublicKey import RSA
 

@@ -53,7 +53,7 @@ If N files are being committed, N new entries will appear below
 from dvcz import DvczError
 from dvcz.project import Project
 from xlattice import HashTypes
-from xlattice.u import UDir, DirStruc
+from xlu import UDir, DirStruc
 
 # from Crypto.PublicKey import RSA
 
